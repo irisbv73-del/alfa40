@@ -640,11 +640,11 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:14px;}
               <div class="stat-val" style="color:#fff;font-size:28px;" id="sitConsum">— m³</div>
             </div>
             <div class="stat-box" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.25);">
-              <div class="stat-lbl" style="color:rgba(255,255,255,.7);">Restanțe</div>
+              <div class="stat-lbl" style="color:rgba(255,255,255,.7);">Sold fond rulment</div>
               <div class="stat-val" style="color:#ffcccc;font-size:28px;" id="sitRest">0 LEI</div>
             </div>
             <div class="stat-box" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.25);">
-              <div class="stat-lbl" style="color:rgba(255,255,255,.7);">Penalizări</div>
+              <div class="stat-lbl" style="color:rgba(255,255,255,.7);">Sold fond reparații</div>
               <div class="stat-val" style="color:#ffe0aa;font-size:28px;" id="sitPen">0 LEI</div>
             </div>
           </div>
@@ -766,8 +766,8 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:14px;}
         <div class="stats-row">
           <div class="stat-box"><div class="stat-lbl">Sumă totală de plată</div><div class="stat-val red" id="adTotal">0 LEI</div></div>
           <div class="stat-box"><div class="stat-lbl">Consum luna curentă</div><div class="stat-val blue" id="adConsum">— m³</div></div>
-          <div class="stat-box"><div class="stat-lbl">Restanțe</div><div class="stat-val red" id="adRest">0 LEI</div></div>
-          <div class="stat-box"><div class="stat-lbl">Penalizări</div><div class="stat-val" style="color:var(--yellow);" id="adPen">0 LEI</div></div>
+          <div class="stat-box"><div class="stat-lbl">Sold fond rulment</div><div class="stat-val red" id="adRest">0 LEI</div></div>
+          <div class="stat-box"><div class="stat-lbl">Sold fond reparații</div><div class="stat-val" style="color:var(--yellow);" id="adPen">0 LEI</div></div>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch;">
@@ -828,6 +828,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:14px;}
           <div class="topbar-right">
             <button class="btn btn-red btn-sm" onclick="openModal('modalPass')">🔐 Schimbă parola</button>
             <button class="btn btn-primary btn-sm" onclick="exportPDF()">📄 Export PDF</button>
+            <button class="btn btn-sm" style="background:linear-gradient(135deg,var(--green),#0a9e5c);color:#fff;font-weight:800;" onclick="descarcaFisierActualizat()">⬇ Descarcă portal actualizat</button>
           </div>
         </div>
 
@@ -925,7 +926,8 @@ const MONTHS_SHORT=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct',
 const MONTHS_FULL=['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
 const COST_KEYS={pierderiApa:'Pierderi apă',gunoi:'Gunoi menajer',curatenie:'Curățenie',
   luminaScara:'Lumină scară',salarii:'Salarii',fondReparatii:'Fond reparații',fondRulment:'Fond rulment',
-  restante:'Restanțe',penalizari:'Penalizări'};
+  costApaRece:'Cost apă rece consumat',
+  soldFondRulment:'Sold fond rulment',soldFondReparatii:'Sold fond reparații'};
 
 function ls(k,d){try{const v=localStorage.getItem('alfa40v2_'+k);return v!==null?JSON.parse(v):d;}catch{return d;}}
 function lss(k,v){try{localStorage.setItem('alfa40v2_'+k,JSON.stringify(v));}catch{}}
@@ -936,7 +938,7 @@ function buildApts(){
     a['A'+i]={nr:i,scara:'A',proprietar:'',prenume:'',persoane:'',password:String(i),
       wa:'',email:'',indexRece:'',indexCald:'',dataTr:'',
       paid:false,  // admin marks as paid manually
-      costs:{pierderiApa:'',gunoi:'',curatenie:'',luminaScara:'',salarii:'',fondReparatii:'',fondRulment:'',restante:'',penalizari:''},
+      costs:{pierderiApa:'',gunoi:'',curatenie:'',luminaScara:'',salarii:'',fondReparatii:'',fondRulment:'',costApaRece:'',soldFondRulment:'',soldFondReparatii:''},
       indexHistory:Array(12).fill(''),iban:''};
   }
   for(let i=1;i<=20;i++){
@@ -944,7 +946,7 @@ function buildApts(){
     a['B'+i]={nr:nr,scara:'B',proprietar:'',prenume:'',persoane:'',password:String(nr),
       wa:'',email:'',indexRece:'',indexCald:'',dataTr:'',
       paid:false,  // admin marks as paid manually
-      costs:{pierderiApa:'',gunoi:'',curatenie:'',luminaScara:'',salarii:'',fondReparatii:'',fondRulment:'',restante:'',penalizari:''},
+      costs:{pierderiApa:'',gunoi:'',curatenie:'',luminaScara:'',salarii:'',fondReparatii:'',fondRulment:'',costApaRece:'',soldFondRulment:'',soldFondReparatii:''},
       indexHistory:Array(12).fill(''),iban:''};
   }
   return a;
@@ -978,6 +980,63 @@ function save(){
   lss('state',S);
   // Show a subtle autosave indicator on every save
   showSaveToast('Salvat automat ✓');
+}
+
+// ══ DESCARCĂ PORTAL ACTUALIZAT CU DATE INCLUSE ══
+function descarcaFisierActualizat(){
+  // 1. Salvăm starea curentă complet
+  save();
+
+  // 2. Luăm HTML-ul complet al paginii
+  let html=document.documentElement.outerHTML;
+
+  // 3. Înscriim datele din localStorage direct în fișier
+  //    ca script de inițializare — astfel datele există în fișier,
+  //    nu doar în browserul curent
+  const stateJSON=JSON.stringify(S);
+  const adminPassCurrent=ADMIN_PASS;
+
+  // Înlocuim ADMIN_PASS cu cel curent
+  html=html.replace(
+    /let ADMIN_PASS = '[^']*';/,
+    "let ADMIN_PASS = '"+adminPassCurrent.replace(/'/g,"\\'")+"';"
+  );
+
+  // Injectăm datele salvate ca script de preîncărcare
+  // (se execută înainte de inițializarea aplicației)
+  const preloadScript=`<script id="preload-data">
+(function(){
+  try{
+    var savedState=${stateJSON};
+    // Scriem datele în localStorage pentru a fi disponibile la pornire
+    localStorage.setItem('alfa40v2_state', JSON.stringify(savedState));
+  }catch(e){console.warn('Preload data error:',e);}
+})();
+<\/script>`;
+
+  // Inserăm scriptul de preîncărcare imediat după <head>
+  html=html.replace('<head>', '<head>\n'+preloadScript);
+
+  // Eliminăm scriptul de preîncărcare dacă există deja (evităm duplicatele)
+  html=html.replace(/<script id="preload-data">[\s\S]*?<\/script>\n<script id="preload-data">/,
+    '<script id="preload-data">');
+
+  // 4. Descărcăm fișierul actualizat
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  const data=new Date();
+  const datStr=data.getFullYear()+''+String(data.getMonth()+1).padStart(2,'0')+''+String(data.getDate()).padStart(2,'0');
+  a.download='alfa40-bloc129-'+datStr+'.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+
+  // 5. Toast de confirmare
+  const toast=document.createElement('div');
+  toast.style.cssText='position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--green),#0a9e5c);color:#fff;padding:14px 22px;border-radius:12px;font-weight:800;font-size:14px;z-index:9999;box-shadow:0 6px 24px rgba(0,0,0,.2);line-height:1.6;max-width:380px;';
+  toast.innerHTML='⬇ Fișier descărcat cu succes!<br><span style="font-size:12px;font-weight:600;opacity:.9;">Toate datele sunt incluse în fișier.<br>Înlocuiți <strong>index.html</strong> pe server — datele se păstrează.</span>';
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(),5000);
 }
 
 // Debounce helper so rapid typing doesn't spam toasts
@@ -1367,8 +1426,8 @@ function openAptDetail(k){
 
   const total=calcTotal(k);
   document.getElementById('adTotal').textContent=total.toFixed(0)+' LEI';
-  document.getElementById('adRest').textContent=(parseFloat(a.costs.restante)||0).toFixed(0)+' LEI';
-  document.getElementById('adPen').textContent=(parseFloat(a.costs.penalizari)||0).toFixed(0)+' LEI';
+  document.getElementById('adRest').textContent=(parseFloat(a.costs.soldFondRulment)||0).toFixed(0)+' LEI';
+  document.getElementById('adPen').textContent=(parseFloat(a.costs.soldFondReparatii)||0).toFixed(0)+' LEI';
 
   // Consum: find latest month with index data
   let latestM=new Date().getMonth();
@@ -1413,7 +1472,7 @@ function renderCostTable(tblId,k,editable){
   Object.entries(COST_KEYS).forEach(([ck,lbl])=>{
     const val=a.costs[ck]||'';
     const tr=document.createElement('tr');
-    const isSpecial=ck==='restante'||ck==='penalizari';
+    const isSpecial=ck==='soldFondRulment'||ck==='soldFondReparatii';
     tr.innerHTML=`<td style="color:${isSpecial?'var(--red)':'var(--text)'};">${lbl}</td>
       <td>${editable&&isAdmin
         ?`<input type="number" value="${val}" placeholder="0" onchange="updateCost('${k}','${ck}',this.value)">`
@@ -1592,8 +1651,8 @@ function loadSituatieLocatar(k){
 
   const total=calcTotal(k);
   document.getElementById('sitTotal').textContent=total.toFixed(0)+' LEI';
-  document.getElementById('sitRest').textContent=(parseFloat(a.costs.restante)||0)+' LEI';
-  document.getElementById('sitPen').textContent=(parseFloat(a.costs.penalizari)||0)+' LEI';
+  document.getElementById('sitRest').textContent=(parseFloat(a.costs.soldFondRulment)||0)+' LEI';
+  document.getElementById('sitPen').textContent=(parseFloat(a.costs.soldFondReparatii)||0)+' LEI';
 
   const now=new Date();const m=now.getMonth();
   // Find the latest month that has index data
@@ -1618,7 +1677,7 @@ function loadSituatieLocatar(k){
     Object.entries(COST_KEYS).forEach(([ck,lbl])=>{
       const val=parseFloat(a.costs[ck])||0;tot+=val;
       const tr=document.createElement('tr');
-      const isSpec=ck==='restante'||ck==='penalizari';
+      const isSpec=ck==='soldFondRulment'||ck==='soldFondReparatii';
       tr.innerHTML=`<td style="color:${isSpec?'var(--red)':'var(--text)'};">${lbl}</td>
         <td style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:${isSpec?'var(--red)':val>0?'var(--sky5)':'var(--text3)'};">${val} LEI</td>`;
       tb.appendChild(tr);
@@ -1787,9 +1846,9 @@ function updateSumaDatorata(k,val){
   const total=parseFloat(val)||0;
   const a=S.apartments[k];
   let subtotal=0;
-  Object.entries(a.costs).forEach(([ck,cv])=>{if(ck!=='restante')subtotal+=parseFloat(cv)||0;});
-  const restante=Math.max(0,total-subtotal).toFixed(0);
-  S.apartments[k].costs.restante=restante;
+  Object.entries(a.costs).forEach(([ck,cv])=>{if(ck!=='soldFondRulment'&&ck!=='soldFondReparatii')subtotal+=parseFloat(cv)||0;});
+  const sold=Math.max(0,total-subtotal).toFixed(0);
+  S.apartments[k].costs.soldFondRulment=sold;
   save(); // immediate auto-save
   renderDashTable();updateStats();
 }
