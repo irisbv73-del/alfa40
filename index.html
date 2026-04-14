@@ -522,7 +522,60 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:14px;}
   </div>
 </div>
 
-<!-- ═══════ APP ═══════ -->
+<!-- MODAL PUBLICARE GITHUB -->
+<div class="modal" id="modalGithub">
+  <div class="modal-box" style="width:560px;">
+    <button class="modal-close" onclick="closeModal('modalGithub')">×</button>
+    <h3>🚀 Publică pe GitHub</h3>
+
+    <div style="background:var(--blue-l);border:2px solid var(--border2);border-radius:9px;padding:12px 16px;font-size:13px;color:var(--sky6);margin-bottom:18px;line-height:1.7;">
+      <strong>Cum obții GitHub Token:</strong><br>
+      1. Mergi pe <strong>github.com</strong> → Settings → Developer Settings<br>
+      2. Personal access tokens → Tokens (classic) → Generate new token<br>
+      3. Bifează permisiunea <strong>repo</strong> → Generate token<br>
+      4. Copiază token-ul și lipește-l mai jos
+    </div>
+
+    <div class="fld" style="margin-bottom:12px;">
+      <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px;">GitHub Username</label>
+      <input type="text" id="ghUser" placeholder="ex: ionescumaria" style="width:100%;padding:10px 14px;background:var(--sky1);border:2px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--text);outline:none;">
+    </div>
+    <div class="fld" style="margin-bottom:12px;">
+      <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px;">Nume Repository</label>
+      <input type="text" id="ghRepo" placeholder="ex: alfa40-portal" style="width:100%;padding:10px 14px;background:var(--sky1);border:2px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--text);outline:none;">
+    </div>
+    <div class="fld" style="margin-bottom:12px;">
+      <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px;">Nume fișier în repository</label>
+      <input type="text" id="ghFile" placeholder="index.html" value="index.html" style="width:100%;padding:10px 14px;background:var(--sky1);border:2px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--text);outline:none;">
+    </div>
+    <div class="fld" style="margin-bottom:16px;">
+      <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px;">
+        Personal Access Token
+        <span style="font-weight:600;font-size:10px;color:var(--text3);text-transform:none;"> (se salvează local, nu se trimite nicăieri)</span>
+      </label>
+      <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="width:100%;padding:10px 14px;background:var(--sky1);border:2px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--text);outline:none;">
+    </div>
+
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:16px;cursor:pointer;">
+      <input type="checkbox" id="ghSaveToken"> Salvează setările (token criptat local)
+    </label>
+
+    <button class="btn btn-primary" onclick="publicaPeGithub()" style="width:100%;padding:13px;font-size:15px;font-weight:800;">
+      🚀 PUBLICĂ ACUM
+    </button>
+
+    <div id="ghProgress" style="display:none;margin-top:14px;">
+      <div style="background:var(--sky1);border:2px solid var(--border);border-radius:9px;padding:14px 16px;">
+        <div id="ghStep1" style="font-size:13px;font-weight:700;color:var(--text3);">⏳ Pregătire fișier...</div>
+        <div id="ghStep2" style="font-size:13px;font-weight:700;color:var(--text3);margin-top:6px;">⏳ Conectare la GitHub...</div>
+        <div id="ghStep3" style="font-size:13px;font-weight:700;color:var(--text3);margin-top:6px;">⏳ Publicare...</div>
+        <div id="ghStep4" style="font-size:13px;font-weight:700;color:var(--text3);margin-top:6px;">⏳ Verificare...</div>
+      </div>
+    </div>
+
+    <div id="ghResult" style="display:none;margin-top:12px;"></div>
+  </div>
+</div>
 <div id="app">
   <!-- BUTON GLOBAL ACASĂ -->
   <button id="homeBtn" onclick="goHome()">
@@ -828,7 +881,8 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:14px;}
           <div class="topbar-right">
             <button class="btn btn-red btn-sm" onclick="openModal('modalPass')">🔐 Schimbă parola</button>
             <button class="btn btn-primary btn-sm" onclick="exportPDF()">📄 Export PDF</button>
-            <button class="btn btn-sm" style="background:linear-gradient(135deg,var(--green),#0a9e5c);color:#fff;font-weight:800;" onclick="descarcaFisierActualizat()">⬇ Descarcă portal actualizat</button>
+            <button class="btn btn-sm" style="background:linear-gradient(135deg,var(--green),#0a9e5c);color:#fff;font-weight:800;" onclick="descarcaFisierActualizat()">⬇ Descarcă actualizat</button>
+            <button class="btn btn-sm" style="background:linear-gradient(135deg,#24292e,#404852);color:#fff;font-weight:800;" onclick="deschideModalGithub()">🚀 Publică pe GitHub</button>
           </div>
         </div>
 
@@ -1037,6 +1091,140 @@ function descarcaFisierActualizat(){
   toast.innerHTML='⬇ Fișier descărcat cu succes!<br><span style="font-size:12px;font-weight:600;opacity:.9;">Toate datele sunt incluse în fișier.<br>Înlocuiți <strong>index.html</strong> pe server — datele se păstrează.</span>';
   document.body.appendChild(toast);
   setTimeout(()=>toast.remove(),5000);
+}
+
+// ══ GITHUB PUBLISH ══
+function deschideModalGithub(){
+  // Restaurează setările salvate dacă există
+  const saved=ls('github_settings',null);
+  if(saved){
+    document.getElementById('ghUser').value=saved.user||'';
+    document.getElementById('ghRepo').value=saved.repo||'';
+    document.getElementById('ghFile').value=saved.file||'index.html';
+    if(saved.token){
+      document.getElementById('ghToken').value=atob(saved.token)||'';
+      document.getElementById('ghSaveToken').checked=true;
+    }
+  }
+  // Reset UI
+  document.getElementById('ghProgress').style.display='none';
+  document.getElementById('ghResult').style.display='none';
+  ['ghStep1','ghStep2','ghStep3','ghStep4'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.style.color='var(--text3)';
+    el.textContent=el.textContent.replace('✅','⏳').replace('❌','⏳');
+  });
+  openModal('modalGithub');
+}
+
+function setGhStep(stepId, status, text){
+  const el=document.getElementById(stepId);
+  if(!el)return;
+  const icon=status==='ok'?'✅':status==='err'?'❌':'⏳';
+  const color=status==='ok'?'var(--green)':status==='err'?'var(--red)':'var(--sky5)';
+  el.style.color=color;
+  el.textContent=icon+' '+text;
+}
+
+async function publicaPeGithub(){
+  const user=document.getElementById('ghUser').value.trim();
+  const repo=document.getElementById('ghRepo').value.trim();
+  const file=document.getElementById('ghFile').value.trim()||'index.html';
+  const token=document.getElementById('ghToken').value.trim();
+  const saveSettings=document.getElementById('ghSaveToken').checked;
+
+  if(!user||!repo||!token){
+    document.getElementById('ghResult').style.display='block';
+    document.getElementById('ghResult').innerHTML=
+      '<div style="background:var(--red-l);border:2px solid var(--red-b);border-radius:9px;padding:12px 16px;font-size:13px;font-weight:700;color:var(--red);">⚠ Completați toate câmpurile: username, repository și token!</div>';
+    return;
+  }
+
+  // Salvează setările dacă e bifat
+  if(saveSettings){
+    lss('github_settings',{user,repo,file,token:btoa(token)});
+  }
+
+  document.getElementById('ghProgress').style.display='block';
+  document.getElementById('ghResult').style.display='none';
+  document.querySelector('#modalGithub .btn-primary').disabled=true;
+
+  try{
+    // PASUL 1: Pregătire fișier
+    setGhStep('ghStep1','active','Pregătire fișier cu date incluse...');
+    save();
+    let html=document.documentElement.outerHTML;
+    html=html.replace(/let ADMIN_PASS = '[^']*';/,
+      "let ADMIN_PASS = '"+ADMIN_PASS.replace(/'/g,"\\'")+"';");
+    const stateJSON=JSON.stringify(S);
+    const preload=`<script id="preload-data">(function(){try{localStorage.setItem('alfa40v2_state',JSON.stringify(${stateJSON}));}catch(e){}})();<\/script>`;
+    // Elimină preload anterior dacă există
+    html=html.replace(/<script id="preload-data">[\s\S]*?<\/script>\n?/g,'');
+    html=html.replace('<head>','<head>\n'+preload);
+    setGhStep('ghStep1','ok','Fișier pregătit cu toate datele incluse.');
+
+    // PASUL 2: Verificare repository și obținere SHA fișier existent
+    setGhStep('ghStep2','active','Conectare la GitHub...');
+    const apiBase=`https://api.github.com/repos/${user}/${repo}/contents/${file}`;
+    const headers={'Authorization':'token '+token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'};
+
+    let sha=null;
+    const checkResp=await fetch(apiBase,{headers});
+    if(checkResp.status===200){
+      const existing=await checkResp.json();
+      sha=existing.sha; // necesar pentru update
+      setGhStep('ghStep2','ok','Conectat. Fișier existent găsit — se actualizează.');
+    } else if(checkResp.status===404){
+      setGhStep('ghStep2','ok','Conectat. Fișier nou — se creează.');
+    } else if(checkResp.status===401){
+      throw new Error('Token invalid sau expirat. Verificați token-ul GitHub.');
+    } else {
+      throw new Error('Eroare conectare GitHub: '+checkResp.status);
+    }
+
+    // PASUL 3: Publicare (create sau update)
+    setGhStep('ghStep3','active','Publicare pe GitHub...');
+    const content=btoa(unescape(encodeURIComponent(html)));
+    const now=new Date();
+    const body={
+      message:'Portal ALFA 40 actualizat — '+now.toLocaleString('ro-RO'),
+      content:content,
+    };
+    if(sha) body.sha=sha; // necesar pentru update
+
+    const pushResp=await fetch(apiBase,{method:'PUT',headers,body:JSON.stringify(body)});
+    if(!pushResp.ok){
+      const err=await pushResp.json();
+      throw new Error(err.message||'Eroare la publicare: '+pushResp.status);
+    }
+    setGhStep('ghStep3','ok','Publicat cu succes pe GitHub!');
+
+    // PASUL 4: Link final
+    setGhStep('ghStep4','ok','Portal actualizat! Activ în ~60 secunde.');
+    const pagesUrl=`https://${user}.github.io/${repo}/`;
+    document.getElementById('ghResult').style.display='block';
+    document.getElementById('ghResult').innerHTML=`
+      <div style="background:var(--green-l);border:2px solid var(--green-b);border-radius:9px;padding:14px 16px;font-size:13px;font-weight:700;color:var(--green);line-height:1.8;">
+        🎉 <strong>Publicat cu succes!</strong><br>
+        <span style="font-weight:600;">Portalul va fi actualizat în aproximativ 60 de secunde la adresa:</span><br>
+        <a href="${pagesUrl}" target="_blank" style="color:var(--sky5);font-size:14px;word-break:break-all;">${pagesUrl}</a>
+      </div>`;
+
+  }catch(err){
+    // Găsim primul pas nefinalizat și îl marcăm cu eroare
+    ['ghStep1','ghStep2','ghStep3','ghStep4'].forEach(id=>{
+      if(document.getElementById(id).textContent.startsWith('⏳'))
+        setGhStep(id,'err','Eroare');
+    });
+    document.getElementById('ghResult').style.display='block';
+    document.getElementById('ghResult').innerHTML=`
+      <div style="background:var(--red-l);border:2px solid var(--red-b);border-radius:9px;padding:12px 16px;font-size:13px;font-weight:700;color:var(--red);line-height:1.7;">
+        ❌ <strong>Eroare:</strong> ${err.message}<br>
+        <span style="font-weight:600;font-size:12px;">Verificați: username, repository, token și permisiunile acestuia (bifați <strong>repo</strong>).</span>
+      </div>`;
+  }finally{
+    document.querySelector('#modalGithub .btn-primary').disabled=false;
+  }
 }
 
 // Debounce helper so rapid typing doesn't spam toasts
