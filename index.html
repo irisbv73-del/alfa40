@@ -800,25 +800,26 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
       <input type="checkbox" id="ghSaveToken"> Salvează setările (token criptat local)
     </label>
 
-    <button class="btn btn-primary" onclick="publicaPeGithub()" style="width:100%;padding:13px;font-size:15px;font-weight:800;" disabled="">
-      🚀 PUBLICĂ ACUM
-    </button>
+    <button class="btn btn-primary" onclick="publicaPeGithub()" style="width: 100%; padding: 13px; font-size: 15px; font-weight: 800;" disabled="">🚀 PUBLICĂ ACUM</button>
 
     <div id="ghProgress" style="display: block; margin-top: 14px;">
       <div style="background:var(--sky1);border:2px solid var(--border);border-radius:9px;padding:14px 16px;">
         <div id="ghStep1" style="font-size: 13px; font-weight: 700; color: var(--sky5);">🔄 Pregătire fișier cu date incluse...</div>
-        <div id="ghStep2" style="font-size:13px;font-weight:700;color:var(--text3);margin-top:6px;">⏳ Conectare la GitHub...</div>
-        <div id="ghStep3" style="font-size:13px;font-weight:700;color:var(--text3);margin-top:6px;">⏳ Publicare...</div>
-        <div id="ghStep4" style="font-size:13px;font-weight:700;color:var(--text3);margin-top:6px;">⏳ Verificare...</div>
+        <div id="ghStep2" style="font-size: 13px; font-weight: 700; color: var(--text3); margin-top: 6px;">⏳ Conectare la GitHub...</div>
+        <div id="ghStep3" style="font-size: 13px; font-weight: 700; color: var(--text3); margin-top: 6px;">⏳ Publicare...</div>
+        <div id="ghStep4" style="font-size: 13px; font-weight: 700; color: var(--text3); margin-top: 6px;">⏳ Verificare...</div>
       </div>
     </div>
 
-    <div id="ghResult" style="display:none;margin-top:12px;"></div>
+    <div id="ghResult" style="display: none; margin-top: 12px;"><div style="background:var(--green-l);
+    border:2px solid var(--green-b);
+    border-radius:9px;padding:14px 16px;font-size:13px;font-weight:700;
+    color:var(--green);line-height:1.8;">🎉 <strong>Publicat cu succes!</strong><br>Portalul va fi disponibil la:<br><a href="https://irisbv73-del.github.io/alfa40/" target="_blank" style="color:var(--sky5);word-break:break-all;font-size:15px;">https://irisbv73-del.github.io/alfa40/</a><br><small style="color:var(--text3);">Repository: <a href="https://github.com/irisbv73-del/alfa40" target="_blank" style="color:var(--text3);">https://github.com/irisbv73-del/alfa40</a></small></div></div>
   </div>
 </div>
 <div id="app" style="display: block;">
   <!-- BUTON GLOBAL ACASĂ -->
-  <button id="homeBtn" onclick="goHome()" style="display: none;">
+  <button id="homeBtn" onclick="goHome()" style="display: flex;">
     <span class="home-icon">🏠</span>
     <span id="homeBtnLabel">← Tablou de bord</span>
   </button>
@@ -836,7 +837,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
       </div>
       <nav class="sb-nav">
         <div class="nav-sec">Meniu</div>
-        <div class="nav-item active" id="navDash" onclick="showPage('dashboard',this)"><span class="ico">⬡</span>Tablou de bord</div>
+        <div class="nav-item" id="navDash" onclick="showPage('dashboard',this)"><span class="ico">⬡</span>Tablou de bord</div>
         <!-- Locatar only -->
         <div class="nav-item locatar-only" id="navMySit" onclick="showPage('situatie',this)" style="display: none;"><span class="ico">📊</span>Situația mea</div>
         <div class="nav-item locatar-only" id="navAviz" onclick="showPage('avizare',this)" style="border-left: 3px solid transparent; display: none;" onmouseover="this.style.borderLeftColor='var(--violet2)'" onmouseout="if(!this.classList.contains('active'))this.style.borderLeftColor='transparent'"><span class="ico">📨</span>Trimite avizare <span class="v-badge" style="margin-left:auto;padding:1px 6px;font-size:10px;">NOU</span></div>
@@ -858,7 +859,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
     <main class="main">
 
       <!-- ═══ DASHBOARD (ADMIN) ═══ -->
-      <div class="page active" id="pageDashboard">
+      <div class="page" id="pageDashboard">
           <div class="topbar">
           <div class="topbar-title">📊 TABLOU DE BORD — ALFA 40 BLOC 129</div>
           <div class="topbar-right">
@@ -866,7 +867,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
             <span class="v-tag" id="adminDashHint" style="cursor: pointer;" onclick="showPage('admin',null)" title="Click pentru editare">⚙ Editare → Panou Admin</span>
             <button class="btn btn-xs admin-only" id="ghBtnDash" style="background: linear-gradient(135deg, rgb(36, 41, 46), rgb(64, 72, 82)); color: rgb(255, 255, 255); font-weight: 800;" onclick="deschideModalGithub()">🚀 GitHub</button>
             <span class="v-tag" id="termViolet">💜 Portal activ</span>
-            <div class="clock" id="clockEl">19:47:09</div>
+            <div class="clock" id="clockEl">19:48:03</div>
           </div>
         </div>
 
@@ -1761,7 +1762,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
 
       <!-- ═══ SITUATIA MEA (LOCATAR) ═══ -->
       <div class="page" id="pageSituatie">
-        <div class="topbar"><div class="topbar-title">📊 SITUAȚIA MEA</div><div class="topbar-right"><div class="clock" id="clockSit">19:47:09</div><span class="v-pill">Portal ALFA 40</span></div></div>
+        <div class="topbar"><div class="topbar-title">📊 SITUAȚIA MEA</div><div class="topbar-right"><div class="clock" id="clockSit">19:48:03</div><span class="v-pill">Portal ALFA 40</span></div></div>
         <div class="apt-hdr" id="sitHeader">
           <div class="apt-owner" id="sitName">—</div>
           <div class="apt-owner-sub" id="sitSub">—</div>
@@ -1948,7 +1949,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
       </div>
 
       <!-- ═══ APT DETAIL (ADMIN CLICK) ═══ -->
-      <div class="page" id="pageAptDetail">
+      <div class="page active" id="pageAptDetail">
         <div class="back-btn" id="aptBackBtn" onclick="showPage('dashboard',null)">← ÎNAPOI LA TABLOU</div>
         <div class="apt-hdr">
           <div class="apt-owner" id="adName">Neagu  irinel</div>
