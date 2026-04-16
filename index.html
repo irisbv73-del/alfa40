@@ -2689,6 +2689,52 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
 // ══════════════════════════════════════════
 // STORAGE
 // ══════════════════════════════════════════
+  // --- CONFIGURARE GITHUB ---
+const GH_TOKEN = "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"; 
+const GH_REPO = "irisbv73-del/alfa40"; 
+const JSON_FILE = "date.json";
+
+// NOUA FUNCȚIE DE SALVARE (Adaug-o aici)
+async function saveAll() {
+    // Salvăm local (backup)
+    localStorage.setItem('alfa40_data', JSON.stringify(S));
+
+    if (!GH_TOKEN || GH_TOKEN.includes("AICI")) {
+        console.warn("GitHub Token lipsește. Salvarea s-a făcut doar local.");
+        return;
+    }
+
+    try {
+        // 1. Obținem SHA-ul fișierului date.json
+        const fileRef = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${JSON_FILE}`, {
+            headers: { "Authorization": `token ${GH_TOKEN}` }
+        });
+        const fileData = await fileRef.json();
+
+        // 2. Trimitem datele
+        const response = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${JSON_FILE}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `token ${GH_TOKEN}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: "Actualizare automata date.json",
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(S, null, 2)))),
+                sha: fileData.sha
+            })
+        });
+
+        if (response.ok) {
+            showToast("✅ Sincronizat cu serverul!");
+        } else {
+            showToast("❌ Eroare la scrierea pe server!", "red");
+        }
+    } catch (err) {
+        console.error(err);
+        showToast("⚠️ Problemă conexiune GitHub", "red");
+    }
+}
 const MONTHS_SHORT=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];
 const MONTHS_FULL=['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
 const COST_KEYS={pierderiApa:'Pierderi apă',gunoi:'Gunoi menajer',curatenie:'Curățenie',
