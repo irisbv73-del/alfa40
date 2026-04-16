@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Asociația de Proprietari ALFA 40 — Bloc 129</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;family=Barlow+Condensed:wght@600;700;800&amp;display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><style type="text/css" id="operaUserStyle"></style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root{
@@ -697,7 +697,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
         <button class="btn-login" onclick="doAdminLogin()">▶ ACCES ADMINISTRATOR</button>
       </div>
 
-      <div class="err" id="loginErr" style="display: none;">⚠ Parolă incorectă. Contactați administratorul.</div>
+      <div class="err" id="loginErr" style="display: block;">⚠ Parolă incorectă. Contactați administratorul.</div>
     </div>
   </div>
 </div>
@@ -843,13 +843,14 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
         <div class="nav-item" onclick="showPage('program',this)"><span class="ico">🕐</span>Program casierie</div>
         <!-- Admin only -->
         <div class="nav-sec admin-only" style="">Administrator</div>
-        <div class="nav-item admin-only active" style="" onclick="showPage('admin',this)"><span class="ico">⚙</span>Panou admin</div>
+        <div class="nav-item admin-only" style="" onclick="showPage('admin',this)"><span class="ico">⚙</span>Panou admin</div>
         <div class="nav-item admin-only" style="" id="navMsgs" onclick="showPage('mesaje',this)">
           <span class="ico">📬</span>Mesaje locatari<span class="nav-badge" id="msgBadge" style="display:none;">0</span>
         </div>
         <div class="nav-item admin-only" style="" onclick="showPage('notificari',this)"><span class="ico">📣</span>Notificări</div>
       </nav>
       <div class="sb-footer">
+        <button class="btn btn-sm admin-only" style="width: 100%; margin-bottom: 6px; background: linear-gradient(135deg, rgb(36, 41, 46), rgb(64, 72, 82)); color: rgb(255, 255, 255); font-weight: 800; border: none; border-radius: 9px; padding: 10px; font-family: Nunito, sans-serif; cursor: pointer;" onclick="deschideModalGithub()">🚀 Publică pe GitHub</button>
         <button class="logout-btn" onclick="doLogout()"><span>⏻</span>Deconectare</button>
       </div>
     </aside>
@@ -861,10 +862,11 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
           <div class="topbar">
           <div class="topbar-title">📊 TABLOU DE BORD — ALFA 40 BLOC 129</div>
           <div class="topbar-right">
-            <div class="alert-pill" id="termPill">10 zile până la termen</div>
+            <div class="alert-pill" id="termPill">9 zile până la termen</div>
             <span class="v-tag" id="adminDashHint" style="cursor: pointer;" onclick="showPage('admin',null)" title="Click pentru editare">⚙ Editare → Panou Admin</span>
+            <button class="btn btn-xs admin-only" id="ghBtnDash" style="background: linear-gradient(135deg, rgb(36, 41, 46), rgb(64, 72, 82)); color: rgb(255, 255, 255); font-weight: 800;" onclick="deschideModalGithub()">🚀 GitHub</button>
             <span class="v-tag" id="termViolet">💜 Portal activ</span>
-            <div class="clock" id="clockEl">22:45:56</div>
+            <div class="clock" id="clockEl">06:01:49</div>
           </div>
         </div>
 
@@ -1759,18 +1761,18 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
 
       <!-- ═══ SITUATIA MEA (LOCATAR) ═══ -->
       <div class="page" id="pageSituatie">
-        <div class="topbar"><div class="topbar-title">📊 SITUAȚIA MEA</div><div class="topbar-right"><div class="clock" id="clockSit">22:45:56</div><span class="v-pill">Portal ALFA 40</span></div></div>
+        <div class="topbar"><div class="topbar-title">📊 SITUAȚIA MEA</div><div class="topbar-right"><div class="clock" id="clockSit">06:01:49</div><span class="v-pill">Portal ALFA 40</span></div></div>
         <div class="apt-hdr" id="sitHeader">
-          <div class="apt-owner" id="sitName">Neagu  irinel</div>
-          <div class="apt-owner-sub" id="sitSub">Apartament 8 · Scara A · Etaj 1</div>
+          <div class="apt-owner" id="sitName">—</div>
+          <div class="apt-owner-sub" id="sitSub">—</div>
           <div class="stats-row" style="margin-top:18px;margin-bottom:0;">
             <div class="stat-box" style="background:#fff;border-color:rgba(255,255,255,.8);box-shadow:0 2px 10px rgba(0,0,0,.1);">
               <div class="stat-lbl" style="color:var(--text2);">Sumă totală</div>
-              <div class="stat-val" style="color:#e05555;font-size:28px;font-weight:400;" id="sitTotal">105,18 LEI</div>
+              <div class="stat-val" style="color:#e05555;font-size:28px;font-weight:400;" id="sitTotal">0 LEI</div>
             </div>
             <div class="stat-box" style="background:#fff;border-color:rgba(255,255,255,.8);box-shadow:0 2px 10px rgba(0,0,0,.1);">
               <div class="stat-lbl" style="color:var(--text2);">Consum luna curentă</div>
-              <div class="stat-val" style="color:var(--sky5);font-size:28px;font-weight:400;" id="sitConsum">—</div>
+              <div class="stat-val" style="color:var(--sky5);font-size:28px;font-weight:400;" id="sitConsum">— m³</div>
             </div>
             <div class="stat-box" style="background:#fff;border-color:rgba(255,255,255,.8);box-shadow:0 2px 10px rgba(0,0,0,.1);">
               <div class="stat-lbl" style="color:var(--text2);">Sold fond rulment</div>
@@ -1787,62 +1789,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
           <div>
             <div class="card">
               <div class="sec-title">🧾 SUME LUNARE</div>
-              <table class="cost-tbl" id="sitCostTbl"><tbody><tr>
-        <td style="color:var(--text);font-style:normal;">
-          Pierderi apă
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--sky5);">10,00 LEI</td></tr><tr>
-        <td style="color:var(--text);font-style:normal;">
-          Gunoi menajer
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--sky5);">11,00 LEI</td></tr><tr>
-        <td style="color:var(--text);font-style:normal;">
-          Curățenie
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--sky5);">12,00 LEI</td></tr><tr>
-        <td style="color:var(--text);font-style:normal;">
-          Lumină scară
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--sky5);">13,40 LEI</td></tr><tr>
-        <td style="color:var(--text);font-style:normal;">
-          Salarii
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--sky5);">25,31 LEI</td></tr><tr>
-        <td style="color:var(--text);font-style:normal;">
-          Fond reparații
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--sky5);">12,00 LEI</td></tr><tr>
-        <td style="color:var(--text);font-style:normal;">
-          Fond rulment
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--sky5);">10,00 LEI</td></tr><tr>
-        <td style="color:var(--text);font-style:normal;">
-          Cost apă rece consumat
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--sky5);">11,47 LEI</td></tr><tr>
-        <td style="color:var(--text);font-style:normal;">
-          Cheltuieli administrative
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--text3);">0,00 LEI</td></tr><tr><td colspan="2" style="padding:0;border-top:2px dashed var(--border2);background:transparent;"></td></tr><tr style="background: rgba(240, 247, 253, 0.5);">
-        <td style="color:var(--sky5);font-style:italic;">
-          Sold fond rulment <span style="font-size:10px;background:var(--blue-l);color:var(--sky5);border:1px solid var(--border2);border-radius:10px;padding:1px 6px;font-style:normal;font-weight:800;">INFO</span>
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--sky5);">0,00 LEI</td></tr><tr style="background: rgba(240, 247, 253, 0.5);">
-        <td style="color:var(--sky5);font-style:italic;">
-          Sold fond reparații <span style="font-size:10px;background:var(--blue-l);color:var(--sky5);border:1px solid var(--border2);border-radius:10px;padding:1px 6px;font-style:normal;font-weight:800;">INFO</span>
-        </td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:500;
-          color:var(--sky5);">0,00 LEI</td></tr></tbody></table>
+              <table class="cost-tbl" id="sitCostTbl"><tbody></tbody></table>
               <div class="iban-box" style="flex-direction:column;align-items:flex-start;gap:8px;">
                 <div style="font-size:13px;font-weight:700;color:var(--text2);">
                   💳 Puteți achita online plata întreținerii în contul IBAN:
@@ -1861,91 +1808,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
                     <th style="padding:8px 10px;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);">Index (m³)</th>
                     <th style="padding:8px 10px;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);">Consum (m³)</th>
                   </tr></thead>
-                  <tbody id="sitHistBody"><tr style="background: rgba(0, 0, 0, 0.02);">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">Ianuarie</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">Februarie</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="background: rgba(0, 0, 0, 0.02);">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">Martie</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="background: rgba(33, 150, 196, 0.12); font-weight: 800;">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:900;
-        color:var(--sky5);">Aprilie ◄</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="background: rgba(0, 0, 0, 0.02);">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">Mai</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">Iunie</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="background: rgba(0, 0, 0, 0.02);">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">Iulie</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">August</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="background: rgba(0, 0, 0, 0.02);">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">Septembrie</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">Octombrie</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="background: rgba(0, 0, 0, 0.02);">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">Noiembrie</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr><tr style="">
-      <td style="white-space:nowrap;padding:9px 10px;font-weight:600;
-        color:var(--text);">Decembrie</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:500;color:var(--text4);">—</td>
-      <td style="padding:9px 10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;
-        font-weight:700;color:var(--text4);">—</td>
-      </tr></tbody>
+                  <tbody id="sitHistBody"></tbody>
                 </table>
               </div>
             </div>
@@ -1955,7 +1818,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
         <!-- PROGRAM CASIERIE - full width -->
         <div class="card" style="margin-top:16px;">
           <div class="sec-title">🏦 PROGRAM CASIERIE</div>
-          <div class="sched-grid" id="sitSchedGrid"><div class="sched-day open"><div class="sched-day-name">Lun</div><div class="sched-hours">09:00–13:00</div></div><div class="sched-day open"><div class="sched-day-name">Mar</div><div class="sched-hours">14:00–18:00</div></div><div class="sched-day"><div class="sched-day-name">Mie</div><div class="sched-closed">Închis</div></div><div class="sched-day open"><div class="sched-day-name">Joi</div><div class="sched-hours">09:00–13:00</div></div><div class="sched-day open"><div class="sched-day-name">Vin</div><div class="sched-hours">10:00–14:00</div></div><div class="sched-day"><div class="sched-day-name">Sâm</div><div class="sched-closed">Închis</div></div><div class="sched-day"><div class="sched-day-name">Dum</div><div class="sched-closed">Închis</div></div></div>
+          <div class="sched-grid" id="sitSchedGrid"></div>
         </div>
 
         <div class="card">
@@ -1995,7 +1858,7 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
         </div>
         <div class="card">
           <div class="sec-title">📋 MESAJELE MELE &amp; MESAJE DE LA ASOCIAȚIE</div>
-          <div id="myMsgsList"><p style="font-size:13px;color:var(--text3);font-weight:600;">Niciun mesaj.</p></div>
+          <div id="myMsgsList"></div>
         </div>
       </div>
 
@@ -2085,10 +1948,10 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
       </div>
 
       <!-- ═══ APT DETAIL (ADMIN CLICK) ═══ -->
-      <div class="page" id="pageAptDetail">
+      <div class="page active" id="pageAptDetail">
         <div class="back-btn" id="aptBackBtn" onclick="showPage('dashboard',null)">← ÎNAPOI LA TABLOU</div>
         <div class="apt-hdr">
-          <div class="apt-owner" id="adName">Proprietar</div>
+          <div class="apt-owner" id="adName">Neagu  irinel</div>
           <div class="apt-owner-sub" id="adSub">Apartament 8 · Scara A · Etaj 1</div>
         </div>
 
@@ -2109,35 +1972,35 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
       <td style="color:var(--text);font-style:normal;">
         Pierderi apă
       </td>
-      <td><input type="number" value="" placeholder="0.00" step="0.01" onchange="updateCost('A8','pierderiApa',this.value)" style="color:inherit;"></td></tr><tr>
+      <td><input type="number" value="10" placeholder="0.00" step="0.01" onchange="updateCost('A8','pierderiApa',this.value)" style="color:inherit;"></td></tr><tr>
       <td style="color:var(--text);font-style:normal;">
         Gunoi menajer
       </td>
-      <td><input type="number" value="" placeholder="0.00" step="0.01" onchange="updateCost('A8','gunoi',this.value)" style="color:inherit;"></td></tr><tr>
+      <td><input type="number" value="11" placeholder="0.00" step="0.01" onchange="updateCost('A8','gunoi',this.value)" style="color:inherit;"></td></tr><tr>
       <td style="color:var(--text);font-style:normal;">
         Curățenie
       </td>
-      <td><input type="number" value="" placeholder="0.00" step="0.01" onchange="updateCost('A8','curatenie',this.value)" style="color:inherit;"></td></tr><tr>
+      <td><input type="number" value="12" placeholder="0.00" step="0.01" onchange="updateCost('A8','curatenie',this.value)" style="color:inherit;"></td></tr><tr>
       <td style="color:var(--text);font-style:normal;">
         Lumină scară
       </td>
-      <td><input type="number" value="" placeholder="0.00" step="0.01" onchange="updateCost('A8','luminaScara',this.value)" style="color:inherit;"></td></tr><tr>
+      <td><input type="number" value="13.40" placeholder="0.00" step="0.01" onchange="updateCost('A8','luminaScara',this.value)" style="color:inherit;"></td></tr><tr>
       <td style="color:var(--text);font-style:normal;">
         Salarii
       </td>
-      <td><input type="number" value="" placeholder="0.00" step="0.01" onchange="updateCost('A8','salarii',this.value)" style="color:inherit;"></td></tr><tr>
+      <td><input type="number" value="25.31" placeholder="0.00" step="0.01" onchange="updateCost('A8','salarii',this.value)" style="color:inherit;"></td></tr><tr>
       <td style="color:var(--text);font-style:normal;">
         Fond reparații
       </td>
-      <td><input type="number" value="" placeholder="0.00" step="0.01" onchange="updateCost('A8','fondReparatii',this.value)" style="color:inherit;"></td></tr><tr>
+      <td><input type="number" value="12" placeholder="0.00" step="0.01" onchange="updateCost('A8','fondReparatii',this.value)" style="color:inherit;"></td></tr><tr>
       <td style="color:var(--text);font-style:normal;">
         Fond rulment
       </td>
-      <td><input type="number" value="" placeholder="0.00" step="0.01" onchange="updateCost('A8','fondRulment',this.value)" style="color:inherit;"></td></tr><tr>
+      <td><input type="number" value="10" placeholder="0.00" step="0.01" onchange="updateCost('A8','fondRulment',this.value)" style="color:inherit;"></td></tr><tr>
       <td style="color:var(--text);font-style:normal;">
         Cost apă rece consumat
       </td>
-      <td><input type="number" value="" placeholder="0.00" step="0.01" onchange="updateCost('A8','costApaRece',this.value)" style="color:inherit;"></td></tr><tr>
+      <td><input type="number" value="11.47" placeholder="0.00" step="0.01" onchange="updateCost('A8','costApaRece',this.value)" style="color:inherit;"></td></tr><tr>
       <td style="color:var(--text);font-style:normal;">
         Cheltuieli administrative
       </td>
@@ -2358,13 +2221,13 @@ table.main-tbl{width:100%;border-collapse:collapse;font-size:16px;}
           </div>
           <div class="af" style="margin-top:10px;"><label>Index apă rece transmis (m³)</label><input id="adIdxR" placeholder="ex: 124.500" oninput="saveAptField('indexRece',this.value)"></div>
           <div class="af" style="margin-top:8px;"><label>Data transmiterii index</label><input type="date" id="adDataTr" oninput="saveAptField('dataTr',this.value)"></div>
-          <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="saveAllAptFields()">💾 SALVEAZĂ DATE APARTAMENT</button>
+          <button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="saveAllAptFields()">💾 SALVEAZĂ DATE APARTAMENT</button>
           <button class="btn btn-sm" style="margin-top:8px;background:linear-gradient(135deg,var(--violet),var(--violet2));color:#fff;" onclick="openAdminMsgModal(currentAptKey)">📨 TRIMITE MESAJ LOCATARULUI</button>
         </div>
       </div>
 
       <!-- ═══ ADMIN PANOU ═══ -->
-      <div class="page active" id="pageAdmin">
+      <div class="page" id="pageAdmin">
         <div class="topbar">
           <div class="topbar-title">⚙ PANOU ADMINISTRATOR</div>
           <div class="topbar-right">
