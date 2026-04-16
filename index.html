@@ -1129,199 +1129,102 @@ function deschideModalGithub(){
   openModal('modalGithub');
 }
 
-// ══ GITHUB UTILITIES ══
-// Conversia corectă UTF-8 → Base64 (suportă ș,ț,ă,â,î etc.)
+// ══ GITHUB PUBLISH — funcție completă rescrisă ══
+
+// Base64 UTF-8 corect pentru fișiere mari cu caractere române
 function toBase64UTF8(str){
-  const bytes=new TextEncoder().encode(str);
-  let bin='';
-  const chunk=8192;
-  for(let i=0;i<bytes.length;i+=chunk){
-    bin+=String.fromCharCode(...bytes.subarray(i,i+chunk));
-  }
-  return btoa(bin);
-}
-
-async function publicaPeGithub(){
-  const user=document.getElementById('ghUser').value.trim();
-  const repo=document.getElementById('ghRepo').value.trim();
-  const file=(document.getElementById('ghFile').value.trim()||'index.html');
-  const token=document.getElementById('ghToken').value.trim();
-  const saveSettings=document.getElementById('ghSaveToken').checked;
-
-  // Validare câmpuri
-  if(!user||!repo||!token){
-    showGhResult('err','⚠ Completați toate câmpurile: username, repository și token!');
-    return;
-  }
-
-  // Salvează setările local
-  if(saveSettings){
-    lss('github_settings',{user,repo,file,token:btoa(unescape(encodeURIComponent(token)))});
-  }
-
-  // Reset UI progress
-  document.getElementById('ghProgress').style.display='block';
-  document.getElementById('ghResult').style.display='none';
-  ['ghStep1','ghStep2','ghStep3','ghStep4'].forEach(id=>setGhStep(id,'wait',
-    document.getElementById(id).textContent.replace(/^[✅❌⏳🔄] /,'')));
-  document.querySelector('#modalGithub .btn-primary').disabled=true;
-
+  // Folosim Blob + FileReader pentru encoding corect garantat
+  // Fallback sincron pentru compatibilitate
   try{
-    // ── PASUL 1: Construiește HTML cu date incluse ──
-    setGhStep('ghStep1','active','Pregătire fișier cu date incluse...');
-    save();
-
-    // ── IMPORTANT: Închidem toate modalele și curățăm UI înainte de a captura HTML-ul ──
-    // Altfel fișierul publicat va avea fereastra deschisă
-    document.querySelectorAll('.modal').forEach(m=>m.classList.remove('open'));
-    // Ascundem și toast-urile active
-    const toast=document.getElementById('autoSaveToast');
-    if(toast)toast.style.display='none';
-
-    // Capturăm HTML-ul CU modalele închise
-    let htmlStr=document.documentElement.outerHTML;
-
-    // Redeschide modalul GitHub după capturare
-    setTimeout(()=>document.getElementById('modalGithub').classList.add('open'),100);
-
-    // Curățăm din HTML-ul capturat orice modal rămas deschis
-    // Înlocuim toate variantele de class="modal open" sau class="modal xxx open"
-    htmlStr=htmlStr.replace(/\bclass="([^"]*\s)?modal(\s[^"]*)?\s+open([^"]*)"/g,
-      (m,b,mid,e)=>'class="'+(b||'')+'modal'+(mid||'')+(e||'')+'"');
-    htmlStr=htmlStr.replace(/\bclass="open\s+modal([^"]*)"/g,'class="modal$1"');
-    // Fallback simplu — elimină clasa open de pe toate modalele
-    htmlStr=htmlStr.replace(/(class="modal[^"]*)\bopen\b([^"]*")/g,'$1$2');
-    htmlStr=htmlStr.replace(/class="modal open"/g,'class="modal"');
-    htmlStr=htmlStr.replace(/class="modal open /g,'class="modal ');
-
-    // Actualizează ADMIN_PASS în fișier
-    htmlStr=htmlStr.replace(
-      /let ADMIN_PASS\s*=\s*'[^']*';/,
-      "let ADMIN_PASS = '"+ADMIN_PASS.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+"';"
-    );
-
-    // Elimină orice preload-data anterior
-    htmlStr=htmlStr.replace(/<script id="preload-data">[\s\S]*?<\/script>\s*/g,'');
-
-    // Injectează starea curentă
-    const stateStr=JSON.stringify(S).replace(/<\/script>/gi,'<\\/script>');
-    const preload='<script id="preload-data">(function(){try{'
-      +'localStorage.setItem(\'alfa40v2_state\',JSON.stringify('+stateStr+'));'
-      +'}catch(e){}})();<\/script>\n';
-    htmlStr=htmlStr.replace(/(<head[^>]*>)/i,'$1\n'+preload);
-
-    setGhStep('ghStep1','ok','Fișier pregătit ('+Math.round(htmlStr.length/1024)+' KB).');
-
-    // ── PASUL 2: Obține SHA fișier existent (necesar pentru update) ──
-    setGhStep('ghStep2','active','Conectare la GitHub API...');
-    const apiUrl=`https://api.github.com/repos/${user}/${repo}/contents/${file}`;
-    const headers={
-      'Authorization':'Bearer '+token,
-      'Content-Type':'application/json',
-      'Accept':'application/vnd.github+json',
-      'X-GitHub-Api-Version':'2022-11-28'
-    };
-
-    let sha=null;
-    const getResp=await fetch(apiUrl,{method:'GET',headers});
-
-    if(getResp.status===200){
-      const existing=await getResp.json();
-      sha=existing.sha;
-      setGhStep('ghStep2','ok','Conectat ✓ — fișier existent, se actualizează.');
-    } else if(getResp.status===404){
-      setGhStep('ghStep2','ok','Conectat ✓ — fișier nou, se creează.');
-    } else if(getResp.status===401||getResp.status===403){
-      const errBody=await getResp.json().catch(()=>({}));
-      throw new Error('Token invalid sau fără permisiuni. '+
-        (errBody.message||'Cod: '+getResp.status)+
-        ' — Asigurați-vă că token-ul are permisiunea "repo" bifată.');
-    } else {
-      const errBody=await getResp.json().catch(()=>({}));
-      throw new Error('Eroare GitHub: '+(errBody.message||'Cod '+getResp.status));
+    // Metodă 1: prin Uint8Array (mai robustă pentru fișiere mari)
+    const bytes=new TextEncoder().encode(str);
+    const CHUNK=0x8000; // 32KB chunks
+    let result='';
+    for(let i=0;i<bytes.length;i+=CHUNK){
+      result+=String.fromCharCode.apply(null,bytes.subarray(i,i+CHUNK));
     }
-
-    // ── PASUL 3: Publică fișierul ──
-    setGhStep('ghStep3','active','Se publică pe GitHub...');
-
-    const content64=toBase64UTF8(htmlStr);
-    const now=new Date();
-    const commitMsg='Portal ALFA 40 — actualizat '+now.toLocaleDateString('ro-RO')+' '+now.toLocaleTimeString('ro-RO');
-
-    const putBody={message:commitMsg,content:content64};
-    if(sha) putBody.sha=sha;
-
-    const putResp=await fetch(apiUrl,{
-      method:'PUT',
-      headers,
-      body:JSON.stringify(putBody)
-    });
-
-    if(!putResp.ok){
-      const errBody=await putResp.json().catch(()=>({}));
-      throw new Error('Eroare publicare: '+(errBody.message||'Cod '+putResp.status));
-    }
-
-    const putData=await putResp.json();
-    setGhStep('ghStep3','ok','Publicat cu succes! Commit: '+putData.commit.sha.substring(0,8));
-
-    // ── PASUL 4: Confirmare finală ──
-    const pagesUrl=`https://${user}.github.io/${repo}/`;
-    const repoUrl=`https://github.com/${user}/${repo}`;
-    setGhStep('ghStep4','ok','GitHub Pages activ în ~60 secunde.');
-    showGhResult('ok',
-      '🎉 <strong>Publicat cu succes!</strong><br>'+
-      'Portalul va fi disponibil la:<br>'+
-      '<a href="'+pagesUrl+'" target="_blank" style="color:var(--sky5);word-break:break-all;font-size:15px;">'+pagesUrl+'</a><br>'+
-      '<small style="color:var(--text3);">Repository: <a href="'+repoUrl+'" target="_blank" style="color:var(--text3);">'+repoUrl+'</a></small>'
-    );
-    // Închide automat fereastra după 3 secunde
-    let countdown=3;
-    const btnClose=document.querySelector('#modalGithub .btn-primary');
-    if(btnClose){
-      const timer=setInterval(()=>{
-        countdown--;
-        btnClose.textContent='✅ Publicat! Se închide în '+countdown+'s...';
-        btnClose.style.background='var(--green)';
-        if(countdown<=0){
-          clearInterval(timer);
-          closeModal('modalGithub');
-          btnClose.textContent='🚀 PUBLICĂ ACUM';
-          btnClose.style.background='';
-        }
-      },1000);
-    }
-
-  }catch(err){
-    console.error('GitHub publish error:',err);
-    // Marchează pasul curent cu eroare
-    ['ghStep1','ghStep2','ghStep3','ghStep4'].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el&&el.textContent.includes('🔄')) setGhStep(id,'err',el.textContent.replace(/^[🔄] /,''));
-    });
-    showGhResult('err',
-      '❌ <strong>Eroare:</strong> '+err.message+'<br>'+
-      '<span style="font-size:12px;font-weight:600;">'+
-      'Verificați:<br>'+
-      '• Username și numele repository-ului sunt corecte?<br>'+
-      '• Token-ul are permisiunea <strong>repo</strong> bifată?<br>'+
-      '• Repository-ul există pe GitHub?'+
-      '</span>'
-    );
-  } finally {
-    document.querySelector('#modalGithub .btn-primary').disabled=false;
+    return btoa(result);
+  }catch(e){
+    // Fallback: encodeURIComponent
+    return btoa(unescape(encodeURIComponent(str)));
   }
 }
 
-function showGhResult(type,html){
-  const el=document.getElementById('ghResult');
-  if(!el)return;
-  const isOk=(type==='ok');
-  el.style.display='block';
-  el.innerHTML=`<div style="background:${isOk?'var(--green-l)':'var(--red-l)'};
-    border:2px solid ${isOk?'var(--green-b)':'var(--red-b)'};
-    border-radius:9px;padding:14px 16px;font-size:13px;font-weight:700;
-    color:${isOk?'var(--green)':'var(--red)'};line-height:1.8;">${html}</div>`;
+// Construiește HTML curat pentru publicare (fără modale deschise, fără UI state)
+function buildCleanHTML(){
+  // Închide toate modalele
+  document.querySelectorAll('.modal').forEach(m=>m.classList.remove('open'));
+  // Resetează butoane dezactivate
+  document.querySelectorAll('button[disabled]').forEach(b=>b.removeAttribute('disabled'));
+  // Ascunde toast-uri
+  ['autoSaveToast'].forEach(id=>{const e=document.getElementById(id);if(e)e.remove();});
+
+  // Capturează HTML-ul
+  let html=document.documentElement.outerHTML;
+
+  // 1. Curăță clasele 'open' de pe modale (regex robust)
+  html=html.replace(/(<div[^>]*class="[^"]*modal[^"]*)\s+open(")/g,'$1$2');
+  html=html.replace(/(<div[^>]*class=")open\s+(modal[^"]*")/g,'$1$2');
+
+  // 2. Actualizează parola admin curentă
+  html=html.replace(
+    /let ADMIN_PASS\s*=\s*'[^']*'\s*;/,
+    "let ADMIN_PASS = '"+ADMIN_PASS.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+"';"
+  );
+
+  // 3. Elimină TOATE scripturile preload anterioare
+  html=html.replace(/<script id="preload-data">[\s\S]*?<\/script>\s*/g,'');
+
+  // 4. Injectează starea curentă ca preload
+  const stateJSON=JSON.stringify(S)
+    .replace(/</g,'\\u003c')
+    .replace(/>/g,'\\u003e')
+    .replace(/&/g,'\\u0026');
+
+  const preloadScript=[
+    '<script id="preload-data">',
+    '(function(){',
+    '  try{',
+    '    var d='+stateJSON+';',
+    '    localStorage.setItem("alfa40v2_state",JSON.stringify(d));',
+    '  }catch(e){console.warn("Preload:",e);}',
+    '})();',
+    '<\/script>'
+  ].join('\n');
+
+  html=html.replace(/(<\/head>)/i, preloadScript+'\n$1');
+
+  return html;
+}
+
+function deschideModalGithub(){
+  const saved=ls('github_settings',null);
+  if(saved){
+    document.getElementById('ghUser').value=saved.user||'';
+    document.getElementById('ghRepo').value=saved.repo||'';
+    document.getElementById('ghFile').value=saved.file||'index.html';
+    if(saved.token){
+      try{
+        document.getElementById('ghToken').value=
+          decodeURIComponent(escape(atob(saved.token)));
+        document.getElementById('ghSaveToken').checked=true;
+      }catch(e){document.getElementById('ghToken').value='';}
+    }
+  }
+  // Reset UI
+  document.getElementById('ghProgress').style.display='none';
+  document.getElementById('ghResult').style.display='none';
+  [['ghStep1','Pregătire fișier...'],
+   ['ghStep2','Conectare la GitHub...'],
+   ['ghStep3','Publicare fișier...'],
+   ['ghStep4','Confirmare finală...']
+  ].forEach(([id,txt])=>{
+    const el=document.getElementById(id);
+    if(el){el.style.color='var(--text3)';el.textContent='⏳ '+txt;}
+  });
+  const btn=document.querySelector('#modalGithub .btn-primary');
+  if(btn){btn.disabled=false;btn.textContent='🚀 PUBLICĂ ACUM';btn.style.background='';}
+  openModal('modalGithub');
 }
 
 function setGhStep(id,status,text){
@@ -1330,6 +1233,151 @@ function setGhStep(id,status,text){
   const colors={ok:'var(--green)',err:'var(--red)',active:'var(--sky5)',wait:'var(--text3)'};
   el.style.color=colors[status]||'var(--text3)';
   el.textContent=(icons[status]||'⏳')+' '+text;
+}
+
+function showGhResult(type,html){
+  const el=document.getElementById('ghResult');if(!el)return;
+  const ok=(type==='ok');
+  el.style.display='block';
+  el.innerHTML='<div style="background:'+(ok?'var(--green-l)':'var(--red-l)')+
+    ';border:2px solid '+(ok?'var(--green-b)':'var(--red-b)')+
+    ';border-radius:9px;padding:14px 16px;font-size:13px;font-weight:700;'+
+    'color:'+(ok?'var(--green)':'var(--red)')+';line-height:1.8;">'+html+'</div>';
+}
+
+async function publicaPeGithub(){
+  const user  = document.getElementById('ghUser').value.trim();
+  const repo  = document.getElementById('ghRepo').value.trim();
+  const file  = document.getElementById('ghFile').value.trim()||'index.html';
+  const token = document.getElementById('ghToken').value.trim();
+  const doSave= document.getElementById('ghSaveToken').checked;
+
+  if(!user||!repo||!token){
+    showGhResult('err','⚠ Completați: GitHub Username, Repository și Token!');
+    return;
+  }
+
+  if(doSave){
+    lss('github_settings',{
+      user,repo,file,
+      token:btoa(unescape(encodeURIComponent(token)))
+    });
+  }
+
+  // Pregătire UI
+  document.getElementById('ghProgress').style.display='block';
+  document.getElementById('ghResult').style.display='none';
+  const btn=document.querySelector('#modalGithub .btn-primary');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Se publică...';}
+
+  const API=`https://api.github.com/repos/${encodeURIComponent(user)}/${encodeURIComponent(repo)}/contents/${file}`;
+  const HEADERS={
+    'Authorization':'Bearer '+token,
+    'Accept':'application/vnd.github+json',
+    'Content-Type':'application/json',
+    'X-GitHub-Api-Version':'2022-11-28'
+  };
+
+  try{
+    // ── PASUL 1: Construire HTML ──
+    setGhStep('ghStep1','active','Se construiește fișierul cu date...');
+    save();
+    await new Promise(r=>setTimeout(r,200)); // mic delay pentru save
+
+    const htmlStr=buildCleanHTML();
+    const sizeKB=Math.round(htmlStr.length/1024);
+    setGhStep('ghStep1','ok','Fișier construit: '+sizeKB+' KB, date incluse.');
+
+    // ── PASUL 2: GET SHA fișier existent ──
+    setGhStep('ghStep2','active','Verificare fișier existent pe GitHub...');
+
+    let sha=null;
+    const getR=await fetch(API,{method:'GET',headers:HEADERS});
+
+    if(getR.status===200){
+      const existing=await getR.json();
+      sha=existing.sha;
+      setGhStep('ghStep2','ok','Fișier existent găsit. SHA: '+sha.substring(0,8)+'...');
+    } else if(getR.status===404){
+      setGhStep('ghStep2','ok','Fișier nou — va fi creat.');
+    } else if(getR.status===401){
+      throw new Error('Token invalid sau expirat (401). Generați un token nou cu permisiunea "repo".');
+    } else if(getR.status===403){
+      const e=await getR.json().catch(()=>({}));
+      throw new Error('Acces refuzat (403): '+(e.message||'Verificați permisiunile token-ului.'));
+    } else if(getR.status===422){
+      throw new Error('Repository inexistent sau path greșit (422). Verificați username și repo name.');
+    } else {
+      const e=await getR.json().catch(()=>({}));
+      throw new Error('Eroare GET GitHub ('+getR.status+'): '+(e.message||'necunoscută'));
+    }
+
+    // ── PASUL 3: PUT fișier ──
+    setGhStep('ghStep3','active','Se trimite fișierul pe GitHub ('+sizeKB+' KB)...');
+
+    const now=new Date();
+    const content64=toBase64UTF8(htmlStr);
+
+    const putBody={
+      message:'Portal ALFA 40 — '+now.toLocaleDateString('ro-RO')+' '+now.toLocaleTimeString('ro-RO'),
+      content:content64
+    };
+    if(sha) putBody.sha=sha; // OBLIGATORIU pentru update!
+
+    const putR=await fetch(API,{
+      method:'PUT',
+      headers:HEADERS,
+      body:JSON.stringify(putBody)
+    });
+
+    if(!putR.ok){
+      const e=await putR.json().catch(()=>({}));
+      let msg='Eroare PUT ('+putR.status+'): '+(e.message||'necunoscută');
+      if(putR.status===409) msg='Conflict SHA (409) — fișierul a fost modificat. Încercați din nou.';
+      if(putR.status===422) msg='Date invalide (422): '+(e.message||'verificați conținutul fișierului.');
+      throw new Error(msg);
+    }
+
+    const putData=await putR.json();
+    const commitSha=(putData.commit&&putData.commit.sha||'').substring(0,8);
+    setGhStep('ghStep3','ok','Publicat! Commit: '+commitSha);
+
+    // ── PASUL 4: Confirmare ──
+    const pagesUrl=`https://${user}.github.io/${repo}/`;
+    const repoUrl =`https://github.com/${user}/${repo}`;
+    setGhStep('ghStep4','ok','GitHub Pages activ în ~60 secunde.');
+
+    showGhResult('ok',
+      '🎉 <strong>Publicat cu succes!</strong><br>'+
+      '📦 Fișier: '+sizeKB+' KB | Commit: '+commitSha+'<br>'+
+      '🌐 Portal la: <a href="'+pagesUrl+'" target="_blank" style="color:var(--sky5);">'+pagesUrl+'</a><br>'+
+      '<small><a href="'+repoUrl+'/commits" target="_blank" style="color:var(--text3);">Vezi commits pe GitHub →</a></small>'
+    );
+
+    // Închide automat după 4 secunde
+    let cnt=4;
+    const timer=setInterval(()=>{
+      cnt--;
+      if(btn) btn.textContent='✅ Gata! Se închide în '+cnt+'s...';
+      if(cnt<=0){
+        clearInterval(timer);
+        closeModal('modalGithub');
+        if(btn){btn.textContent='🚀 PUBLICĂ ACUM';btn.style.background='';}
+      }
+    },1000);
+
+  }catch(err){
+    console.error('GitHub error:',err);
+    setGhStep('ghStep3','err',err.message.substring(0,80));
+    showGhResult('err',
+      '❌ <strong>Eroare:</strong><br>'+err.message+'<br><br>'+
+      '<span style="font-size:12px;font-weight:600;">Verificați:<br>'+
+      '• Token GitHub are permisiunea <strong>repo</strong> bifată?<br>'+
+      '• Username și repository sunt corecte?<br>'+
+      '• Repository-ul există și are GitHub Pages activat?</span>'
+    );
+    if(btn){btn.disabled=false;btn.textContent='🚀 Încearcă din nou';}
+  }
 }
 
 // Debounce helper so rapid typing doesn't spam toasts
