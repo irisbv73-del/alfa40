@@ -2,73 +2,74 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Gestiune Saturn 34 - FINAL COMPLET</title>
+    <title>Gestiune Saturn 34 - Master</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 5px; }
         
-        /* HEADER - LOGO + TITLU */
-        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border-bottom: 3px solid #2d3436; margin-bottom: 5px; }
-        .logo-box { width: 70px; height: 70px; background: #2d3436; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-        .logo-box img { width: 50px; height: 50px; filter: invert(1); }
-        .titlu-bloc { text-align: right; }
-        .titlu-bloc h1 { margin: 0; font-size: 22px; text-transform: uppercase; color: #2d3436; }
-        .titlu-bloc p { margin: 2px 0; font-weight: bold; color: #7f8c8d; }
+        /* HEADER */
+        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-bottom: 3px solid #2d3436; }
+        .logo-box { width: 60px; height: 60px; background: #2d3436; border-radius: 5px; display: flex; align-items: center; justify-content: center; }
+        .logo-box img { width: 45px; height: 45px; filter: invert(1); }
+        .titlu-bloc h1 { margin: 0; font-size: 18px; text-transform: uppercase; }
 
         /* NAVIGARE */
-        .nav-tabs { display: flex; justify-content: center; gap: 10px; margin: 10px 0; background: #2d3436; padding: 10px; border-radius: 5px; position: sticky; top: 0; z-index: 100; }
-        .tab-btn { padding: 8px 20px; cursor: pointer; border: none; background: #636e72; color: white; font-weight: bold; border-radius: 4px; font-size: 13px; }
-        .active-a { background: #27ae60 !important; box-shadow: 0 0 8px #27ae60; }
-        .active-b { background: #2980b9 !important; box-shadow: 0 0 8px #2980b9; }
-        
+        .nav-tabs { display: flex; justify-content: center; gap: 8px; margin: 10px 0; background: #2d3436; padding: 10px; position: sticky; top: 0; z-index: 100; border-radius: 5px; }
+        .tab-btn { padding: 8px 15px; cursor: pointer; border: none; background: #636e72; color: white; font-weight: bold; border-radius: 4px; font-size: 12px; }
+        .active-a { background: #27ae60 !important; }
+        .active-b { background: #2980b9 !important; }
+        .btn-view { background: #8e44ad !important; } /* Mov pentru butonul magic */
+
         /* TABEL */
-        .container { background: white; padding: 5px; border-radius: 4px; overflow-x: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .container { background: white; padding: 5px; overflow-x: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         table { border-collapse: collapse; font-size: 10.5px; table-layout: fixed; width: 1580px; }
         th, td { border: 1px solid #666; text-align: center; padding: 2px 1px; }
         
         .w30 { width: 30px; } .w40 { width: 40px; } .w55 { width: 55px; } .w70 { width: 70px; }
 
-        /* CULORI INTENSE */
+        /* CULORI ZEBRA */
         .scara-a tr:nth-child(even) { background-color: #bdf0d5; } 
         .scara-b tr:nth-child(even) { background-color: #b3d7ff; }
-        .selected-row { background-color: #f1c40f !important; font-weight: bold; }
+        .selected-row { background-color: #f1c40f !important; }
 
-        input { width: 92%; border: 1px solid #888; text-align: center; font-size: 10px; font-weight: bold; padding: 2px 0; }
+        input { width: 90%; border: 1px solid #888; text-align: center; font-size: 10px; font-weight: bold; }
         .total-luna-val { color: #1e8449; font-weight: bold; }
         .total-plata-val { color: #a93226; font-weight: 900; background: #fff0f0; }
-        
-        /* COLOANE FINALE GRI (Nu intra in calcul) */
-        .info-col { background: #e0e0e0 !important; font-style: italic; }
+        .info-col { background: #e0e0e0 !important; }
 
-        /* FOOTER */
-        .footer-info { margin-top: 15px; display: flex; gap: 20px; background: white; padding: 15px; border: 2px solid #bdc3c7; border-radius: 5px; }
-        .casierie-box { flex: 1; border-right: 2px solid #eee; font-size: 13px; line-height: 1.6; }
-        .mesaje-box { flex: 2; }
-        .mesaje-box textarea { width: 100%; height: 70px; border: 1px solid #bdc3c7; padding: 8px; font-size: 12px; background: #fffcf0; resize: none; }
-        
+        /* MOD VIZUALIZARE (LOCATARI) */
+        .readonly-mode input { border: none !important; background: transparent !important; pointer-events: none; color: black !important; }
+        .readonly-mode .nav-tabs { background: #27ae60; }
+        .readonly-mode .btn-admin-only { display: none; } /* Ascunde butoanele de admin */
+
+        .footer-info { margin-top: 15px; display: flex; gap: 20px; background: white; padding: 10px; border: 1px solid #ccc; }
+        .casierie-box { flex: 1; border-right: 1px solid #eee; font-size: 12px; }
+        textarea { width: 100%; height: 60px; background: #fffcf0; resize: none; border: 1px solid #ccc; }
+
         @media print {
-            .nav-tabs, .tab-btn { display: none; }
-            .header-top { border-bottom: 2px solid black; }
+            .nav-tabs { display: none; }
+            body { background: white; }
         }
     </style>
 </head>
-<body>
+<body id="mainBody">
 
 <div class="header-top">
     <div class="logo-box"><img src="https://cdn-icons-png.flaticon.com/512/1018/1018573.png"></div>
     <div class="titlu-bloc">
-        <h1>Asociația de Proprietari Saturn 34</h1>
-        <p>LISTĂ PRIVIND CHELTUIELILE DE ÎNTREȚINERE</p>
+        <h1>Asociația Saturn 34</h1>
+        <p id="statusLabel" style="font-size:11px; color:#7f8c8d;">MOD EDITARE ACTIV (ADMIN)</p>
     </div>
 </div>
 
 <div class="nav-tabs">
-    <button id="btnA" class="tab-btn active-a" onclick="switchS('A')">SCARA A</button>
-    <button id="btnB" class="tab-btn" onclick="switchS('B')">SCARA B</button>
-    <button class="tab-btn" style="background:#d35400" onclick="window.print()">🖨️ PRINTEAZĂ LISTA</button>
+    <button id="btnA" class="tab-btn active-a btn-admin-only" onclick="switchS('A')">SCARA A</button>
+    <button id="btnB" class="tab-btn btn-admin-only" onclick="switchS('B')">SCARA B</button>
+    <button class="tab-btn btn-view" onclick="toggleViewMode()">👁️ MOD VIZUALIZARE (SITE)</button>
+    <button class="tab-btn" style="background:#d35400" onclick="window.print()">🖨️ PRINT</button>
 </div>
 
 <div id="cont-A">
-    <h2 style="text-align:center; color:#27ae60; font-size: 16px;">SCARA A</h2>
+    <h2 style="text-align:center; font-size:14px; color:#27ae60; margin:5px;">LISTĂ PLATĂ - SCARA A</h2>
     <div class="container">
         <table class="scara-a">
             <thead>
@@ -77,8 +78,7 @@
                     <th class="w70" style="background:#27ae60; color:white">TOT.LUNA</th>
                     <th class="w40">Rulm</th><th class="w40">Rep</th><th class="w40">R.Int</th><th class="w40">R.Fd</th><th class="w40">R.Pen</th><th class="w40">Penal</th>
                     <th class="w70" style="background:#c0392b; color:white">TOTAL.PL</th>
-                    <th class="w55" style="background:#7f8c8d; color:white">F.RUL</th>
-                    <th class="w55" style="background:#7f8c8d; color:white">F.REP</th>
+                    <th class="w55" style="background:#7f8c8d; color:white">F.RUL</th><th class="w55" style="background:#7f8c8d; color:white">F.REP</th>
                 </tr>
             </thead>
             <tbody id="tbodyA"></tbody>
@@ -87,7 +87,7 @@
 </div>
 
 <div id="cont-B" style="display:none">
-    <h2 style="text-align:center; color:#2980b9; font-size: 16px;">SCARA B</h2>
+    <h2 style="text-align:center; font-size:14px; color:#2980b9; margin:5px;">LISTĂ PLATĂ - SCARA B</h2>
     <div class="container">
         <table class="scara-b">
             <thead>
@@ -96,8 +96,7 @@
                     <th class="w70" style="background:#2980b9; color:white">TOT.LUNA</th>
                     <th class="w40">Rulm</th><th class="w40">Rep</th><th class="w40">R.Int</th><th class="w40">R.Fd</th><th class="w40">R.Pen</th><th class="w40">Penal</th>
                     <th class="w70" style="background:#c0392b; color:white">TOTAL.PL</th>
-                    <th class="w55" style="background:#7f8c8d; color:white">F.RUL</th>
-                    <th class="w55" style="background:#7f8c8d; color:white">F.REP</th>
+                    <th class="w55" style="background:#7f8c8d; color:white">F.RUL</th><th class="w55" style="background:#7f8c8d; color:white">F.REP</th>
                 </tr>
             </thead>
             <tbody id="tbodyB"></tbody>
@@ -107,13 +106,12 @@
 
 <div class="footer-info">
     <div class="casierie-box">
-        <strong>PROGRAM CASIERIE:</strong><br>
-        Luni: 17:30 - 19:30 | Joi: 18:00 - 20:00<br>
-        <small>Administrator: ..................................</small>
+        <strong>CASIERIE:</strong> Luni 17:30-19:30 | Joi 18:00-20:00<br>
+        <small>Administrator: ....................................</small>
     </div>
     <div class="mesaje-box">
-        <strong>ANUNȚURI / MESAJE:</strong><br>
-        <textarea placeholder="Introduceți aici mesajele pentru avizier..."></textarea>
+        <strong>ANUNȚURI:</strong><br>
+        <textarea id="areaMesaje" placeholder="Scrie aici anunțurile..."></textarea>
     </div>
 </div>
 
@@ -127,12 +125,27 @@
         const getV = (n) => parseFloat(document.getElementById(n + id).value) || 0;
         const vAR = getV('mc_') * T[sc].p;
         const tL = vAR + T[sc].d + T[sc].e + T[sc].s + T[sc].sl + T[sc].c + T[sc].a;
-        // Doar coloanele de restante intra in calcul
         const ext = getV('f1_') + getV('f2_') + getV('r1_') + getV('r2_') + getV('r3_') + getV('p_');
-        
         document.getElementById('v_ar_'+id).innerText = vAR.toFixed(2);
         document.getElementById('t_luna_'+id).innerText = tL.toFixed(2);
         document.getElementById('t_plata_'+id).innerText = (tL + ext).toFixed(2);
+    }
+
+    function toggleViewMode() {
+        const body = document.getElementById('mainBody');
+        const label = document.getElementById('statusLabel');
+        const isReadonly = body.classList.toggle('readonly-mode');
+        
+        if(isReadonly) {
+            label.innerText = "✓ MOD CONSULTARE (DATE PROTEJATE)";
+            label.style.color = "#27ae60";
+            document.getElementById('cont-A').style.display = 'block';
+            document.getElementById('cont-B').style.display = 'block';
+        } else {
+            label.innerText = "MOD EDITARE ACTIV (ADMIN)";
+            label.style.color = "#7f8c8d";
+            switchS('A');
+        }
     }
 
     function buildAll() {
@@ -141,18 +154,16 @@
             hA += `<tr onclick="sel(this)"><td><b>${i}</b></td><td><input type="number" id="mc_${i}" value="0" oninput="calc(${i},'A')"></td><td id="v_ar_${i}">0</td><td>${T.A.d}</td><td>${T.A.e}</td><td>${T.A.s}</td><td>${T.A.sl}</td><td>${T.A.c}</td><td>${T.A.a}</td><td id="t_luna_${i}" class="total-luna-val">0</td><td><input type="number" id="f1_${i}" value="0" oninput="calc(${i},'A')"></td><td><input type="number" id="f2_${i}" value="0" oninput="calc(${i},'A')"></td><td><input type="number" id="r1_${i}" value="0" oninput="calc(${i},'A')"></td><td><input type="number" id="r2_${i}" value="0" oninput="calc(${i},'A')"></td><td><input type="number" id="r3_${i}" value="0" oninput="calc(${i},'A')"></td><td><input type="number" id="p_${i}" value="0" oninput="calc(${i},'A')"></td><td id="t_plata_${i}" class="total-plata-val">0</td><td class="info-col"><input type="number" value="0"></td><td class="info-col"><input type="number" value="0"></td></tr>`;
         }
         document.getElementById('tbodyA').innerHTML = hA;
-
         let hB = "";
         for(let i=21; i<=40; i++) {
             hB += `<tr onclick="sel(this)"><td><b>${i}</b></td><td><input type="number" id="mc_${i}" value="0" oninput="calc(${i},'B')"></td><td id="v_ar_${i}">0</td><td>${T.B.d}</td><td>${T.B.e}</td><td>${T.B.s}</td><td>${T.B.sl}</td><td>${T.B.c}</td><td>${T.B.a}</td><td id="t_luna_${i}" class="total-luna-val">0</td><td><input type="number" id="f1_${i}" value="0" oninput="calc(${i},'B')"></td><td><input type="number" id="f2_${i}" value="0" oninput="calc(${i},'B')"></td><td><input type="number" id="r1_${i}" value="0" oninput="calc(${i},'B')"></td><td><input type="number" id="r2_${i}" value="0" oninput="calc(${i},'B')"></td><td><input type="number" id="r3_${i}" value="0" oninput="calc(${i},'B')"></td><td><input type="number" id="p_${i}" value="0" oninput="calc(${i},'B')"></td><td id="t_plata_${i}" class="total-plata-val">0</td><td class="info-col"><input type="number" value="0"></td><td class="info-col"><input type="number" value="0"></td></tr>`;
         }
         document.getElementById('tbodyB').innerHTML = hB;
-
         for(let i=1; i<=20; i++) calc(i, 'A');
         for(let i=21; i<=40; i++) calc(i, 'B');
     }
 
-    function sel(r) { document.querySelectorAll('tr').forEach(x => x.classList.remove('selected-row')); r.classList.add('selected-row'); }
+    function sel(r) { if(!document.getElementById('mainBody').classList.contains('readonly-mode')) { document.querySelectorAll('tr').forEach(x => x.classList.remove('selected-row')); r.classList.add('selected-row'); } }
     function switchS(s) {
         document.getElementById('cont-A').style.display = s === 'A' ? 'block' : 'none';
         document.getElementById('cont-B').style.display = s === 'B' ? 'block' : 'none';
