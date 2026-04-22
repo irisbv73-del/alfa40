@@ -2,190 +2,107 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Gestiune Saturn 34 - Calcul per Persoană</title>
+    <title>Saturn 34 - Sincronizare GitHub</title>
     <style>
         @media print {
             @page { size: A4 landscape; margin: 5mm; }
             body { zoom: 55%; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .nav-tabs, .admin-only { display: none !important; }
+            .nav-tabs, .admin-section { display: none !important; }
             input, textarea { border: none !important; background: transparent !important; }
         }
 
         body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 5px; }
         
+        /* Panou Admin pentru GitHub */
+        .admin-section {
+            background: #2d3436; color: white; padding: 10px; border-radius: 5px; margin-bottom: 10px;
+            display: none; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;
+        }
+        .admin-section input { background: #636e72; border: 1px solid #b2bec3; color: white; font-size: 11px; padding: 5px; }
+
         .header-panel {
-            display: grid;
-            grid-template-columns: 250px 1fr 350px;
+            display: grid; grid-template-columns: 250px 1fr 350px;
             gap: 15px; background: white; padding: 10px;
             border-bottom: 3px solid #2d3436; align-items: center;
         }
 
-        .stanga-info { font-size: 13px; font-weight: bold; }
-        .logo-box { width: 50px; height: 50px; background: #2d3436; border-radius: 5px; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
-        .logo-box img { width: 35px; height: 35px; filter: invert(1); }
-
         .titlu-section { text-align: center; }
-        .edit-titlu { font-size: 24px; font-weight: 900; text-transform: uppercase; border: none; width: 100%; text-align: center; background: transparent; }
-
-        .program-box { background: #fffcf0; border: 2px solid #f1c40f; padding: 8px; border-radius: 5px; }
-        .edit-program { width: 100%; height: 60px; font-size: 16px; font-weight: bold; border: none; background: transparent; resize: none; text-align: center; }
+        .edit-titlu { font-size: 22px; font-weight: 900; text-transform: uppercase; border: none; width: 100%; text-align: center; }
 
         .nav-tabs { display: flex; justify-content: center; gap: 8px; margin: 10px 0; background: #2d3436; padding: 10px; border-radius: 5px; }
-        .tab-btn { padding: 10px 20px; cursor: pointer; border: none; background: #636e72; color: white; font-weight: bold; border-radius: 4px; }
+        .tab-btn { padding: 10px 15px; cursor: pointer; border: none; background: #636e72; color: white; font-weight: bold; border-radius: 4px; }
         .active-a { background: #27ae60 !important; }
         .active-b { background: #2980b9 !important; }
-        .btn-lock { background: #8e44ad !important; }
-        .btn-export { background: #2ecc71 !important; color: black !important; font-weight: bold; }
+        .btn-gh { background: #2ecc71 !important; color: black !important; font-weight: 900; }
 
         .container { background: white; padding: 5px; overflow-x: auto; }
-        
         table { border-collapse: collapse; font-size: 10px; width: 1650px; table-layout: fixed; }
-        th, td { border: 1px solid #444; text-align: center; padding: 3px; overflow: hidden; }
+        th, td { border: 1px solid #444; text-align: center; padding: 3px; }
+        th { background: #bdc3c7; font-weight: bold; height: 35px; }
         
-        /* LĂȚIMI FIXE REAJUSTATE */
-        .col-ap { width: 30px; }
-        .col-pers { width: 40px; background: #fff9c4; }
-        .col-mc { width: 45px; }
-        .col-val { width: 60px; }
-        .col-fix { width: 50px; }
-        .col-total { width: 85px; }
-        .col-fund { width: 60px; }
-
-        th { background: #bdc3c7; color: black; font-weight: bold; height: 40px; font-size: 10px; }
+        .scara-a tr:nth-child(even) { background-color: #e8f8f5; } 
+        .scara-b tr:nth-child(even) { background-color: #ebf5fb; } 
         
-        .scara-a tr:nth-child(even) { background-color: #bdf0d5; } 
-        .scara-b tr:nth-child(even) { background-color: #b3d7ff; } 
-        
-        .col-total-luna { font-weight: 900 !important; font-size: 12px !important; }
-        .scara-a .col-total-luna { background-color: #d4efdf !important; color: #1e8449; }
-        .scara-b .col-total-luna { background-color: #d1e1f7 !important; color: #2980b9; }
-
-        .total-plata-val { color: #a93226 !important; font-weight: 900 !important; background: #fff0f0 !important; font-size: 12px !important; }
-
-        tr.selected-row { background-color: #f1c40f !important; }
-        input { width: 92%; border: 1px solid #ccc; text-align: center; font-size: 10px; font-weight: bold; padding: 2px 0; }
-
+        input { width: 92%; border: 1px solid #ccc; text-align: center; font-size: 10px; font-weight: bold; }
         .readonly-mode input, .readonly-mode textarea { border: none !important; background: transparent !important; pointer-events: none; color: black !important; }
         
-        .footer-mesaje { margin-top: 15px; background: white; padding: 15px; border: 2px solid #bdc3c7; border-radius: 5px; }
-        #areaMesaje { width: 100%; height: 70px; margin-top: 10px; font-size: 13px; padding: 10px; box-sizing: border-box; }
-        
-        .admin-only { display: none; }
-        body:not(.readonly-mode) .admin-only { display: inline-block; }
+        .status-msg { color: #f1c40f; font-size: 11px; grid-column: 1 / -1; text-align: center; }
     </style>
 </head>
 <body id="mainBody" class="readonly-mode">
 
+<div id="ghPanel" class="admin-section">
+    <input type="password" id="gh_token" placeholder="GitHub Personal Token">
+    <input type="text" id="gh_user" placeholder="Utilizator GitHub">
+    <input type="text" id="gh_repo" placeholder="Nume Repository">
+    <input type="text" id="gh_path" placeholder="index.html (nume fisier)">
+    <button class="tab-btn btn-gh" onclick="uploadToGitHub()">🚀 URCĂ PE GITHUB</button>
+    <div id="ghStatus" class="status-msg">Token-ul este salvat local. Gata pentru sincronizare.</div>
+</div>
+
 <div class="header-panel">
     <div class="stanga-info">
-        <div class="logo-box"><img src="https://cdn-icons-png.flaticon.com/512/1018/1018573.png"></div>
         <div id="ceas">00:00:00</div>
-        Adm: <input type="text" id="adm_n" value="Popescu Ion" oninput="saveData()"><br>
-        Preș: <input type="text" id="pres_n" value="Ionescu Dan" oninput="saveData()">
+        Adm: <input type="text" id="adm_n" value="Popescu Ion" oninput="saveData()">
     </div>
-    
     <div class="titlu-section">
         <input type="text" id="titlu_main" class="edit-titlu" value="Asociația Saturn 34" oninput="saveData()">
-        <div id="statusLabel" style="font-size:11px; color:#c0392b; font-weight:bold;">MOD VIZUALIZARE</div>
+        <div id="statusLabel" style="font-size:11px; color:#c0392b;">MOD VIZUALIZARE</div>
     </div>
-
-    <div class="program-box">
-        <textarea id="prog_l" class="edit-program" oninput="saveData()">LUNI: 17:30 - 19:30&#10;JOI: 18:00 - 20:00</textarea>
+    <div style="text-align:right">
+        <button id="lockBtn" class="tab-btn" style="background:#8e44ad" onclick="verificareParola()">🔓 ADMIN</button>
     </div>
 </div>
 
 <div class="nav-tabs">
     <button id="btnA" class="tab-btn active-a" onclick="switchS('A')">SCARA A</button>
     <button id="btnB" class="tab-btn" onclick="switchS('B')">SCARA B</button>
-    <button id="lockBtn" class="tab-btn btn-lock" onclick="verificareParola()">🔓 ACCES ADMIN</button>
-    <button class="tab-btn admin-only btn-export" onclick="exportaFisier()">💾 EXPORT HTML (FINAL)</button>
     <button class="tab-btn" style="background:#d35400" onclick="window.print()">🖨️ PRINT</button>
 </div>
 
-<div id="cont-A">
-    <div class="container">
-        <table class="scara-a">
-            <thead>
-                <tr>
-                    <th class="col-ap">Ap</th>
-                    <th class="col-mc">AR MC</th>
-                    <th class="col-val">ValAR</th>
-                    <th class="col-pers">Pers</th>
-                    <th class="col-fix">Dif</th>
-                    <th class="col-fix">El.</th>
-                    <th class="col-fix">Salub</th>
-                    <th class="col-fix">Salari</th>
-                    <th class="col-fix">Curat</th>
-                    <th class="col-fix">Adm</th>
-                    <th class="col-total" style="background:#27ae60; color:white">TOT.LUNA</th>
-                    <th class="col-fix">Rulm</th><th class="col-fix">Rep</th><th class="col-fix">R.Int</th><th class="col-fix">R.Fd</th><th class="col-fix">R.Pen</th><th class="col-fix">Penal</th>
-                    <th class="col-total" style="background:#c0392b; color:white">TOTAL.PL</th>
-                    <th class="col-fund" style="background:#7f8c8d; color:white">F.RUL</th><th class="col-fund" style="background:#7f8c8d; color:white">F.REP</th>
-                </tr>
-            </thead>
-            <tbody id="tbodyA"></tbody>
-        </table>
-    </div>
-</div>
-
-<div id="cont-B" style="display:none">
-    <div class="container">
-        <table class="scara-b">
-            <thead>
-                <tr>
-                    <th class="col-ap">Ap</th>
-                    <th class="col-mc">AR MC</th>
-                    <th class="col-val">ValAR</th>
-                    <th class="col-pers">Pers</th>
-                    <th class="col-fix">Dif</th>
-                    <th class="col-fix">El.</th>
-                    <th class="col-fix">Salub</th>
-                    <th class="col-fix">Salari</th>
-                    <th class="col-fix">Curat</th>
-                    <th class="col-fix">Adm</th>
-                    <th class="col-total" style="background:#2980b9; color:white">TOT.LUNA</th>
-                    <th class="col-fix">Rulm</th><th class="col-fix">Rep</th><th class="col-fix">R.Int</th><th class="col-fix">R.Fd</th><th class="col-fix">R.Pen</th><th class="col-fix">Penal</th>
-                    <th class="col-total" style="background:#c0392b; color:white">TOTAL.PL</th>
-                    <th class="col-fund" style="background:#7f8c8d; color:white">F.RUL</th><th class="col-fund" style="background:#7f8c8d; color:white">F.REP</th>
-                </tr>
-            </thead>
-            <tbody id="tbodyB"></tbody>
-        </table>
-    </div>
-</div>
-
-<div class="footer-mesaje">
-    <strong>📢 ANUNȚURI / COMUNICĂRI:</strong>
-    <textarea id="areaMesaje" placeholder="Scrieți aici anunțurile..." oninput="saveData()"></textarea>
-</div>
+<div id="cont-A"><div class="container"><table class="scara-a"><thead><tr><th>Ap</th><th>MC</th><th>Val</th><th>Pers</th><th>Dif</th><th>El</th><th>Salub</th><th>Salari</th><th>Curat</th><th>Adm</th><th style="background:#27ae60;color:white">TOTAL</th><th>Rulm</th><th>Rep</th><th>R.I</th><th>R.F</th><th>R.P</th><th>Pen</th><th style="background:#c0392b;color:white">PLATA</th><th>F.RU</th><th>F.RE</th></tr></thead><tbody id="tbodyA"></tbody></table></div></div>
+<div id="cont-B" style="display:none"><div class="container"><table class="scara-b"><thead><tr><th>Ap</th><th>MC</th><th>Val</th><th>Pers</th><th>Dif</th><th>El</th><th>Salub</th><th>Salari</th><th>Curat</th><th>Adm</th><th style="background:#2980b9;color:white">TOTAL</th><th>Rulm</th><th>Rep</th><th>R.I</th><th>R.F</th><th>R.P</th><th>Pen</th><th style="background:#c0392b;color:white">PLATA</th><th>F.RU</th><th>F.RE</th></tr></thead><tbody id="tbodyB"></tbody></table></div></div>
 
 <script>
-    const PAROLA = "1234";
-    // TARIFE PER PERSOANA (Modifică aici valorile dacă se schimbă)
+    const _0xHASH = "MTIzNA=="; // Parola 1234
     const T = {
         A: { apa: 17.03, dif: 10.82, el: 1.16, salub: 30.30, salari: 23.73, curat: 9.59, adm: 1.12 },
-        B: { apa: 17.03, dif: 10.82, el: 1.16, salub: 30.30, salari: 23.73, curat: 9.59, adm: 1.12 }
+        B: { apa: 17.03, dif: 12.00, el: 2.33, salub: 60.60, salari: 25.50, curat: 10.50, adm: 1.40 }
     };
 
     function saveData() {
         const d = {};
         document.querySelectorAll('input, textarea').forEach(el => { if(el.id) d[el.id] = el.value; });
-        localStorage.setItem('saturn34_v4', JSON.stringify(d));
+        localStorage.setItem('saturn34_gh_data', JSON.stringify(d));
     }
 
     function loadData() {
-        const s = localStorage.getItem('saturn34_v4');
+        const s = localStorage.getItem('saturn34_gh_data');
         if(s) {
             const d = JSON.parse(s);
             Object.keys(d).forEach(id => {
                 const el = document.getElementById(id);
-                if(el) {
-                    el.value = d[id];
-                    if(id.includes('_')) {
-                        let ap = id.split('_').pop();
-                        if(!isNaN(ap)) calc(ap, ap <= 20 ? 'A' : 'B');
-                    }
-                }
+                if(el) { el.value = d[id]; if(id.includes('_')) { let ap = id.split('_').pop(); if(!isNaN(ap)) calc(ap, ap <= 20 ? 'A' : 'B'); } }
             });
         }
     }
@@ -193,100 +110,98 @@
     function calc(id, sc) {
         const getV = (n) => parseFloat(document.getElementById(n + id).value) || 0;
         const pers = getV('pers_');
+        const vAR = getV('mc_') * T[sc].apa;
+        const sums = [vAR, T[sc].dif, pers*T[sc].el, pers*T[sc].salub, pers*T[sc].salari, pers*T[sc].curat, pers*T[sc].adm];
+        const names = ['v_ar_','v_el_','v_salub_','v_salari_','v_curat_','v_adm_'];
         
-        // Calcul valori dinamice bazate pe persoane
-        const valAR = getV('mc_') * T[sc].apa;
-        const valEl = pers * T[sc].el;
-        const valSalub = pers * T[sc].salub;
-        const valSalari = pers * T[sc].salari;
-        const valCurat = pers * T[sc].curat;
-        const valAdm = pers * T[sc].adm;
-        const valDif = T[sc].dif; // Diferența am lăsat-o fixă per ap, modifică dacă e per pers.
+        document.getElementById('v_ar_'+id).innerText = vAR.toFixed(2);
+        document.getElementById('v_el_'+id).innerText = (pers*T[sc].el).toFixed(2);
+        document.getElementById('v_salub_'+id).innerText = (pers*T[sc].salub).toFixed(2);
+        document.getElementById('v_salari_'+id).innerText = (pers*T[sc].salari).toFixed(2);
+        document.getElementById('v_curat_'+id).innerText = (pers*T[sc].curat).toFixed(2);
+        document.getElementById('v_adm_'+id).innerText = (pers*T[sc].adm).toFixed(2);
 
-        // Afisare in celule
-        document.getElementById('v_ar_'+id).innerText = valAR.toFixed(2);
-        document.getElementById('v_el_'+id).innerText = valEl.toFixed(2);
-        document.getElementById('v_salub_'+id).innerText = valSalub.toFixed(2);
-        document.getElementById('v_salari_'+id).innerText = valSalari.toFixed(2);
-        document.getElementById('v_curat_'+id).innerText = valCurat.toFixed(2);
-        document.getElementById('v_adm_'+id).innerText = valAdm.toFixed(2);
-
-        // Total Luna
-        const tL = valAR + valDif + valEl + valSalub + valSalari + valCurat + valAdm;
+        const tL = sums.reduce((a, b) => a + b, 0);
         document.getElementById('t_luna_'+id).innerText = tL.toFixed(2);
-
-        // Total Plata (Luna + Fonduri/Restante/Penalitati)
         const ext = getV('f1_') + getV('f2_') + getV('r1_') + getV('r2_') + getV('r3_') + getV('p_');
         document.getElementById('t_plata_'+id).innerText = (tL + ext).toFixed(2);
-        
         saveData();
+    }
+
+    async function uploadToGitHub() {
+        const status = document.getElementById('ghStatus');
+        status.innerText = "⏳ Se pregătește fișierul...";
+        
+        // Fixăm valorile în HTML pentru export
+        document.querySelectorAll('input').forEach(i => i.setAttribute('value', i.value));
+        const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+        
+        const token = document.getElementById('gh_token').value;
+        const user = document.getElementById('gh_user').value;
+        const repo = document.getElementById('gh_repo').value;
+        const path = document.getElementById('gh_path').value || "index.html";
+
+        if(!token || !user || !repo) { alert("Completează datele GitHub!"); return; }
+
+        const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+        
+        try {
+            // Verificăm dacă fișierul există pentru a lua SHA (necesar la update)
+            let sha = "";
+            const resGet = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+            if(resGet.ok) { const dataGet = await resGet.json(); sha = dataGet.sha; }
+
+            const resPut = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: "Actualizare tabel intretinere",
+                    content: btoa(unescape(encodeURIComponent(htmlContent))),
+                    sha: sha
+                })
+            });
+
+            if(resPut.ok) { status.innerText = "✅ REUȘIT! Tabelul este online."; status.style.color = "#2ecc71"; }
+            else { throw new Error("Eroare la upload."); }
+        } catch (e) {
+            status.innerText = "❌ EROARE: " + e.message;
+            status.style.color = "#e74c3c";
+        }
     }
 
     function build() {
         let hA = "", hB = "";
         for(let i=1; i<=40; i++) {
             let sc = i <= 20 ? 'A' : 'B';
-            let row = `<tr onclick="selR(this)">
-                <td><b>${i}</b></td>
-                <td><input type="number" id="mc_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
-                <td id="v_ar_${i}">0</td>
-                <td><input type="number" id="pers_${i}" value="1" oninput="calc(${i},'${sc}')"></td>
-                <td>${T[sc].dif}</td>
-                <td id="v_el_${i}">0</td>
-                <td id="v_salub_${i}">0</td>
-                <td id="v_salari_${i}">0</td>
-                <td id="v_curat_${i}">0</td>
-                <td id="v_adm_${i}">0</td>
-                <td id="t_luna_${i}" class="col-total-luna">0</td>
-                <td><input type="number" id="f1_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
-                <td><input type="number" id="f2_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
-                <td><input type="number" id="r1_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
-                <td><input type="number" id="r2_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
-                <td><input type="number" id="r3_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
-                <td><input type="number" id="p_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
-                <td id="t_plata_${i}" class="total-plata-val">0</td>
-                <td><input type="number" id="frul_${i}" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_${i}" value="0" oninput="saveData()"></td>
-            </tr>`;
-            if(i <= 20) hA += row; else hB += row;
+            let r = `<tr onclick="selR(this)"><td><b>${i}</b></td><td><input type="number" id="mc_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td id="v_ar_${i}">0</td><td><input type="number" id="pers_${i}" value="1" oninput="calc(${i},'${sc}')"></td><td>${T[sc].dif}</td><td id="v_el_${i}">0</td><td id="v_salub_${i}">0</td><td id="v_salari_${i}">0</td><td id="v_curat_${i}">0</td><td id="v_adm_${i}">0</td><td id="t_luna_${i}" style="font-weight:bold">0</td><td><input type="number" id="f1_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td><input type="number" id="f2_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td><input type="number" id="r1_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td><input type="number" id="r2_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td><input type="number" id="r3_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td><input type="number" id="p_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td id="t_plata_${i}" style="color:red; font-weight:bold">0</td><td><input type="number" id="frul_${i}" value="0"></td><td><input type="number" id="frep_${i}" value="0"></td></tr>`;
+            if(i <= 20) hA += r; else hB += r;
         }
-        document.getElementById('tbodyA').innerHTML = hA;
-        document.getElementById('tbodyB').innerHTML = hB;
+        document.getElementById('tbodyA').innerHTML = hA; document.getElementById('tbodyB').innerHTML = hB;
         loadData();
     }
 
-    // Funcții utilitare neschimbate
-    function exportaFisier() {
-        document.querySelectorAll('input').forEach(i => i.setAttribute('value', i.value));
-        document.querySelectorAll('textarea').forEach(t => t.innerText = t.value);
-        const b = new Blob(["<!DOCTYPE html>\n" + document.documentElement.outerHTML], {type: 'text/html'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(b);
-        a.download = "Gestiune_Saturn34_Final.html";
-        a.click();
-    }
-
     function verificareParola() {
-        const b = document.getElementById('mainBody');
-        if (b.classList.contains('readonly-mode')) {
-            if (prompt("Parolă:") === PAROLA) {
-                b.classList.remove('readonly-mode');
-                document.getElementById('lockBtn').innerText = "🔒 BLOCHEAZĂ DATELE";
+        if (document.getElementById('mainBody').classList.contains('readonly-mode')) {
+            if (prompt("Parolă:") === atob(_0xHASH)) {
+                document.getElementById('mainBody').classList.remove('readonly-mode');
+                document.getElementById('ghPanel').style.display = 'grid';
+                document.getElementById('statusLabel').innerText = "MOD ADMIN ACTIV";
             }
         } else {
-            b.classList.add('readonly-mode');
-            document.getElementById('lockBtn').innerText = "🔓 ACCES ADMIN";
+            document.getElementById('mainBody').classList.add('readonly-mode');
+            document.getElementById('ghPanel').style.display = 'none';
+            document.getElementById('statusLabel').innerText = "MOD VIZUALIZARE";
         }
     }
 
     function switchS(s) {
         document.getElementById('cont-A').style.display = s === 'A' ? 'block' : 'none';
         document.getElementById('cont-B').style.display = s === 'B' ? 'block' : 'none';
-        document.getElementById('btnA').className = 'tab-btn' + (s === 'A' ? ' active-a' : '');
-        document.getElementById('btnB').className = 'tab-btn' + (s === 'B' ? ' active-b' : '');
+        document.getElementById('btnA').classList.toggle('active-a', s === 'A');
+        document.getElementById('btnB').classList.toggle('active-b', s === 'B');
     }
 
-    function selR(el) { document.querySelectorAll('tr').forEach(r => r.classList.remove('selected-row')); el.classList.add('selected-row'); }
+    function selR(el) { document.querySelectorAll('tr').forEach(r => r.style.outline = "none"); el.style.outline = "2px solid #f1c40f"; }
     
     document.addEventListener("DOMContentLoaded", build);
     setInterval(() => { document.getElementById('ceas').innerText = new Date().toLocaleTimeString('ro-RO'); }, 1000);
