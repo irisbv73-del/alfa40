@@ -126,48 +126,68 @@
         const ext = getV('f1_') + getV('f2_') + getV('r1_') + getV('r2_') + getV('r3_') + getV('p_');
         document.getElementById('t_plata_'+id).innerText = (tL + ext).toFixed(2);
         saveData();
+ async function uploadToGitHub() {
+    const status = document.getElementById('ghStatus');
+    status.innerText = "⏳ Se verifică conexiunea...";
+    status.style.color = "#f1c40f";
+
+    // Fixăm valorile pentru export
+    document.querySelectorAll('input').forEach(i => i.setAttribute('value', i.value));
+    document.querySelectorAll('textarea').forEach(t => t.innerText = t.value);
+    const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    
+    const token = document.getElementById('gh_token').value.trim();
+    const user = document.getElementById('gh_user').value.trim();
+    const repo = document.getElementById('gh_repo').value.trim();
+    const path = document.getElementById('gh_path').value.trim() || "index.html";
+
+    if(!token || !user || !repo) { 
+        status.innerText = "❌ Lipsesc date (Token/User/Repo)";
+        return; 
     }
 
-    async function uploadToGitHub() {
-        const status = document.getElementById('ghStatus');
-        status.innerText = "⏳ Se pregătește fișierul...";
-        
-        // Fixăm valorile în HTML pentru export
-        document.querySelectorAll('input').forEach(i => i.setAttribute('value', i.value));
-        const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-        
-        const token = document.getElementById('gh_token').value;
-        const user = document.getElementById('gh_user').value;
-        const repo = document.getElementById('gh_repo').value;
-        const path = document.getElementById('gh_path').value || "index.html";
+    const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+    
+    try {
+        let sha = "";
+        const resGet = await fetch(url, { 
+            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } 
+        });
 
-        if(!token || !user || !repo) { alert("Completează datele GitHub!"); return; }
-
-        const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-        
-        try {
-            // Verificăm dacă fișierul există pentru a lua SHA (necesar la update)
-            let sha = "";
-            const resGet = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
-            if(resGet.ok) { const dataGet = await resGet.json(); sha = dataGet.sha; }
-
-            const resPut = await fetch(url, {
-                method: 'PUT',
-                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    message: "Actualizare tabel intretinere",
-                    content: btoa(unescape(encodeURIComponent(htmlContent))),
-                    sha: sha
-                })
-            });
-
-            if(resPut.ok) { status.innerText = "✅ REUȘIT! Tabelul este online."; status.style.color = "#2ecc71"; }
-            else { throw new Error("Eroare la upload."); }
-        } catch (e) {
-            status.innerText = "❌ EROARE: " + e.message;
-            status.style.color = "#e74c3c";
+        if(resGet.status === 401) throw new Error("Token invalid sau expirat.");
+        if(resGet.status === 404) {
+            console.log("Fișierul nu există, se va crea unul nou.");
+        } else if(resGet.ok) {
+            const dataGet = await resGet.json();
+            sha = dataGet.sha;
         }
+
+        const resPut = await fetch(url, {
+            method: 'PUT',
+            headers: { 
+                'Authorization': `token ${token}`, 
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({
+                message: "Update Saturn 34 - " + new Date().toLocaleString(),
+                content: btoa(unescape(encodeURIComponent(htmlContent))),
+                sha: sha
+            })
+        });
+
+        if(resPut.ok) { 
+            status.innerText = "✅ REUȘIT! Datele sunt pe GitHub."; 
+            status.style.color = "#2ecc71"; 
+        } else {
+            const errData = await resPut.json();
+            throw new Error(errData.message || "Eroare la scriere.");
+        }
+    } catch (e) {
+        status.innerText = "❌ EROARE: " + e.message;
+        status.style.color = "#ff7675";
+        console.error(e);
     }
+}
 
     function build() {
         let hA = "", hB = "";
