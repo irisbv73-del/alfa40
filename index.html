@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="ro"><head>
+<html lang="ro">
+<head>
     <meta charset="UTF-8">
-    <title>Gestiune Saturn 34 - Versiunea Sincronizată</title>
+    <title>Gestiune Saturn 34 - Sistem Integrat GitHub</title>
     <style>
         @media print {
             @page { size: A4 landscape; margin: 5mm; }
@@ -12,7 +13,6 @@
 
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 10px; }
         
-        /* Panou Admin GitHub */
         .admin-section {
             background: #1e272e; color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;
             display: none; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;
@@ -21,29 +21,24 @@
         .admin-section input { background: #34495e; border: 1px solid #576574; color: white; padding: 8px; border-radius: 4px; font-size: 12px; }
         .status-msg { grid-column: 1 / -1; text-align: center; font-weight: bold; margin-top: 10px; font-size: 13px; }
 
-        /* Header */
         .header-panel {
             display: grid; grid-template-columns: 280px 1fr 300px;
             gap: 20px; background: white; padding: 15px;
             border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); align-items: center;
         }
-        .edit-titlu { font-size: 24px; font-weight: 900; text-transform: uppercase; border: none; width: 100%; text-align: center; color: #2c3e50; }
+        .edit-titlu { font-size: 24px; font-weight: 900; text-transform: uppercase; border: none; width: 100%; text-align: center; color: #2c3e50; background: transparent; }
 
-        /* Navigare */
         .nav-tabs { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
         .tab-btn { padding: 12px 25px; cursor: pointer; border: none; background: #7f8c8d; color: white; font-weight: bold; border-radius: 5px; transition: 0.3s; }
         .active-a { background: #27ae60 !important; }
         .active-b { background: #2980b9 !important; }
         .btn-gh { background: #2ecc71 !important; color: white !important; cursor: pointer; }
-        .btn-gh:hover { background: #27ae60 !important; }
 
-        /* Tabel */
         .container { background: white; padding: 10px; border-radius: 8px; overflow-x: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         table { border-collapse: collapse; font-size: 11px; width: 1700px; table-layout: fixed; }
         th, td { border: 1px solid #dfe6e9; text-align: center; padding: 6px; }
         th { background: #f1f2f6; color: #2f3542; font-weight: bold; height: 40px; }
         
-        tr:hover { background-color: #f1f2f6 !important; }
         .scara-a tr:nth-child(even) { background-color: #f9fffb; } 
         .scara-b tr:nth-child(even) { background-color: #f4faff; } 
         
@@ -54,20 +49,20 @@
         .col-plata { font-weight: 900; background: #ffebee !important; color: #c62828; }
     </style>
 </head>
-<body id="mainBody" class="">
+<body id="mainBody" class="readonly-mode">
 
-<div id="ghPanel" class="admin-section" style="display: grid;">
+<div id="ghPanel" class="admin-section">
     <div style="display:flex; flex-direction:column; gap:5px;">
         <label style="font-size:10px">GitHub Personal Token:</label>
-        <input type="password" id="gh_token" placeholder="ghp_xxxxxxxxxxxx" value="">
+        <input type="password" id="gh_token" placeholder="ghp_xxxxxxxxxxxx">
     </div>
     <div style="display:flex; flex-direction:column; gap:5px;">
         <label style="font-size:10px">Utilizator GitHub:</label>
-        <input type="text" id="gh_user" placeholder="ex: nume_utilizator" value="">
+        <input type="text" id="gh_user" placeholder="ex: nume_utilizator">
     </div>
     <div style="display:flex; flex-direction:column; gap:5px;">
         <label style="font-size:10px">Nume Repository:</label>
-        <input type="text" id="gh_repo" placeholder="ex: tabel-saturn" value="">
+        <input type="text" id="gh_repo" placeholder="ex: tabel-saturn">
     </div>
     <div style="display:flex; flex-direction:column; gap:5px;">
         <label style="font-size:10px">Nume Fișier (index.html):</label>
@@ -76,20 +71,20 @@
     <div style="display:flex; align-items:flex-end;">
         <button class="tab-btn btn-gh" onclick="uploadToGitHub()" style="width:100%">🚀 URCĂ PE GITHUB</button>
     </div>
-    <div id="ghStatus" class="status-msg" style="color: rgb(241, 196, 15);">⏳ Curățare date sensibile și upload...</div>
+    <div id="ghStatus" class="status-msg">Pregătit pentru sincronizare.</div>
 </div>
 
 <div class="header-panel">
     <div>
-        <div id="ceas" style="font-size: 18px; font-weight: bold; color: #2c3e50;">00:23:47</div>
-        <div style="margin-top:5px;">Adm: <input type="text" id="adm_n" value="Nicoleta Godri" oninput="saveData()"></div>
+        <div id="ceas" style="font-size: 18px; font-weight: bold; color: #2c3e50;">00:00:00</div>
+        <div style="margin-top:5px;">Adm: <input type="text" id="adm_n" value="Popescu Ion" oninput="saveData()"></div>
     </div>
     <div class="titlu-section">
         <input type="text" id="titlu_main" class="edit-titlu" value="Asociația Saturn 34" oninput="saveData()">
-        <div id="statusLabel" style="font-size: 12px; color: rgb(39, 174, 96); font-weight: bold;">MOD EDITARE ACTIV</div>
+        <div id="statusLabel" style="font-size:12px; color:#e74c3c; font-weight:bold;">MOD VIZUALIZARE</div>
     </div>
     <div style="text-align:right">
-        <button id="lockBtn" class="tab-btn" style="background:#8e44ad" onclick="verificareParola()">🔒 BLOCHEAZĂ DATELE</button>
+        <button id="lockBtn" class="tab-btn" style="background:#8e44ad" onclick="verificareParola()">🔓 ACCES ADMIN</button>
     </div>
 </div>
 
@@ -99,914 +94,11 @@
     <button class="tab-btn" style="background:#e67e22" onclick="window.print()">🖨️ PRINTARE PDF</button>
 </div>
 
-<div id="cont-A" style="display: block;">
-    <div class="container">
-        <table class="scara-a">
-            <thead>
-                <tr>
-                    <th style="width:35px">Ap</th>
-                    <th style="width:50px">AR MC</th>
-                    <th style="width:70px">Val AR</th>
-                    <th style="width:45px">Pers</th>
-                    <th style="width:55px">Dif</th>
-                    <th style="width:55px">Elec</th>
-                    <th style="width:60px">Salub</th>
-                    <th style="width:60px">Salarii</th>
-                    <th style="width:60px">Curat</th>
-                    <th style="width:60px">Adm</th>
-                    <th style="width:90px">TOTAL LUNĂ</th>
-                    <th style="width:55px">Rulm</th>
-                    <th style="width:55px">Rep</th>
-                    <th style="width:55px">R.Int</th>
-                    <th style="width:55px">R.Fd</th>
-                    <th style="width:55px">R.Pen</th>
-                    <th style="width:55px">Penal</th>
-                    <th style="width:100px">TOTAL PLATĂ</th>
-                    <th style="width:65px">F.Rul</th>
-                    <th style="width:65px">F.Rep</th>
-                </tr>
-            </thead>
-            <tbody id="tbodyA"><tr>
-                <td><b>1</b></td>
-                <td><input type="number" id="mc_1" value="3" oninput="calc(1,'A')"></td>
-                <td id="v_ar_1">51.09</td>
-                <td><input type="number" id="pers_1" value="3" oninput="calc(1,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_1">3.48</td>
-                <td id="v_salub_1">90.90</td>
-                <td id="v_salari_1">71.19</td>
-                <td id="v_curat_1">28.77</td>
-                <td id="v_adm_1">3.36</td>
-                <td id="t_luna_1" class="col-total">259.61</td>
-                <td><input type="number" id="f1_1" value="0" oninput="calc(1,'A')"></td>
-                <td><input type="number" id="f2_1" value="0" oninput="calc(1,'A')"></td>
-                <td><input type="number" id="r1_1" value="0" oninput="calc(1,'A')"></td>
-                <td><input type="number" id="r2_1" value="0" oninput="calc(1,'A')"></td>
-                <td><input type="number" id="r3_1" value="0" oninput="calc(1,'A')"></td>
-                <td><input type="number" id="p_1" value="0" oninput="calc(1,'A')"></td>
-                <td id="t_plata_1" class="col-plata">259.61</td>
-                <td><input type="number" id="frul_1" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_1" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>2</b></td>
-                <td><input type="number" id="mc_2" value="3" oninput="calc(2,'A')"></td>
-                <td id="v_ar_2">51.09</td>
-                <td><input type="number" id="pers_2" value="1" oninput="calc(2,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_2">1.16</td>
-                <td id="v_salub_2">30.30</td>
-                <td id="v_salari_2">23.73</td>
-                <td id="v_curat_2">9.59</td>
-                <td id="v_adm_2">1.12</td>
-                <td id="t_luna_2" class="col-total">127.81</td>
-                <td><input type="number" id="f1_2" value="0" oninput="calc(2,'A')"></td>
-                <td><input type="number" id="f2_2" value="0" oninput="calc(2,'A')"></td>
-                <td><input type="number" id="r1_2" value="0" oninput="calc(2,'A')"></td>
-                <td><input type="number" id="r2_2" value="0" oninput="calc(2,'A')"></td>
-                <td><input type="number" id="r3_2" value="0" oninput="calc(2,'A')"></td>
-                <td><input type="number" id="p_2" value="0" oninput="calc(2,'A')"></td>
-                <td id="t_plata_2" class="col-plata">127.81</td>
-                <td><input type="number" id="frul_2" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_2" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>3</b></td>
-                <td><input type="number" id="mc_3" value="3" oninput="calc(3,'A')"></td>
-                <td id="v_ar_3">51.09</td>
-                <td><input type="number" id="pers_3" value="1" oninput="calc(3,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_3">1.16</td>
-                <td id="v_salub_3">30.30</td>
-                <td id="v_salari_3">23.73</td>
-                <td id="v_curat_3">9.59</td>
-                <td id="v_adm_3">1.12</td>
-                <td id="t_luna_3" class="col-total">127.81</td>
-                <td><input type="number" id="f1_3" value="0" oninput="calc(3,'A')"></td>
-                <td><input type="number" id="f2_3" value="0" oninput="calc(3,'A')"></td>
-                <td><input type="number" id="r1_3" value="0" oninput="calc(3,'A')"></td>
-                <td><input type="number" id="r2_3" value="0" oninput="calc(3,'A')"></td>
-                <td><input type="number" id="r3_3" value="0" oninput="calc(3,'A')"></td>
-                <td><input type="number" id="p_3" value="0" oninput="calc(3,'A')"></td>
-                <td id="t_plata_3" class="col-plata">127.81</td>
-                <td><input type="number" id="frul_3" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_3" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>4</b></td>
-                <td><input type="number" id="mc_4" value="0" oninput="calc(4,'A')"></td>
-                <td id="v_ar_4">0.00</td>
-                <td><input type="number" id="pers_4" value="1" oninput="calc(4,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_4">0.00</td>
-                <td id="v_salub_4">0.00</td>
-                <td id="v_salari_4">0.00</td>
-                <td id="v_curat_4">0.00</td>
-                <td id="v_adm_4">0.00</td>
-                <td id="t_luna_4" class="col-total">0.00</td>
-                <td><input type="number" id="f1_4" value="0" oninput="calc(4,'A')"></td>
-                <td><input type="number" id="f2_4" value="0" oninput="calc(4,'A')"></td>
-                <td><input type="number" id="r1_4" value="0" oninput="calc(4,'A')"></td>
-                <td><input type="number" id="r2_4" value="0" oninput="calc(4,'A')"></td>
-                <td><input type="number" id="r3_4" value="0" oninput="calc(4,'A')"></td>
-                <td><input type="number" id="p_4" value="0" oninput="calc(4,'A')"></td>
-                <td id="t_plata_4" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_4" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_4" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>5</b></td>
-                <td><input type="number" id="mc_5" value="0" oninput="calc(5,'A')"></td>
-                <td id="v_ar_5">0.00</td>
-                <td><input type="number" id="pers_5" value="1" oninput="calc(5,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_5">0.00</td>
-                <td id="v_salub_5">0.00</td>
-                <td id="v_salari_5">0.00</td>
-                <td id="v_curat_5">0.00</td>
-                <td id="v_adm_5">0.00</td>
-                <td id="t_luna_5" class="col-total">0.00</td>
-                <td><input type="number" id="f1_5" value="0" oninput="calc(5,'A')"></td>
-                <td><input type="number" id="f2_5" value="0" oninput="calc(5,'A')"></td>
-                <td><input type="number" id="r1_5" value="0" oninput="calc(5,'A')"></td>
-                <td><input type="number" id="r2_5" value="0" oninput="calc(5,'A')"></td>
-                <td><input type="number" id="r3_5" value="0" oninput="calc(5,'A')"></td>
-                <td><input type="number" id="p_5" value="0" oninput="calc(5,'A')"></td>
-                <td id="t_plata_5" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_5" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_5" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>6</b></td>
-                <td><input type="number" id="mc_6" value="2" oninput="calc(6,'A')"></td>
-                <td id="v_ar_6">34.06</td>
-                <td><input type="number" id="pers_6" value="1" oninput="calc(6,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_6">1.16</td>
-                <td id="v_salub_6">30.30</td>
-                <td id="v_salari_6">23.73</td>
-                <td id="v_curat_6">9.59</td>
-                <td id="v_adm_6">1.12</td>
-                <td id="t_luna_6" class="col-total">110.78</td>
-                <td><input type="number" id="f1_6" value="0" oninput="calc(6,'A')"></td>
-                <td><input type="number" id="f2_6" value="0" oninput="calc(6,'A')"></td>
-                <td><input type="number" id="r1_6" value="0" oninput="calc(6,'A')"></td>
-                <td><input type="number" id="r2_6" value="0" oninput="calc(6,'A')"></td>
-                <td><input type="number" id="r3_6" value="0" oninput="calc(6,'A')"></td>
-                <td><input type="number" id="p_6" value="0" oninput="calc(6,'A')"></td>
-                <td id="t_plata_6" class="col-plata">110.78</td>
-                <td><input type="number" id="frul_6" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_6" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>7</b></td>
-                <td><input type="number" id="mc_7" value="5" oninput="calc(7,'A')"></td>
-                <td id="v_ar_7">85.15</td>
-                <td><input type="number" id="pers_7" value="1" oninput="calc(7,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_7">1.16</td>
-                <td id="v_salub_7">30.30</td>
-                <td id="v_salari_7">23.73</td>
-                <td id="v_curat_7">9.59</td>
-                <td id="v_adm_7">1.12</td>
-                <td id="t_luna_7" class="col-total">161.87</td>
-                <td><input type="number" id="f1_7" value="0" oninput="calc(7,'A')"></td>
-                <td><input type="number" id="f2_7" value="0" oninput="calc(7,'A')"></td>
-                <td><input type="number" id="r1_7" value="0" oninput="calc(7,'A')"></td>
-                <td><input type="number" id="r2_7" value="0" oninput="calc(7,'A')"></td>
-                <td><input type="number" id="r3_7" value="0" oninput="calc(7,'A')"></td>
-                <td><input type="number" id="p_7" value="0" oninput="calc(7,'A')"></td>
-                <td id="t_plata_7" class="col-plata">161.87</td>
-                <td><input type="number" id="frul_7" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_7" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>8</b></td>
-                <td><input type="number" id="mc_8" value="4" oninput="calc(8,'A')"></td>
-                <td id="v_ar_8">68.12</td>
-                <td><input type="number" id="pers_8" value="2" oninput="calc(8,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_8">2.32</td>
-                <td id="v_salub_8">60.60</td>
-                <td id="v_salari_8">47.46</td>
-                <td id="v_curat_8">19.18</td>
-                <td id="v_adm_8">2.24</td>
-                <td id="t_luna_8" class="col-total">210.74</td>
-                <td><input type="number" id="f1_8" value="0" oninput="calc(8,'A')"></td>
-                <td><input type="number" id="f2_8" value="0" oninput="calc(8,'A')"></td>
-                <td><input type="number" id="r1_8" value="0" oninput="calc(8,'A')"></td>
-                <td><input type="number" id="r2_8" value="0" oninput="calc(8,'A')"></td>
-                <td><input type="number" id="r3_8" value="0" oninput="calc(8,'A')"></td>
-                <td><input type="number" id="p_8" value="0" oninput="calc(8,'A')"></td>
-                <td id="t_plata_8" class="col-plata">210.74</td>
-                <td><input type="number" id="frul_8" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_8" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>9</b></td>
-                <td><input type="number" id="mc_9" value="0" oninput="calc(9,'A')"></td>
-                <td id="v_ar_9">0.00</td>
-                <td><input type="number" id="pers_9" value="1" oninput="calc(9,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_9">0.00</td>
-                <td id="v_salub_9">0.00</td>
-                <td id="v_salari_9">0.00</td>
-                <td id="v_curat_9">0.00</td>
-                <td id="v_adm_9">0.00</td>
-                <td id="t_luna_9" class="col-total">0.00</td>
-                <td><input type="number" id="f1_9" value="0" oninput="calc(9,'A')"></td>
-                <td><input type="number" id="f2_9" value="0" oninput="calc(9,'A')"></td>
-                <td><input type="number" id="r1_9" value="0" oninput="calc(9,'A')"></td>
-                <td><input type="number" id="r2_9" value="0" oninput="calc(9,'A')"></td>
-                <td><input type="number" id="r3_9" value="0" oninput="calc(9,'A')"></td>
-                <td><input type="number" id="p_9" value="0" oninput="calc(9,'A')"></td>
-                <td id="t_plata_9" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_9" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_9" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>10</b></td>
-                <td><input type="number" id="mc_10" value="0" oninput="calc(10,'A')"></td>
-                <td id="v_ar_10">0.00</td>
-                <td><input type="number" id="pers_10" value="1" oninput="calc(10,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_10">0.00</td>
-                <td id="v_salub_10">0.00</td>
-                <td id="v_salari_10">0.00</td>
-                <td id="v_curat_10">0.00</td>
-                <td id="v_adm_10">0.00</td>
-                <td id="t_luna_10" class="col-total">0.00</td>
-                <td><input type="number" id="f1_10" value="0" oninput="calc(10,'A')"></td>
-                <td><input type="number" id="f2_10" value="0" oninput="calc(10,'A')"></td>
-                <td><input type="number" id="r1_10" value="0" oninput="calc(10,'A')"></td>
-                <td><input type="number" id="r2_10" value="0" oninput="calc(10,'A')"></td>
-                <td><input type="number" id="r3_10" value="0" oninput="calc(10,'A')"></td>
-                <td><input type="number" id="p_10" value="0" oninput="calc(10,'A')"></td>
-                <td id="t_plata_10" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_10" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_10" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>11</b></td>
-                <td><input type="number" id="mc_11" value="0" oninput="calc(11,'A')"></td>
-                <td id="v_ar_11">0.00</td>
-                <td><input type="number" id="pers_11" value="1" oninput="calc(11,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_11">0.00</td>
-                <td id="v_salub_11">0.00</td>
-                <td id="v_salari_11">0.00</td>
-                <td id="v_curat_11">0.00</td>
-                <td id="v_adm_11">0.00</td>
-                <td id="t_luna_11" class="col-total">0.00</td>
-                <td><input type="number" id="f1_11" value="0" oninput="calc(11,'A')"></td>
-                <td><input type="number" id="f2_11" value="0" oninput="calc(11,'A')"></td>
-                <td><input type="number" id="r1_11" value="0" oninput="calc(11,'A')"></td>
-                <td><input type="number" id="r2_11" value="0" oninput="calc(11,'A')"></td>
-                <td><input type="number" id="r3_11" value="0" oninput="calc(11,'A')"></td>
-                <td><input type="number" id="p_11" value="0" oninput="calc(11,'A')"></td>
-                <td id="t_plata_11" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_11" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_11" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>12</b></td>
-                <td><input type="number" id="mc_12" value="0" oninput="calc(12,'A')"></td>
-                <td id="v_ar_12">0.00</td>
-                <td><input type="number" id="pers_12" value="1" oninput="calc(12,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_12">0.00</td>
-                <td id="v_salub_12">0.00</td>
-                <td id="v_salari_12">0.00</td>
-                <td id="v_curat_12">0.00</td>
-                <td id="v_adm_12">0.00</td>
-                <td id="t_luna_12" class="col-total">0.00</td>
-                <td><input type="number" id="f1_12" value="0" oninput="calc(12,'A')"></td>
-                <td><input type="number" id="f2_12" value="0" oninput="calc(12,'A')"></td>
-                <td><input type="number" id="r1_12" value="0" oninput="calc(12,'A')"></td>
-                <td><input type="number" id="r2_12" value="0" oninput="calc(12,'A')"></td>
-                <td><input type="number" id="r3_12" value="0" oninput="calc(12,'A')"></td>
-                <td><input type="number" id="p_12" value="0" oninput="calc(12,'A')"></td>
-                <td id="t_plata_12" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_12" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_12" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>13</b></td>
-                <td><input type="number" id="mc_13" value="0" oninput="calc(13,'A')"></td>
-                <td id="v_ar_13">0.00</td>
-                <td><input type="number" id="pers_13" value="1" oninput="calc(13,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_13">0.00</td>
-                <td id="v_salub_13">0.00</td>
-                <td id="v_salari_13">0.00</td>
-                <td id="v_curat_13">0.00</td>
-                <td id="v_adm_13">0.00</td>
-                <td id="t_luna_13" class="col-total">0.00</td>
-                <td><input type="number" id="f1_13" value="0" oninput="calc(13,'A')"></td>
-                <td><input type="number" id="f2_13" value="0" oninput="calc(13,'A')"></td>
-                <td><input type="number" id="r1_13" value="0" oninput="calc(13,'A')"></td>
-                <td><input type="number" id="r2_13" value="0" oninput="calc(13,'A')"></td>
-                <td><input type="number" id="r3_13" value="0" oninput="calc(13,'A')"></td>
-                <td><input type="number" id="p_13" value="0" oninput="calc(13,'A')"></td>
-                <td id="t_plata_13" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_13" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_13" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>14</b></td>
-                <td><input type="number" id="mc_14" value="0" oninput="calc(14,'A')"></td>
-                <td id="v_ar_14">0.00</td>
-                <td><input type="number" id="pers_14" value="1" oninput="calc(14,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_14">0.00</td>
-                <td id="v_salub_14">0.00</td>
-                <td id="v_salari_14">0.00</td>
-                <td id="v_curat_14">0.00</td>
-                <td id="v_adm_14">0.00</td>
-                <td id="t_luna_14" class="col-total">0.00</td>
-                <td><input type="number" id="f1_14" value="0" oninput="calc(14,'A')"></td>
-                <td><input type="number" id="f2_14" value="0" oninput="calc(14,'A')"></td>
-                <td><input type="number" id="r1_14" value="0" oninput="calc(14,'A')"></td>
-                <td><input type="number" id="r2_14" value="0" oninput="calc(14,'A')"></td>
-                <td><input type="number" id="r3_14" value="0" oninput="calc(14,'A')"></td>
-                <td><input type="number" id="p_14" value="0" oninput="calc(14,'A')"></td>
-                <td id="t_plata_14" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_14" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_14" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>15</b></td>
-                <td><input type="number" id="mc_15" value="0" oninput="calc(15,'A')"></td>
-                <td id="v_ar_15">0.00</td>
-                <td><input type="number" id="pers_15" value="1" oninput="calc(15,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_15">0.00</td>
-                <td id="v_salub_15">0.00</td>
-                <td id="v_salari_15">0.00</td>
-                <td id="v_curat_15">0.00</td>
-                <td id="v_adm_15">0.00</td>
-                <td id="t_luna_15" class="col-total">0.00</td>
-                <td><input type="number" id="f1_15" value="0" oninput="calc(15,'A')"></td>
-                <td><input type="number" id="f2_15" value="0" oninput="calc(15,'A')"></td>
-                <td><input type="number" id="r1_15" value="0" oninput="calc(15,'A')"></td>
-                <td><input type="number" id="r2_15" value="0" oninput="calc(15,'A')"></td>
-                <td><input type="number" id="r3_15" value="0" oninput="calc(15,'A')"></td>
-                <td><input type="number" id="p_15" value="0" oninput="calc(15,'A')"></td>
-                <td id="t_plata_15" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_15" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_15" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>16</b></td>
-                <td><input type="number" id="mc_16" value="0" oninput="calc(16,'A')"></td>
-                <td id="v_ar_16">0.00</td>
-                <td><input type="number" id="pers_16" value="1" oninput="calc(16,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_16">0.00</td>
-                <td id="v_salub_16">0.00</td>
-                <td id="v_salari_16">0.00</td>
-                <td id="v_curat_16">0.00</td>
-                <td id="v_adm_16">0.00</td>
-                <td id="t_luna_16" class="col-total">0.00</td>
-                <td><input type="number" id="f1_16" value="0" oninput="calc(16,'A')"></td>
-                <td><input type="number" id="f2_16" value="0" oninput="calc(16,'A')"></td>
-                <td><input type="number" id="r1_16" value="0" oninput="calc(16,'A')"></td>
-                <td><input type="number" id="r2_16" value="0" oninput="calc(16,'A')"></td>
-                <td><input type="number" id="r3_16" value="0" oninput="calc(16,'A')"></td>
-                <td><input type="number" id="p_16" value="0" oninput="calc(16,'A')"></td>
-                <td id="t_plata_16" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_16" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_16" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>17</b></td>
-                <td><input type="number" id="mc_17" value="0" oninput="calc(17,'A')"></td>
-                <td id="v_ar_17">0.00</td>
-                <td><input type="number" id="pers_17" value="1" oninput="calc(17,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_17">0.00</td>
-                <td id="v_salub_17">0.00</td>
-                <td id="v_salari_17">0.00</td>
-                <td id="v_curat_17">0.00</td>
-                <td id="v_adm_17">0.00</td>
-                <td id="t_luna_17" class="col-total">0.00</td>
-                <td><input type="number" id="f1_17" value="0" oninput="calc(17,'A')"></td>
-                <td><input type="number" id="f2_17" value="0" oninput="calc(17,'A')"></td>
-                <td><input type="number" id="r1_17" value="0" oninput="calc(17,'A')"></td>
-                <td><input type="number" id="r2_17" value="0" oninput="calc(17,'A')"></td>
-                <td><input type="number" id="r3_17" value="0" oninput="calc(17,'A')"></td>
-                <td><input type="number" id="p_17" value="0" oninput="calc(17,'A')"></td>
-                <td id="t_plata_17" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_17" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_17" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>18</b></td>
-                <td><input type="number" id="mc_18" value="0" oninput="calc(18,'A')"></td>
-                <td id="v_ar_18">0.00</td>
-                <td><input type="number" id="pers_18" value="1" oninput="calc(18,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_18">0.00</td>
-                <td id="v_salub_18">0.00</td>
-                <td id="v_salari_18">0.00</td>
-                <td id="v_curat_18">0.00</td>
-                <td id="v_adm_18">0.00</td>
-                <td id="t_luna_18" class="col-total">0.00</td>
-                <td><input type="number" id="f1_18" value="0" oninput="calc(18,'A')"></td>
-                <td><input type="number" id="f2_18" value="0" oninput="calc(18,'A')"></td>
-                <td><input type="number" id="r1_18" value="0" oninput="calc(18,'A')"></td>
-                <td><input type="number" id="r2_18" value="0" oninput="calc(18,'A')"></td>
-                <td><input type="number" id="r3_18" value="0" oninput="calc(18,'A')"></td>
-                <td><input type="number" id="p_18" value="0" oninput="calc(18,'A')"></td>
-                <td id="t_plata_18" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_18" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_18" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>19</b></td>
-                <td><input type="number" id="mc_19" value="0" oninput="calc(19,'A')"></td>
-                <td id="v_ar_19">0.00</td>
-                <td><input type="number" id="pers_19" value="1" oninput="calc(19,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_19">0.00</td>
-                <td id="v_salub_19">0.00</td>
-                <td id="v_salari_19">0.00</td>
-                <td id="v_curat_19">0.00</td>
-                <td id="v_adm_19">0.00</td>
-                <td id="t_luna_19" class="col-total">0.00</td>
-                <td><input type="number" id="f1_19" value="0" oninput="calc(19,'A')"></td>
-                <td><input type="number" id="f2_19" value="0" oninput="calc(19,'A')"></td>
-                <td><input type="number" id="r1_19" value="0" oninput="calc(19,'A')"></td>
-                <td><input type="number" id="r2_19" value="0" oninput="calc(19,'A')"></td>
-                <td><input type="number" id="r3_19" value="0" oninput="calc(19,'A')"></td>
-                <td><input type="number" id="p_19" value="0" oninput="calc(19,'A')"></td>
-                <td id="t_plata_19" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_19" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_19" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>20</b></td>
-                <td><input type="number" id="mc_20" value="0" oninput="calc(20,'A')"></td>
-                <td id="v_ar_20">0.00</td>
-                <td><input type="number" id="pers_20" value="1" oninput="calc(20,'A')"></td>
-                <td>10.82</td>
-                <td id="v_el_20">0.00</td>
-                <td id="v_salub_20">0.00</td>
-                <td id="v_salari_20">0.00</td>
-                <td id="v_curat_20">0.00</td>
-                <td id="v_adm_20">0.00</td>
-                <td id="t_luna_20" class="col-total">0.00</td>
-                <td><input type="number" id="f1_20" value="0" oninput="calc(20,'A')"></td>
-                <td><input type="number" id="f2_20" value="0" oninput="calc(20,'A')"></td>
-                <td><input type="number" id="r1_20" value="0" oninput="calc(20,'A')"></td>
-                <td><input type="number" id="r2_20" value="0" oninput="calc(20,'A')"></td>
-                <td><input type="number" id="r3_20" value="0" oninput="calc(20,'A')"></td>
-                <td><input type="number" id="p_20" value="0" oninput="calc(20,'A')"></td>
-                <td id="t_plata_20" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_20" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_20" value="0" oninput="saveData()"></td>
-            </tr></tbody>
-        </table>
-    </div>
-</div>
-
-<div id="cont-B" style="display: none;">
-    <div class="container">
-        <table class="scara-b">
-            <thead>
-                <tr>
-                    <th style="width:35px">Ap</th>
-                    <th style="width:50px">AR MC</th>
-                    <th style="width:70px">Val AR</th>
-                    <th style="width:45px">Pers</th>
-                    <th style="width:55px">Dif</th>
-                    <th style="width:55px">Elec</th>
-                    <th style="width:60px">Salub</th>
-                    <th style="width:60px">Salarii</th>
-                    <th style="width:60px">Curat</th>
-                    <th style="width:60px">Adm</th>
-                    <th style="width:90px">TOTAL LUNĂ</th>
-                    <th style="width:55px">Rulm</th>
-                    <th style="width:55px">Rep</th>
-                    <th style="width:55px">R.Int</th>
-                    <th style="width:55px">R.Fd</th>
-                    <th style="width:55px">R.Pen</th>
-                    <th style="width:55px">Penal</th>
-                    <th style="width:100px">TOTAL PLATĂ</th>
-                    <th style="width:65px">F.Rul</th>
-                    <th style="width:65px">F.Rep</th>
-                </tr>
-            </thead>
-            <tbody id="tbodyB"><tr>
-                <td><b>21</b></td>
-                <td><input type="number" id="mc_21" value="0" oninput="calc(21,'B')"></td>
-                <td id="v_ar_21">0.00</td>
-                <td><input type="number" id="pers_21" value="1" oninput="calc(21,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_21">0.00</td>
-                <td id="v_salub_21">0.00</td>
-                <td id="v_salari_21">0.00</td>
-                <td id="v_curat_21">0.00</td>
-                <td id="v_adm_21">0.00</td>
-                <td id="t_luna_21" class="col-total">0.00</td>
-                <td><input type="number" id="f1_21" value="0" oninput="calc(21,'B')"></td>
-                <td><input type="number" id="f2_21" value="0" oninput="calc(21,'B')"></td>
-                <td><input type="number" id="r1_21" value="0" oninput="calc(21,'B')"></td>
-                <td><input type="number" id="r2_21" value="0" oninput="calc(21,'B')"></td>
-                <td><input type="number" id="r3_21" value="0" oninput="calc(21,'B')"></td>
-                <td><input type="number" id="p_21" value="0" oninput="calc(21,'B')"></td>
-                <td id="t_plata_21" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_21" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_21" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>22</b></td>
-                <td><input type="number" id="mc_22" value="0" oninput="calc(22,'B')"></td>
-                <td id="v_ar_22">0.00</td>
-                <td><input type="number" id="pers_22" value="1" oninput="calc(22,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_22">0.00</td>
-                <td id="v_salub_22">0.00</td>
-                <td id="v_salari_22">0.00</td>
-                <td id="v_curat_22">0.00</td>
-                <td id="v_adm_22">0.00</td>
-                <td id="t_luna_22" class="col-total">0.00</td>
-                <td><input type="number" id="f1_22" value="0" oninput="calc(22,'B')"></td>
-                <td><input type="number" id="f2_22" value="0" oninput="calc(22,'B')"></td>
-                <td><input type="number" id="r1_22" value="0" oninput="calc(22,'B')"></td>
-                <td><input type="number" id="r2_22" value="0" oninput="calc(22,'B')"></td>
-                <td><input type="number" id="r3_22" value="0" oninput="calc(22,'B')"></td>
-                <td><input type="number" id="p_22" value="0" oninput="calc(22,'B')"></td>
-                <td id="t_plata_22" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_22" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_22" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>23</b></td>
-                <td><input type="number" id="mc_23" value="0" oninput="calc(23,'B')"></td>
-                <td id="v_ar_23">0.00</td>
-                <td><input type="number" id="pers_23" value="1" oninput="calc(23,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_23">0.00</td>
-                <td id="v_salub_23">0.00</td>
-                <td id="v_salari_23">0.00</td>
-                <td id="v_curat_23">0.00</td>
-                <td id="v_adm_23">0.00</td>
-                <td id="t_luna_23" class="col-total">0.00</td>
-                <td><input type="number" id="f1_23" value="0" oninput="calc(23,'B')"></td>
-                <td><input type="number" id="f2_23" value="0" oninput="calc(23,'B')"></td>
-                <td><input type="number" id="r1_23" value="0" oninput="calc(23,'B')"></td>
-                <td><input type="number" id="r2_23" value="0" oninput="calc(23,'B')"></td>
-                <td><input type="number" id="r3_23" value="0" oninput="calc(23,'B')"></td>
-                <td><input type="number" id="p_23" value="0" oninput="calc(23,'B')"></td>
-                <td id="t_plata_23" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_23" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_23" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>24</b></td>
-                <td><input type="number" id="mc_24" value="0" oninput="calc(24,'B')"></td>
-                <td id="v_ar_24">0.00</td>
-                <td><input type="number" id="pers_24" value="1" oninput="calc(24,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_24">0.00</td>
-                <td id="v_salub_24">0.00</td>
-                <td id="v_salari_24">0.00</td>
-                <td id="v_curat_24">0.00</td>
-                <td id="v_adm_24">0.00</td>
-                <td id="t_luna_24" class="col-total">0.00</td>
-                <td><input type="number" id="f1_24" value="0" oninput="calc(24,'B')"></td>
-                <td><input type="number" id="f2_24" value="0" oninput="calc(24,'B')"></td>
-                <td><input type="number" id="r1_24" value="0" oninput="calc(24,'B')"></td>
-                <td><input type="number" id="r2_24" value="0" oninput="calc(24,'B')"></td>
-                <td><input type="number" id="r3_24" value="0" oninput="calc(24,'B')"></td>
-                <td><input type="number" id="p_24" value="0" oninput="calc(24,'B')"></td>
-                <td id="t_plata_24" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_24" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_24" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>25</b></td>
-                <td><input type="number" id="mc_25" value="0" oninput="calc(25,'B')"></td>
-                <td id="v_ar_25">0.00</td>
-                <td><input type="number" id="pers_25" value="1" oninput="calc(25,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_25">0.00</td>
-                <td id="v_salub_25">0.00</td>
-                <td id="v_salari_25">0.00</td>
-                <td id="v_curat_25">0.00</td>
-                <td id="v_adm_25">0.00</td>
-                <td id="t_luna_25" class="col-total">0.00</td>
-                <td><input type="number" id="f1_25" value="0" oninput="calc(25,'B')"></td>
-                <td><input type="number" id="f2_25" value="0" oninput="calc(25,'B')"></td>
-                <td><input type="number" id="r1_25" value="0" oninput="calc(25,'B')"></td>
-                <td><input type="number" id="r2_25" value="0" oninput="calc(25,'B')"></td>
-                <td><input type="number" id="r3_25" value="0" oninput="calc(25,'B')"></td>
-                <td><input type="number" id="p_25" value="0" oninput="calc(25,'B')"></td>
-                <td id="t_plata_25" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_25" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_25" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>26</b></td>
-                <td><input type="number" id="mc_26" value="0" oninput="calc(26,'B')"></td>
-                <td id="v_ar_26">0.00</td>
-                <td><input type="number" id="pers_26" value="1" oninput="calc(26,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_26">0.00</td>
-                <td id="v_salub_26">0.00</td>
-                <td id="v_salari_26">0.00</td>
-                <td id="v_curat_26">0.00</td>
-                <td id="v_adm_26">0.00</td>
-                <td id="t_luna_26" class="col-total">0.00</td>
-                <td><input type="number" id="f1_26" value="0" oninput="calc(26,'B')"></td>
-                <td><input type="number" id="f2_26" value="0" oninput="calc(26,'B')"></td>
-                <td><input type="number" id="r1_26" value="0" oninput="calc(26,'B')"></td>
-                <td><input type="number" id="r2_26" value="0" oninput="calc(26,'B')"></td>
-                <td><input type="number" id="r3_26" value="0" oninput="calc(26,'B')"></td>
-                <td><input type="number" id="p_26" value="0" oninput="calc(26,'B')"></td>
-                <td id="t_plata_26" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_26" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_26" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>27</b></td>
-                <td><input type="number" id="mc_27" value="0" oninput="calc(27,'B')"></td>
-                <td id="v_ar_27">0.00</td>
-                <td><input type="number" id="pers_27" value="1" oninput="calc(27,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_27">0.00</td>
-                <td id="v_salub_27">0.00</td>
-                <td id="v_salari_27">0.00</td>
-                <td id="v_curat_27">0.00</td>
-                <td id="v_adm_27">0.00</td>
-                <td id="t_luna_27" class="col-total">0.00</td>
-                <td><input type="number" id="f1_27" value="0" oninput="calc(27,'B')"></td>
-                <td><input type="number" id="f2_27" value="0" oninput="calc(27,'B')"></td>
-                <td><input type="number" id="r1_27" value="0" oninput="calc(27,'B')"></td>
-                <td><input type="number" id="r2_27" value="0" oninput="calc(27,'B')"></td>
-                <td><input type="number" id="r3_27" value="0" oninput="calc(27,'B')"></td>
-                <td><input type="number" id="p_27" value="0" oninput="calc(27,'B')"></td>
-                <td id="t_plata_27" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_27" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_27" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>28</b></td>
-                <td><input type="number" id="mc_28" value="0" oninput="calc(28,'B')"></td>
-                <td id="v_ar_28">0.00</td>
-                <td><input type="number" id="pers_28" value="1" oninput="calc(28,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_28">0.00</td>
-                <td id="v_salub_28">0.00</td>
-                <td id="v_salari_28">0.00</td>
-                <td id="v_curat_28">0.00</td>
-                <td id="v_adm_28">0.00</td>
-                <td id="t_luna_28" class="col-total">0.00</td>
-                <td><input type="number" id="f1_28" value="0" oninput="calc(28,'B')"></td>
-                <td><input type="number" id="f2_28" value="0" oninput="calc(28,'B')"></td>
-                <td><input type="number" id="r1_28" value="0" oninput="calc(28,'B')"></td>
-                <td><input type="number" id="r2_28" value="0" oninput="calc(28,'B')"></td>
-                <td><input type="number" id="r3_28" value="0" oninput="calc(28,'B')"></td>
-                <td><input type="number" id="p_28" value="0" oninput="calc(28,'B')"></td>
-                <td id="t_plata_28" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_28" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_28" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>29</b></td>
-                <td><input type="number" id="mc_29" value="0" oninput="calc(29,'B')"></td>
-                <td id="v_ar_29">0.00</td>
-                <td><input type="number" id="pers_29" value="1" oninput="calc(29,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_29">0.00</td>
-                <td id="v_salub_29">0.00</td>
-                <td id="v_salari_29">0.00</td>
-                <td id="v_curat_29">0.00</td>
-                <td id="v_adm_29">0.00</td>
-                <td id="t_luna_29" class="col-total">0.00</td>
-                <td><input type="number" id="f1_29" value="0" oninput="calc(29,'B')"></td>
-                <td><input type="number" id="f2_29" value="0" oninput="calc(29,'B')"></td>
-                <td><input type="number" id="r1_29" value="0" oninput="calc(29,'B')"></td>
-                <td><input type="number" id="r2_29" value="0" oninput="calc(29,'B')"></td>
-                <td><input type="number" id="r3_29" value="0" oninput="calc(29,'B')"></td>
-                <td><input type="number" id="p_29" value="0" oninput="calc(29,'B')"></td>
-                <td id="t_plata_29" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_29" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_29" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>30</b></td>
-                <td><input type="number" id="mc_30" value="0" oninput="calc(30,'B')"></td>
-                <td id="v_ar_30">0.00</td>
-                <td><input type="number" id="pers_30" value="1" oninput="calc(30,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_30">0.00</td>
-                <td id="v_salub_30">0.00</td>
-                <td id="v_salari_30">0.00</td>
-                <td id="v_curat_30">0.00</td>
-                <td id="v_adm_30">0.00</td>
-                <td id="t_luna_30" class="col-total">0.00</td>
-                <td><input type="number" id="f1_30" value="0" oninput="calc(30,'B')"></td>
-                <td><input type="number" id="f2_30" value="0" oninput="calc(30,'B')"></td>
-                <td><input type="number" id="r1_30" value="0" oninput="calc(30,'B')"></td>
-                <td><input type="number" id="r2_30" value="0" oninput="calc(30,'B')"></td>
-                <td><input type="number" id="r3_30" value="0" oninput="calc(30,'B')"></td>
-                <td><input type="number" id="p_30" value="0" oninput="calc(30,'B')"></td>
-                <td id="t_plata_30" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_30" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_30" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>31</b></td>
-                <td><input type="number" id="mc_31" value="0" oninput="calc(31,'B')"></td>
-                <td id="v_ar_31">0.00</td>
-                <td><input type="number" id="pers_31" value="1" oninput="calc(31,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_31">0.00</td>
-                <td id="v_salub_31">0.00</td>
-                <td id="v_salari_31">0.00</td>
-                <td id="v_curat_31">0.00</td>
-                <td id="v_adm_31">0.00</td>
-                <td id="t_luna_31" class="col-total">0.00</td>
-                <td><input type="number" id="f1_31" value="0" oninput="calc(31,'B')"></td>
-                <td><input type="number" id="f2_31" value="0" oninput="calc(31,'B')"></td>
-                <td><input type="number" id="r1_31" value="0" oninput="calc(31,'B')"></td>
-                <td><input type="number" id="r2_31" value="0" oninput="calc(31,'B')"></td>
-                <td><input type="number" id="r3_31" value="0" oninput="calc(31,'B')"></td>
-                <td><input type="number" id="p_31" value="0" oninput="calc(31,'B')"></td>
-                <td id="t_plata_31" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_31" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_31" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>32</b></td>
-                <td><input type="number" id="mc_32" value="0" oninput="calc(32,'B')"></td>
-                <td id="v_ar_32">0.00</td>
-                <td><input type="number" id="pers_32" value="1" oninput="calc(32,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_32">0.00</td>
-                <td id="v_salub_32">0.00</td>
-                <td id="v_salari_32">0.00</td>
-                <td id="v_curat_32">0.00</td>
-                <td id="v_adm_32">0.00</td>
-                <td id="t_luna_32" class="col-total">0.00</td>
-                <td><input type="number" id="f1_32" value="0" oninput="calc(32,'B')"></td>
-                <td><input type="number" id="f2_32" value="0" oninput="calc(32,'B')"></td>
-                <td><input type="number" id="r1_32" value="0" oninput="calc(32,'B')"></td>
-                <td><input type="number" id="r2_32" value="0" oninput="calc(32,'B')"></td>
-                <td><input type="number" id="r3_32" value="0" oninput="calc(32,'B')"></td>
-                <td><input type="number" id="p_32" value="0" oninput="calc(32,'B')"></td>
-                <td id="t_plata_32" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_32" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_32" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>33</b></td>
-                <td><input type="number" id="mc_33" value="0" oninput="calc(33,'B')"></td>
-                <td id="v_ar_33">0.00</td>
-                <td><input type="number" id="pers_33" value="1" oninput="calc(33,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_33">0.00</td>
-                <td id="v_salub_33">0.00</td>
-                <td id="v_salari_33">0.00</td>
-                <td id="v_curat_33">0.00</td>
-                <td id="v_adm_33">0.00</td>
-                <td id="t_luna_33" class="col-total">0.00</td>
-                <td><input type="number" id="f1_33" value="0" oninput="calc(33,'B')"></td>
-                <td><input type="number" id="f2_33" value="0" oninput="calc(33,'B')"></td>
-                <td><input type="number" id="r1_33" value="0" oninput="calc(33,'B')"></td>
-                <td><input type="number" id="r2_33" value="0" oninput="calc(33,'B')"></td>
-                <td><input type="number" id="r3_33" value="0" oninput="calc(33,'B')"></td>
-                <td><input type="number" id="p_33" value="0" oninput="calc(33,'B')"></td>
-                <td id="t_plata_33" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_33" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_33" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>34</b></td>
-                <td><input type="number" id="mc_34" value="0" oninput="calc(34,'B')"></td>
-                <td id="v_ar_34">0.00</td>
-                <td><input type="number" id="pers_34" value="1" oninput="calc(34,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_34">0.00</td>
-                <td id="v_salub_34">0.00</td>
-                <td id="v_salari_34">0.00</td>
-                <td id="v_curat_34">0.00</td>
-                <td id="v_adm_34">0.00</td>
-                <td id="t_luna_34" class="col-total">0.00</td>
-                <td><input type="number" id="f1_34" value="0" oninput="calc(34,'B')"></td>
-                <td><input type="number" id="f2_34" value="0" oninput="calc(34,'B')"></td>
-                <td><input type="number" id="r1_34" value="0" oninput="calc(34,'B')"></td>
-                <td><input type="number" id="r2_34" value="0" oninput="calc(34,'B')"></td>
-                <td><input type="number" id="r3_34" value="0" oninput="calc(34,'B')"></td>
-                <td><input type="number" id="p_34" value="0" oninput="calc(34,'B')"></td>
-                <td id="t_plata_34" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_34" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_34" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>35</b></td>
-                <td><input type="number" id="mc_35" value="0" oninput="calc(35,'B')"></td>
-                <td id="v_ar_35">0.00</td>
-                <td><input type="number" id="pers_35" value="1" oninput="calc(35,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_35">0.00</td>
-                <td id="v_salub_35">0.00</td>
-                <td id="v_salari_35">0.00</td>
-                <td id="v_curat_35">0.00</td>
-                <td id="v_adm_35">0.00</td>
-                <td id="t_luna_35" class="col-total">0.00</td>
-                <td><input type="number" id="f1_35" value="0" oninput="calc(35,'B')"></td>
-                <td><input type="number" id="f2_35" value="0" oninput="calc(35,'B')"></td>
-                <td><input type="number" id="r1_35" value="0" oninput="calc(35,'B')"></td>
-                <td><input type="number" id="r2_35" value="0" oninput="calc(35,'B')"></td>
-                <td><input type="number" id="r3_35" value="0" oninput="calc(35,'B')"></td>
-                <td><input type="number" id="p_35" value="0" oninput="calc(35,'B')"></td>
-                <td id="t_plata_35" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_35" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_35" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>36</b></td>
-                <td><input type="number" id="mc_36" value="0" oninput="calc(36,'B')"></td>
-                <td id="v_ar_36">0.00</td>
-                <td><input type="number" id="pers_36" value="1" oninput="calc(36,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_36">0.00</td>
-                <td id="v_salub_36">0.00</td>
-                <td id="v_salari_36">0.00</td>
-                <td id="v_curat_36">0.00</td>
-                <td id="v_adm_36">0.00</td>
-                <td id="t_luna_36" class="col-total">0.00</td>
-                <td><input type="number" id="f1_36" value="0" oninput="calc(36,'B')"></td>
-                <td><input type="number" id="f2_36" value="0" oninput="calc(36,'B')"></td>
-                <td><input type="number" id="r1_36" value="0" oninput="calc(36,'B')"></td>
-                <td><input type="number" id="r2_36" value="0" oninput="calc(36,'B')"></td>
-                <td><input type="number" id="r3_36" value="0" oninput="calc(36,'B')"></td>
-                <td><input type="number" id="p_36" value="0" oninput="calc(36,'B')"></td>
-                <td id="t_plata_36" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_36" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_36" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>37</b></td>
-                <td><input type="number" id="mc_37" value="0" oninput="calc(37,'B')"></td>
-                <td id="v_ar_37">0.00</td>
-                <td><input type="number" id="pers_37" value="1" oninput="calc(37,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_37">0.00</td>
-                <td id="v_salub_37">0.00</td>
-                <td id="v_salari_37">0.00</td>
-                <td id="v_curat_37">0.00</td>
-                <td id="v_adm_37">0.00</td>
-                <td id="t_luna_37" class="col-total">0.00</td>
-                <td><input type="number" id="f1_37" value="0" oninput="calc(37,'B')"></td>
-                <td><input type="number" id="f2_37" value="0" oninput="calc(37,'B')"></td>
-                <td><input type="number" id="r1_37" value="0" oninput="calc(37,'B')"></td>
-                <td><input type="number" id="r2_37" value="0" oninput="calc(37,'B')"></td>
-                <td><input type="number" id="r3_37" value="0" oninput="calc(37,'B')"></td>
-                <td><input type="number" id="p_37" value="0" oninput="calc(37,'B')"></td>
-                <td id="t_plata_37" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_37" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_37" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>38</b></td>
-                <td><input type="number" id="mc_38" value="0" oninput="calc(38,'B')"></td>
-                <td id="v_ar_38">0.00</td>
-                <td><input type="number" id="pers_38" value="1" oninput="calc(38,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_38">0.00</td>
-                <td id="v_salub_38">0.00</td>
-                <td id="v_salari_38">0.00</td>
-                <td id="v_curat_38">0.00</td>
-                <td id="v_adm_38">0.00</td>
-                <td id="t_luna_38" class="col-total">0.00</td>
-                <td><input type="number" id="f1_38" value="0" oninput="calc(38,'B')"></td>
-                <td><input type="number" id="f2_38" value="0" oninput="calc(38,'B')"></td>
-                <td><input type="number" id="r1_38" value="0" oninput="calc(38,'B')"></td>
-                <td><input type="number" id="r2_38" value="0" oninput="calc(38,'B')"></td>
-                <td><input type="number" id="r3_38" value="0" oninput="calc(38,'B')"></td>
-                <td><input type="number" id="p_38" value="0" oninput="calc(38,'B')"></td>
-                <td id="t_plata_38" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_38" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_38" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>39</b></td>
-                <td><input type="number" id="mc_39" value="0" oninput="calc(39,'B')"></td>
-                <td id="v_ar_39">0.00</td>
-                <td><input type="number" id="pers_39" value="1" oninput="calc(39,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_39">0.00</td>
-                <td id="v_salub_39">0.00</td>
-                <td id="v_salari_39">0.00</td>
-                <td id="v_curat_39">0.00</td>
-                <td id="v_adm_39">0.00</td>
-                <td id="t_luna_39" class="col-total">0.00</td>
-                <td><input type="number" id="f1_39" value="0" oninput="calc(39,'B')"></td>
-                <td><input type="number" id="f2_39" value="0" oninput="calc(39,'B')"></td>
-                <td><input type="number" id="r1_39" value="0" oninput="calc(39,'B')"></td>
-                <td><input type="number" id="r2_39" value="0" oninput="calc(39,'B')"></td>
-                <td><input type="number" id="r3_39" value="0" oninput="calc(39,'B')"></td>
-                <td><input type="number" id="p_39" value="0" oninput="calc(39,'B')"></td>
-                <td id="t_plata_39" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_39" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_39" value="0" oninput="saveData()"></td>
-            </tr><tr>
-                <td><b>40</b></td>
-                <td><input type="number" id="mc_40" value="0" oninput="calc(40,'B')"></td>
-                <td id="v_ar_40">0.00</td>
-                <td><input type="number" id="pers_40" value="1" oninput="calc(40,'B')"></td>
-                <td>12.00</td>
-                <td id="v_el_40">0.00</td>
-                <td id="v_salub_40">0.00</td>
-                <td id="v_salari_40">0.00</td>
-                <td id="v_curat_40">0.00</td>
-                <td id="v_adm_40">0.00</td>
-                <td id="t_luna_40" class="col-total">0.00</td>
-                <td><input type="number" id="f1_40" value="0" oninput="calc(40,'B')"></td>
-                <td><input type="number" id="f2_40" value="0" oninput="calc(40,'B')"></td>
-                <td><input type="number" id="r1_40" value="0" oninput="calc(40,'B')"></td>
-                <td><input type="number" id="r2_40" value="0" oninput="calc(40,'B')"></td>
-                <td><input type="number" id="r3_40" value="0" oninput="calc(40,'B')"></td>
-                <td><input type="number" id="p_40" value="0" oninput="calc(40,'B')"></td>
-                <td id="t_plata_40" class="col-plata">0.00</td>
-                <td><input type="number" id="frul_40" value="0" oninput="saveData()"></td>
-                <td><input type="number" id="frep_40" value="0" oninput="saveData()"></td>
-            </tr></tbody>
-        </table>
-    </div>
-</div>
+<div id="cont-A"><div class="container"><table class="scara-a"><thead><tr><th style="width:35px">Ap</th><th style="width:50px">AR MC</th><th style="width:70px">Val AR</th><th style="width:45px">Pers</th><th style="width:55px">Dif</th><th style="width:55px">Elec</th><th style="width:60px">Salub</th><th style="width:60px">Salarii</th><th style="width:60px">Curat</th><th style="width:60px">Adm</th><th style="width:90px">TOTAL LUNĂ</th><th style="width:55px">Rulm</th><th style="width:55px">Rep</th><th style="width:55px">R.Int</th><th style="width:55px">R.Fd</th><th style="width:55px">R.Pen</th><th style="width:55px">Penal</th><th style="width:100px">TOTAL PLATĂ</th><th style="width:65px">F.Rul</th><th style="width:65px">F.Rep</th></tr></thead><tbody id="tbodyA"></tbody></table></div></div>
+<div id="cont-B" style="display:none"><div class="container"><table class="scara-b"><thead><tr><th style="width:35px">Ap</th><th style="width:50px">AR MC</th><th style="width:70px">Val AR</th><th style="width:45px">Pers</th><th style="width:55px">Dif</th><th style="width:55px">Elec</th><th style="width:60px">Salub</th><th style="width:60px">Salarii</th><th style="width:60px">Curat</th><th style="width:60px">Adm</th><th style="width:90px">TOTAL LUNĂ</th><th style="width:55px">Rulm</th><th style="width:55px">Rep</th><th style="width:55px">R.Int</th><th style="width:55px">R.Fd</th><th style="width:55px">R.Pen</th><th style="width:55px">Penal</th><th style="width:100px">TOTAL PLATĂ</th><th style="width:65px">F.Rul</th><th style="width:65px">F.Rep</th></tr></thead><tbody id="tbodyB"></tbody></table></div></div>
 
 <script>
-    const _0xHASH = "MTIzNA=="; // Parola: 1234
-    
-    // Tarife per persoană
+    const _0xHASH = "MTIzNA=="; // 1234
     const T = {
         A: { apa: 17.03, dif: 10.82, el: 1.16, salub: 30.30, salari: 23.73, curat: 9.59, adm: 1.12 },
         B: { apa: 17.03, dif: 12.00, el: 2.33, salub: 60.60, salari: 25.50, curat: 10.50, adm: 1.40 }
@@ -1015,11 +107,11 @@
     function saveData() {
         const data = {};
         document.querySelectorAll('input').forEach(el => { if(el.id) data[el.id] = el.value; });
-        localStorage.setItem('saturn34_v5_db', JSON.stringify(data));
+        localStorage.setItem('saturn34_vfinal_db', JSON.stringify(data));
     }
 
     function loadData() {
-        const saved = localStorage.getItem('saturn34_v5_db');
+        const saved = localStorage.getItem('saturn34_vfinal_db');
         if(saved) {
             const data = JSON.parse(saved);
             Object.keys(data).forEach(id => {
@@ -1039,8 +131,6 @@
         const getV = (name) => parseFloat(document.getElementById(name + id).value) || 0;
         const pers = getV('pers_');
         const vAR = getV('mc_') * T[sc].apa;
-        
-        // Calcule dinamice
         const vEl = pers * T[sc].el;
         const vSalub = pers * T[sc].salub;
         const vSalari = pers * T[sc].salari;
@@ -1056,7 +146,6 @@
 
         const totalLuna = vAR + T[sc].dif + vEl + vSalub + vSalari + vCurat + vAdm;
         document.getElementById('t_luna_'+id).innerText = totalLuna.toFixed(2);
-
         const restate = getV('f1_') + getV('f2_') + getV('r1_') + getV('r2_') + getV('r3_') + getV('p_');
         document.getElementById('t_plata_'+id).innerText = (totalLuna + restate).toFixed(2);
         saveData();
@@ -1064,71 +153,65 @@
 
     async function uploadToGitHub() {
         const status = document.getElementById('ghStatus');
-        status.innerText = "⏳ Curățare date sensibile și upload...";
+        status.innerText = "⏳ Pregătire date...";
         status.style.color = "#f1c40f";
 
-        // 1. Preluăm datele de conexiune
-        const token = document.getElementById('gh_token').value.trim();
-        const user = document.getElementById('gh_user').value.trim();
-        const repo = document.getElementById('gh_repo').value.trim();
-        const path = document.getElementById('gh_path').value.trim() || "index.html";
-
-        if(!token || !user || !repo) {
-            status.innerText = "❌ Eroare: Completează Token, User și Repo!";
-            status.style.color = "#e74c3c";
-            return;
-        }
-
-        // 2. CURĂȚĂM TOKEN-UL ȘI USERUL DIN HTML-UL DE EXPORT (ca să nu ne blocheze GitHub)
-        const oldToken = document.getElementById('gh_token').value;
-        const oldUser = document.getElementById('gh_user').value;
-        const oldRepo = document.getElementById('gh_repo').value;
-
-        document.getElementById('gh_token').value = "";
-        document.getElementById('gh_user').value = "";
-        document.getElementById('gh_repo').value = "";
-        
-        // Forțăm scrierea valorilor în atributele HTML
-        document.querySelectorAll('input').forEach(i => i.setAttribute('value', i.value));
-        
-        const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-
-        // Punem datele înapoi în pagina locală după ce am făcut "poza" HTML
-        document.getElementById('gh_token').value = oldToken;
-        document.getElementById('gh_user').value = oldUser;
-        document.getElementById('gh_repo').value = oldRepo;
-
-        const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-
         try {
+            const token = document.getElementById('gh_token').value.trim();
+            const user = document.getElementById('gh_user').value.trim();
+            const repo = document.getElementById('gh_repo').value.trim();
+            const path = document.getElementById('gh_path').value.trim() || "index.html";
+
+            if(!token || !user || !repo) throw new Error("Completează Token, User și Repo!");
+
+            // FIXARE DATE ÎN HTML
+            document.querySelectorAll('input').forEach(i => i.setAttribute('value', i.value));
+
+            // CURĂȚARE SECRETE PENTRU EXPORT
+            const bTok = document.getElementById('gh_token').value;
+            const bUsr = document.getElementById('gh_user').value;
+            const bRep = document.getElementById('gh_repo').value;
+            document.getElementById('gh_token').value = "";
+            document.getElementById('gh_user').value = "";
+            document.getElementById('gh_repo').value = "";
+            
+            const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+            // RESTAURARE DATE LOCALE
+            document.getElementById('gh_token').value = bTok;
+            document.getElementById('gh_user').value = bUsr;
+            document.getElementById('gh_repo').value = bRep;
+
+            // CONVERSIE BASE64 ROBUSTĂ
+            const encodedContent = btoa(unescape(encodeURIComponent(htmlContent)));
+
+            status.innerText = "⏳ Contactare GitHub...";
+            const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+
             let sha = "";
             const resGet = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
-            if(resGet.ok) { 
-                const dataGet = await resGet.json(); 
-                sha = dataGet.sha; 
-            }
+            if(resGet.ok) { const dataGet = await resGet.json(); sha = dataGet.sha; }
 
             const resPut = await fetch(url, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    message: "Update Gestiune - " + new Date().toLocaleString(),
-                    content: btoa(unescape(encodeURIComponent(htmlContent))),
+                    message: "Update Gestiune " + new Date().toLocaleString('ro-RO'),
+                    content: encodedContent,
                     sha: sha
                 })
             });
 
             if(resPut.ok) {
-                status.innerText = "✅ REUȘIT! Tabelul a fost sincronizat online.";
+                status.innerText = "✅ REUȘIT! Tabelul este online.";
                 status.style.color = "#2ecc71";
             } else {
-                const errJson = await resPut.json();
-                throw new Error(errJson.message || "Eroare necunoscută");
+                const err = await resPut.json();
+                throw new Error(err.message || "Eroare necunoscută");
             }
         } catch (e) {
             status.innerText = "❌ EROARE: " + e.message;
             status.style.color = "#e74c3c";
-            console.error(e);
         }
     }
 
@@ -1168,19 +251,19 @@
     function verificareParola() {
         const body = document.getElementById('mainBody');
         if (body.classList.contains('readonly-mode')) {
-            if (prompt("Introdu parola de Administrator:") === atob(_0xHASH)) {
+            if (prompt("Parola Admin:") === atob(_0xHASH)) {
                 body.classList.remove('readonly-mode');
                 document.getElementById('ghPanel').style.display = 'grid';
                 document.getElementById('statusLabel').innerText = "MOD EDITARE ACTIV";
                 document.getElementById('statusLabel').style.color = "#27ae60";
-                document.getElementById('lockBtn').innerText = "🔒 BLOCHEAZĂ DATELE";
-            } else { alert("Parolă incorectă!"); }
+                document.getElementById('lockBtn').innerText = "🔒 BLOCARE";
+            }
         } else {
             body.classList.add('readonly-mode');
             document.getElementById('ghPanel').style.display = 'none';
             document.getElementById('statusLabel').innerText = "MOD VIZUALIZARE";
             document.getElementById('statusLabel').style.color = "#e74c3c";
-            document.getElementById('lockBtn').innerText = "🔓 ACCES ADMIN";
+            document.getElementById('lockBtn').innerText = "🔓 ADMIN";
         }
     }
 
@@ -1194,5 +277,5 @@
     document.addEventListener("DOMContentLoaded", build);
     setInterval(() => { document.getElementById('ceas').innerText = new Date().toLocaleTimeString('ro-RO'); }, 1000);
 </script>
-
-</body></html>
+</body>
+</html>
