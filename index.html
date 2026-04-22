@@ -2,155 +2,294 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Saturn 34 - Sistem GitHub Sincro</title>
+    <title>Gestiune Saturn 34 - Versiunea Sincronizată</title>
     <style>
         @media print {
             @page { size: A4 landscape; margin: 5mm; }
             body { zoom: 55%; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .nav-tabs, .admin-section { display: none !important; }
+            .nav-tabs, .admin-section, #lockBtn { display: none !important; }
             input, textarea { border: none !important; background: transparent !important; }
         }
-        body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 5px; }
-        .admin-section { background: #2d3436; color: white; padding: 10px; border-radius: 5px; margin-bottom: 10px; display: none; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; border: 2px solid #2ecc71; }
-        .admin-section input { background: #636e72; border: 1px solid #b2bec3; color: white; font-size: 11px; padding: 5px; }
-        .header-panel { display: grid; grid-template-columns: 250px 1fr 350px; gap: 15px; background: white; padding: 10px; border-bottom: 3px solid #2d3436; align-items: center; }
-        .titlu-section { text-align: center; }
-        .edit-titlu { font-size: 22px; font-weight: 900; text-transform: uppercase; border: none; width: 100%; text-align: center; background: transparent; }
-        .nav-tabs { display: flex; justify-content: center; gap: 8px; margin: 10px 0; background: #2d3436; padding: 10px; border-radius: 5px; }
-        .tab-btn { padding: 10px 15px; cursor: pointer; border: none; background: #636e72; color: white; font-weight: bold; border-radius: 4px; }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 10px; }
+        
+        /* Panou Admin GitHub */
+        .admin-section {
+            background: #1e272e; color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;
+            display: none; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;
+            border: 2px solid #2ecc71; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .admin-section input { background: #34495e; border: 1px solid #576574; color: white; padding: 8px; border-radius: 4px; font-size: 12px; }
+        .status-msg { grid-column: 1 / -1; text-align: center; font-weight: bold; margin-top: 10px; font-size: 13px; }
+
+        /* Header */
+        .header-panel {
+            display: grid; grid-template-columns: 280px 1fr 300px;
+            gap: 20px; background: white; padding: 15px;
+            border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); align-items: center;
+        }
+        .edit-titlu { font-size: 24px; font-weight: 900; text-transform: uppercase; border: none; width: 100%; text-align: center; color: #2c3e50; }
+
+        /* Navigare */
+        .nav-tabs { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
+        .tab-btn { padding: 12px 25px; cursor: pointer; border: none; background: #7f8c8d; color: white; font-weight: bold; border-radius: 5px; transition: 0.3s; }
         .active-a { background: #27ae60 !important; }
         .active-b { background: #2980b9 !important; }
-        .btn-gh { background: #2ecc71 !important; color: black !important; font-weight: 900; }
-        .container { background: white; padding: 5px; overflow-x: auto; }
-        table { border-collapse: collapse; font-size: 10px; width: 1650px; table-layout: fixed; }
-        th, td { border: 1px solid #444; text-align: center; padding: 3px; }
-        th { background: #bdc3c7; font-weight: bold; height: 35px; }
-        .scara-a tr:nth-child(even) { background-color: #e8f8f5; } 
-        .scara-b tr:nth-child(even) { background-color: #ebf5fb; } 
-        input { width: 92%; border: 1px solid #ccc; text-align: center; font-size: 10px; font-weight: bold; }
-        .readonly-mode input, .readonly-mode textarea { border: none !important; background: transparent !important; pointer-events: none; color: black !important; }
-        .status-msg { color: #f1c40f; font-size: 11px; grid-column: 1 / -1; text-align: center; font-weight: bold; }
+        .btn-gh { background: #2ecc71 !important; color: white !important; cursor: pointer; }
+        .btn-gh:hover { background: #27ae60 !important; }
+
+        /* Tabel */
+        .container { background: white; padding: 10px; border-radius: 8px; overflow-x: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        table { border-collapse: collapse; font-size: 11px; width: 1700px; table-layout: fixed; }
+        th, td { border: 1px solid #dfe6e9; text-align: center; padding: 6px; }
+        th { background: #f1f2f6; color: #2f3542; font-weight: bold; height: 40px; }
+        
+        tr:hover { background-color: #f1f2f6 !important; }
+        .scara-a tr:nth-child(even) { background-color: #f9fffb; } 
+        .scara-b tr:nth-child(even) { background-color: #f4faff; } 
+        
+        input[type="number"], input[type="text"] { width: 90%; border: 1px solid #ced4da; border-radius: 3px; text-align: center; padding: 3px; font-weight: bold; }
+        .readonly-mode input { border: none !important; background: transparent !important; pointer-events: none; color: black !important; }
+        
+        .col-total { font-weight: 900; background: #e8f5e9 !important; color: #2e7d32; }
+        .col-plata { font-weight: 900; background: #ffebee !important; color: #c62828; }
     </style>
 </head>
 <body id="mainBody" class="readonly-mode">
 
 <div id="ghPanel" class="admin-section">
-    <input type="password" id="gh_token" placeholder="GitHub Personal Token">
-    <input type="text" id="gh_user" placeholder="Utilizator GitHub">
-    <input type="text" id="gh_repo" placeholder="Nume Repository">
-    <input type="text" id="gh_path" placeholder="index.html">
-    <button class="tab-btn btn-gh" onclick="uploadToGitHub()">🚀 URCĂ PE GITHUB</button>
-    <div id="ghStatus" class="status-msg">Panou Sincronizare Activ.</div>
+    <div style="display:flex; flex-direction:column; gap:5px;">
+        <label style="font-size:10px">GitHub Personal Token:</label>
+        <input type="password" id="gh_token" placeholder="ghp_xxxxxxxxxxxx">
+    </div>
+    <div style="display:flex; flex-direction:column; gap:5px;">
+        <label style="font-size:10px">Utilizator GitHub:</label>
+        <input type="text" id="gh_user" placeholder="ex: nume_utilizator">
+    </div>
+    <div style="display:flex; flex-direction:column; gap:5px;">
+        <label style="font-size:10px">Nume Repository:</label>
+        <input type="text" id="gh_repo" placeholder="ex: tabel-saturn">
+    </div>
+    <div style="display:flex; flex-direction:column; gap:5px;">
+        <label style="font-size:10px">Nume Fișier (index.html):</label>
+        <input type="text" id="gh_path" value="index.html">
+    </div>
+    <div style="display:flex; align-items:flex-end;">
+        <button class="tab-btn btn-gh" onclick="uploadToGitHub()" style="width:100%">🚀 URCĂ PE GITHUB</button>
+    </div>
+    <div id="ghStatus" class="status-msg">Conectează-te pentru a sincroniza datele online.</div>
 </div>
 
 <div class="header-panel">
-    <div class="stanga-info">
-        <div id="ceas">00:00:00</div>
-        Adm: <input type="text" id="adm_n" value="Popescu Ion" oninput="saveData()">
+    <div>
+        <div id="ceas" style="font-size: 18px; font-weight: bold; color: #2c3e50;">00:00:00</div>
+        <div style="margin-top:5px;">Adm: <input type="text" id="adm_n" value="Popescu Ion" oninput="saveData()"></div>
     </div>
     <div class="titlu-section">
         <input type="text" id="titlu_main" class="edit-titlu" value="Asociația Saturn 34" oninput="saveData()">
-        <div id="statusLabel" style="font-size:11px; color:#c0392b; font-weight:bold;">MOD VIZUALIZARE</div>
+        <div id="statusLabel" style="font-size:12px; color:#e74c3c; font-weight:bold;">MOD VIZUALIZARE</div>
     </div>
     <div style="text-align:right">
-        <button id="lockBtn" class="tab-btn" style="background:#8e44ad" onclick="verificareParola()">🔓 ADMIN</button>
+        <button id="lockBtn" class="tab-btn" style="background:#8e44ad" onclick="verificareParola()">🔓 ACCES ADMIN</button>
     </div>
 </div>
 
 <div class="nav-tabs">
     <button id="btnA" class="tab-btn active-a" onclick="switchS('A')">SCARA A</button>
     <button id="btnB" class="tab-btn" onclick="switchS('B')">SCARA B</button>
-    <button class="tab-btn" style="background:#d35400" onclick="window.print()">🖨️ PRINT</button>
+    <button class="tab-btn" style="background:#e67e22" onclick="window.print()">🖨️ PRINTARE PDF</button>
 </div>
 
-<div id="cont-A"><div class="container"><table class="scara-a"><thead><tr><th style="width:30px">Ap</th><th style="width:45px">MC</th><th style="width:60px">ValAR</th><th style="width:40px">Pers</th><th style="width:50px">Dif</th><th style="width:50px">El</th><th style="width:50px">Salub</th><th style="width:50px">Salari</th><th style="width:50px">Curat</th><th style="width:50px">Adm</th><th style="width:80px; background:#27ae60; color:white">TOTAL</th><th style="width:50px">Rulm</th><th style="width:50px">Rep</th><th style="width:50px">R.I</th><th style="width:50px">R.F</th><th style="width:50px">R.P</th><th style="width:50px">Pen</th><th style="width:85px; background:#c0392b; color:white">PLATA</th><th style="width:60px">F.RU</th><th style="width:60px">F.RE</th></tr></thead><tbody id="tbodyA"></tbody></table></div></div>
-<div id="cont-B" style="display:none"><div class="container"><table class="scara-b"><thead><tr><th style="width:30px">Ap</th><th style="width:45px">MC</th><th style="width:60px">ValAR</th><th style="width:40px">Pers</th><th style="width:50px">Dif</th><th style="width:50px">El</th><th style="width:50px">Salub</th><th style="width:50px">Salari</th><th style="width:50px">Curat</th><th style="width:50px">Adm</th><th style="width:80px; background:#2980b9; color:white">TOTAL</th><th style="width:50px">Rulm</th><th style="width:50px">Rep</th><th style="width:50px">R.I</th><th style="width:50px">R.F</th><th style="width:50px">R.P</th><th style="width:50px">Pen</th><th style="width:85px; background:#c0392b; color:white">PLATA</th><th style="width:60px">F.RU</th><th style="width:60px">F.RE</th></tr></thead><tbody id="tbodyB"></tbody></table></div></div>
+<div id="cont-A">
+    <div class="container">
+        <table class="scara-a">
+            <thead>
+                <tr>
+                    <th style="width:35px">Ap</th>
+                    <th style="width:50px">AR MC</th>
+                    <th style="width:70px">Val AR</th>
+                    <th style="width:45px">Pers</th>
+                    <th style="width:55px">Dif</th>
+                    <th style="width:55px">Elec</th>
+                    <th style="width:60px">Salub</th>
+                    <th style="width:60px">Salarii</th>
+                    <th style="width:60px">Curat</th>
+                    <th style="width:60px">Adm</th>
+                    <th style="width:90px">TOTAL LUNĂ</th>
+                    <th style="width:55px">Rulm</th>
+                    <th style="width:55px">Rep</th>
+                    <th style="width:55px">R.Int</th>
+                    <th style="width:55px">R.Fd</th>
+                    <th style="width:55px">R.Pen</th>
+                    <th style="width:55px">Penal</th>
+                    <th style="width:100px">TOTAL PLATĂ</th>
+                    <th style="width:65px">F.Rul</th>
+                    <th style="width:65px">F.Rep</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyA"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="cont-B" style="display:none">
+    <div class="container">
+        <table class="scara-b">
+            <thead>
+                <tr>
+                    <th style="width:35px">Ap</th>
+                    <th style="width:50px">AR MC</th>
+                    <th style="width:70px">Val AR</th>
+                    <th style="width:45px">Pers</th>
+                    <th style="width:55px">Dif</th>
+                    <th style="width:55px">Elec</th>
+                    <th style="width:60px">Salub</th>
+                    <th style="width:60px">Salarii</th>
+                    <th style="width:60px">Curat</th>
+                    <th style="width:60px">Adm</th>
+                    <th style="width:90px">TOTAL LUNĂ</th>
+                    <th style="width:55px">Rulm</th>
+                    <th style="width:55px">Rep</th>
+                    <th style="width:55px">R.Int</th>
+                    <th style="width:55px">R.Fd</th>
+                    <th style="width:55px">R.Pen</th>
+                    <th style="width:55px">Penal</th>
+                    <th style="width:100px">TOTAL PLATĂ</th>
+                    <th style="width:65px">F.Rul</th>
+                    <th style="width:65px">F.Rep</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyB"></tbody>
+        </table>
+    </div>
+</div>
 
 <script>
-    const _0xHASH = "MTIzNA=="; // 1234
+    const _0xHASH = "MTIzNA=="; // Parola: 1234
+    
+    // Tarife per persoană
     const T = {
         A: { apa: 17.03, dif: 10.82, el: 1.16, salub: 30.30, salari: 23.73, curat: 9.59, adm: 1.12 },
         B: { apa: 17.03, dif: 12.00, el: 2.33, salub: 60.60, salari: 25.50, curat: 10.50, adm: 1.40 }
     };
 
     function saveData() {
-        const d = {};
-        document.querySelectorAll('input, textarea').forEach(el => { if(el.id) d[el.id] = el.value; });
-        localStorage.setItem('saturn34_final_db', JSON.stringify(d));
+        const data = {};
+        document.querySelectorAll('input').forEach(el => { if(el.id) data[el.id] = el.value; });
+        localStorage.setItem('saturn34_v5_db', JSON.stringify(data));
     }
 
     function loadData() {
-        const s = localStorage.getItem('saturn34_final_db');
-        if(s) {
-            const d = JSON.parse(s);
-            Object.keys(d).forEach(id => {
+        const saved = localStorage.getItem('saturn34_v5_db');
+        if(saved) {
+            const data = JSON.parse(saved);
+            Object.keys(data).forEach(id => {
                 const el = document.getElementById(id);
                 if(el) { 
-                    el.value = d[id]; 
-                    if(id.includes('_')) { 
-                        let ap = id.split('_').pop(); 
-                        if(!isNaN(ap)) calc(ap, ap <= 20 ? 'A' : 'B'); 
-                    } 
+                    el.value = data[id]; 
+                    if(id.includes('_')) {
+                        let ap = id.split('_').pop();
+                        if(!isNaN(ap)) calc(ap, ap <= 20 ? 'A' : 'B');
+                    }
                 }
             });
         }
     }
 
     function calc(id, sc) {
-        const getV = (n) => parseFloat(document.getElementById(n + id).value) || 0;
+        const getV = (name) => parseFloat(document.getElementById(name + id).value) || 0;
         const pers = getV('pers_');
         const vAR = getV('mc_') * T[sc].apa;
         
-        document.getElementById('v_ar_'+id).innerText = vAR.toFixed(2);
-        document.getElementById('v_el_'+id).innerText = (pers * T[sc].el).toFixed(2);
-        document.getElementById('v_salub_'+id).innerText = (pers * T[sc].salub).toFixed(2);
-        document.getElementById('v_salari_'+id).innerText = (pers * T[sc].salari).toFixed(2);
-        document.getElementById('v_curat_'+id).innerText = (pers * T[sc].curat).toFixed(2);
-        document.getElementById('v_adm_'+id).innerText = (pers * T[sc].adm).toFixed(2);
+        // Calcule dinamice
+        const vEl = pers * T[sc].el;
+        const vSalub = pers * T[sc].salub;
+        const vSalari = pers * T[sc].salari;
+        const vCurat = pers * T[sc].curat;
+        const vAdm = pers * T[sc].adm;
 
-        const tL = vAR + T[sc].dif + (pers * T[sc].el) + (pers * T[sc].salub) + (pers * T[sc].salari) + (pers * T[sc].curat) + (pers * T[sc].adm);
-        document.getElementById('t_luna_'+id).innerText = tL.toFixed(2);
-        
-        const ext = getV('f1_') + getV('f2_') + getV('r1_') + getV('r2_') + getV('r3_') + getV('p_');
-        document.getElementById('t_plata_'+id).innerText = (tL + ext).toFixed(2);
+        document.getElementById('v_ar_'+id).innerText = vAR.toFixed(2);
+        document.getElementById('v_el_'+id).innerText = vEl.toFixed(2);
+        document.getElementById('v_salub_'+id).innerText = vSalub.toFixed(2);
+        document.getElementById('v_salari_'+id).innerText = vSalari.toFixed(2);
+        document.getElementById('v_curat_'+id).innerText = vCurat.toFixed(2);
+        document.getElementById('v_adm_'+id).innerText = vAdm.toFixed(2);
+
+        const totalLuna = vAR + T[sc].dif + vEl + vSalub + vSalari + vCurat + vAdm;
+        document.getElementById('t_luna_'+id).innerText = totalLuna.toFixed(2);
+
+        const restate = getV('f1_') + getV('f2_') + getV('r1_') + getV('r2_') + getV('r3_') + getV('p_');
+        document.getElementById('t_plata_'+id).innerText = (totalLuna + restate).toFixed(2);
         saveData();
     }
 
     async function uploadToGitHub() {
         const status = document.getElementById('ghStatus');
-        status.innerText = "⏳ Se verifică...";
+        status.innerText = "⏳ Curățare date sensibile și upload...";
         status.style.color = "#f1c40f";
 
-        document.querySelectorAll('input').forEach(i => i.setAttribute('value', i.value));
-        const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-        
+        // 1. Preluăm datele de conexiune
         const token = document.getElementById('gh_token').value.trim();
         const user = document.getElementById('gh_user').value.trim();
         const repo = document.getElementById('gh_repo').value.trim();
         const path = document.getElementById('gh_path').value.trim() || "index.html";
 
-        const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+        if(!token || !user || !repo) {
+            status.innerText = "❌ Eroare: Completează Token, User și Repo!";
+            status.style.color = "#e74c3c";
+            return;
+        }
+
+        // 2. CURĂȚĂM TOKEN-UL ȘI USERUL DIN HTML-UL DE EXPORT (ca să nu ne blocheze GitHub)
+        const oldToken = document.getElementById('gh_token').value;
+        const oldUser = document.getElementById('gh_user').value;
+        const oldRepo = document.getElementById('gh_repo').value;
+
+        document.getElementById('gh_token').value = "";
+        document.getElementById('gh_user').value = "";
+        document.getElementById('gh_repo').value = "";
         
+        // Forțăm scrierea valorilor în atributele HTML
+        document.querySelectorAll('input').forEach(i => i.setAttribute('value', i.value));
+        
+        const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+        // Punem datele înapoi în pagina locală după ce am făcut "poza" HTML
+        document.getElementById('gh_token').value = oldToken;
+        document.getElementById('gh_user').value = oldUser;
+        document.getElementById('gh_repo').value = oldRepo;
+
+        const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+
         try {
             let sha = "";
             const resGet = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
-            if(resGet.ok) { const dataGet = await resGet.json(); sha = dataGet.sha; }
+            if(resGet.ok) { 
+                const dataGet = await resGet.json(); 
+                sha = dataGet.sha; 
+            }
 
             const resPut = await fetch(url, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    message: "Update " + new Date().toLocaleString(),
+                    message: "Update Gestiune - " + new Date().toLocaleString(),
                     content: btoa(unescape(encodeURIComponent(htmlContent))),
                     sha: sha
                 })
             });
 
-            if(resPut.ok) { status.innerText = "✅ REUȘIT!"; status.style.color = "#2ecc71"; }
-            else { const err = await resPut.json(); throw new Error(err.message); }
+            if(resPut.ok) {
+                status.innerText = "✅ REUȘIT! Tabelul a fost sincronizat online.";
+                status.style.color = "#2ecc71";
+            } else {
+                const errJson = await resPut.json();
+                throw new Error(errJson.message || "Eroare necunoscută");
+            }
         } catch (e) {
             status.innerText = "❌ EROARE: " + e.message;
-            status.style.color = "#ff7675";
+            status.style.color = "#e74c3c";
+            console.error(e);
         }
     }
 
@@ -161,22 +300,22 @@
             let row = `<tr>
                 <td><b>${i}</b></td>
                 <td><input type="number" id="mc_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
-                <td id="v_ar_${i}">0</td>
+                <td id="v_ar_${i}">0.00</td>
                 <td><input type="number" id="pers_${i}" value="1" oninput="calc(${i},'${sc}')"></td>
-                <td>${T[sc].dif}</td>
-                <td id="v_el_${i}">0</td>
-                <td id="v_salub_${i}">0</td>
-                <td id="v_salari_${i}">0</td>
-                <td id="v_curat_${i}">0</td>
-                <td id="v_adm_${i}">0</td>
-                <td id="t_luna_${i}" style="font-weight:bold">0</td>
+                <td>${T[sc].dif.toFixed(2)}</td>
+                <td id="v_el_${i}">0.00</td>
+                <td id="v_salub_${i}">0.00</td>
+                <td id="v_salari_${i}">0.00</td>
+                <td id="v_curat_${i}">0.00</td>
+                <td id="v_adm_${i}">0.00</td>
+                <td id="t_luna_${i}" class="col-total">0.00</td>
                 <td><input type="number" id="f1_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
                 <td><input type="number" id="f2_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
                 <td><input type="number" id="r1_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
                 <td><input type="number" id="r2_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
                 <td><input type="number" id="r3_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
                 <td><input type="number" id="p_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
-                <td id="t_plata_${i}" style="color:red; font-weight:bold">0</td>
+                <td id="t_plata_${i}" class="col-plata">0.00</td>
                 <td><input type="number" id="frul_${i}" value="0" oninput="saveData()"></td>
                 <td><input type="number" id="frep_${i}" value="0" oninput="saveData()"></td>
             </tr>`;
@@ -188,19 +327,21 @@
     }
 
     function verificareParola() {
-        const b = document.getElementById('mainBody');
-        if (b.classList.contains('readonly-mode')) {
-            if (prompt("Parolă:") === atob(_0xHASH)) {
-                b.classList.remove('readonly-mode');
+        const body = document.getElementById('mainBody');
+        if (body.classList.contains('readonly-mode')) {
+            if (prompt("Introdu parola de Administrator:") === atob(_0xHASH)) {
+                body.classList.remove('readonly-mode');
                 document.getElementById('ghPanel').style.display = 'grid';
-                document.getElementById('statusLabel').innerText = "MOD ADMIN ACTIV";
+                document.getElementById('statusLabel').innerText = "MOD EDITARE ACTIV";
                 document.getElementById('statusLabel').style.color = "#27ae60";
-            }
+                document.getElementById('lockBtn').innerText = "🔒 BLOCHEAZĂ DATELE";
+            } else { alert("Parolă incorectă!"); }
         } else {
-            b.classList.add('readonly-mode');
+            body.classList.add('readonly-mode');
             document.getElementById('ghPanel').style.display = 'none';
             document.getElementById('statusLabel').innerText = "MOD VIZUALIZARE";
-            document.getElementById('statusLabel').style.color = "#c0392b";
+            document.getElementById('statusLabel').style.color = "#e74c3c";
+            document.getElementById('lockBtn').innerText = "🔓 ACCES ADMIN";
         }
     }
 
