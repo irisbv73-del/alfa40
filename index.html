@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Saturn 34 - Sincronizare GitHub</title>
+    <title>Saturn 34 - Sistem GitHub Sincro</title>
     <style>
         @media print {
             @page { size: A4 landscape; margin: 5mm; }
@@ -10,43 +10,26 @@
             .nav-tabs, .admin-section { display: none !important; }
             input, textarea { border: none !important; background: transparent !important; }
         }
-
         body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 5px; }
-        
-        /* Panou Admin pentru GitHub */
-        .admin-section {
-            background: #2d3436; color: white; padding: 10px; border-radius: 5px; margin-bottom: 10px;
-            display: none; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;
-        }
+        .admin-section { background: #2d3436; color: white; padding: 10px; border-radius: 5px; margin-bottom: 10px; display: none; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; border: 2px solid #2ecc71; }
         .admin-section input { background: #636e72; border: 1px solid #b2bec3; color: white; font-size: 11px; padding: 5px; }
-
-        .header-panel {
-            display: grid; grid-template-columns: 250px 1fr 350px;
-            gap: 15px; background: white; padding: 10px;
-            border-bottom: 3px solid #2d3436; align-items: center;
-        }
-
+        .header-panel { display: grid; grid-template-columns: 250px 1fr 350px; gap: 15px; background: white; padding: 10px; border-bottom: 3px solid #2d3436; align-items: center; }
         .titlu-section { text-align: center; }
-        .edit-titlu { font-size: 22px; font-weight: 900; text-transform: uppercase; border: none; width: 100%; text-align: center; }
-
+        .edit-titlu { font-size: 22px; font-weight: 900; text-transform: uppercase; border: none; width: 100%; text-align: center; background: transparent; }
         .nav-tabs { display: flex; justify-content: center; gap: 8px; margin: 10px 0; background: #2d3436; padding: 10px; border-radius: 5px; }
         .tab-btn { padding: 10px 15px; cursor: pointer; border: none; background: #636e72; color: white; font-weight: bold; border-radius: 4px; }
         .active-a { background: #27ae60 !important; }
         .active-b { background: #2980b9 !important; }
         .btn-gh { background: #2ecc71 !important; color: black !important; font-weight: 900; }
-
         .container { background: white; padding: 5px; overflow-x: auto; }
         table { border-collapse: collapse; font-size: 10px; width: 1650px; table-layout: fixed; }
         th, td { border: 1px solid #444; text-align: center; padding: 3px; }
         th { background: #bdc3c7; font-weight: bold; height: 35px; }
-        
         .scara-a tr:nth-child(even) { background-color: #e8f8f5; } 
         .scara-b tr:nth-child(even) { background-color: #ebf5fb; } 
-        
         input { width: 92%; border: 1px solid #ccc; text-align: center; font-size: 10px; font-weight: bold; }
         .readonly-mode input, .readonly-mode textarea { border: none !important; background: transparent !important; pointer-events: none; color: black !important; }
-        
-        .status-msg { color: #f1c40f; font-size: 11px; grid-column: 1 / -1; text-align: center; }
+        .status-msg { color: #f1c40f; font-size: 11px; grid-column: 1 / -1; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body id="mainBody" class="readonly-mode">
@@ -55,9 +38,9 @@
     <input type="password" id="gh_token" placeholder="GitHub Personal Token">
     <input type="text" id="gh_user" placeholder="Utilizator GitHub">
     <input type="text" id="gh_repo" placeholder="Nume Repository">
-    <input type="text" id="gh_path" placeholder="index.html (nume fisier)">
+    <input type="text" id="gh_path" placeholder="index.html">
     <button class="tab-btn btn-gh" onclick="uploadToGitHub()">🚀 URCĂ PE GITHUB</button>
-    <div id="ghStatus" class="status-msg">Token-ul este salvat local. Gata pentru sincronizare.</div>
+    <div id="ghStatus" class="status-msg">Panou Sincronizare Activ.</div>
 </div>
 
 <div class="header-panel">
@@ -67,7 +50,7 @@
     </div>
     <div class="titlu-section">
         <input type="text" id="titlu_main" class="edit-titlu" value="Asociația Saturn 34" oninput="saveData()">
-        <div id="statusLabel" style="font-size:11px; color:#c0392b;">MOD VIZUALIZARE</div>
+        <div id="statusLabel" style="font-size:11px; color:#c0392b; font-weight:bold;">MOD VIZUALIZARE</div>
     </div>
     <div style="text-align:right">
         <button id="lockBtn" class="tab-btn" style="background:#8e44ad" onclick="verificareParola()">🔓 ADMIN</button>
@@ -80,11 +63,11 @@
     <button class="tab-btn" style="background:#d35400" onclick="window.print()">🖨️ PRINT</button>
 </div>
 
-<div id="cont-A"><div class="container"><table class="scara-a"><thead><tr><th>Ap</th><th>MC</th><th>Val</th><th>Pers</th><th>Dif</th><th>El</th><th>Salub</th><th>Salari</th><th>Curat</th><th>Adm</th><th style="background:#27ae60;color:white">TOTAL</th><th>Rulm</th><th>Rep</th><th>R.I</th><th>R.F</th><th>R.P</th><th>Pen</th><th style="background:#c0392b;color:white">PLATA</th><th>F.RU</th><th>F.RE</th></tr></thead><tbody id="tbodyA"></tbody></table></div></div>
-<div id="cont-B" style="display:none"><div class="container"><table class="scara-b"><thead><tr><th>Ap</th><th>MC</th><th>Val</th><th>Pers</th><th>Dif</th><th>El</th><th>Salub</th><th>Salari</th><th>Curat</th><th>Adm</th><th style="background:#2980b9;color:white">TOTAL</th><th>Rulm</th><th>Rep</th><th>R.I</th><th>R.F</th><th>R.P</th><th>Pen</th><th style="background:#c0392b;color:white">PLATA</th><th>F.RU</th><th>F.RE</th></tr></thead><tbody id="tbodyB"></tbody></table></div></div>
+<div id="cont-A"><div class="container"><table class="scara-a"><thead><tr><th style="width:30px">Ap</th><th style="width:45px">MC</th><th style="width:60px">ValAR</th><th style="width:40px">Pers</th><th style="width:50px">Dif</th><th style="width:50px">El</th><th style="width:50px">Salub</th><th style="width:50px">Salari</th><th style="width:50px">Curat</th><th style="width:50px">Adm</th><th style="width:80px; background:#27ae60; color:white">TOTAL</th><th style="width:50px">Rulm</th><th style="width:50px">Rep</th><th style="width:50px">R.I</th><th style="width:50px">R.F</th><th style="width:50px">R.P</th><th style="width:50px">Pen</th><th style="width:85px; background:#c0392b; color:white">PLATA</th><th style="width:60px">F.RU</th><th style="width:60px">F.RE</th></tr></thead><tbody id="tbodyA"></tbody></table></div></div>
+<div id="cont-B" style="display:none"><div class="container"><table class="scara-b"><thead><tr><th style="width:30px">Ap</th><th style="width:45px">MC</th><th style="width:60px">ValAR</th><th style="width:40px">Pers</th><th style="width:50px">Dif</th><th style="width:50px">El</th><th style="width:50px">Salub</th><th style="width:50px">Salari</th><th style="width:50px">Curat</th><th style="width:50px">Adm</th><th style="width:80px; background:#2980b9; color:white">TOTAL</th><th style="width:50px">Rulm</th><th style="width:50px">Rep</th><th style="width:50px">R.I</th><th style="width:50px">R.F</th><th style="width:50px">R.P</th><th style="width:50px">Pen</th><th style="width:85px; background:#c0392b; color:white">PLATA</th><th style="width:60px">F.RU</th><th style="width:60px">F.RE</th></tr></thead><tbody id="tbodyB"></tbody></table></div></div>
 
 <script>
-    const _0xHASH = "MTIzNA=="; // Parola 1234
+    const _0xHASH = "MTIzNA=="; // 1234
     const T = {
         A: { apa: 17.03, dif: 10.82, el: 1.16, salub: 30.30, salari: 23.73, curat: 9.59, adm: 1.12 },
         B: { apa: 17.03, dif: 12.00, el: 2.33, salub: 60.60, salari: 25.50, curat: 10.50, adm: 1.40 }
@@ -93,16 +76,22 @@
     function saveData() {
         const d = {};
         document.querySelectorAll('input, textarea').forEach(el => { if(el.id) d[el.id] = el.value; });
-        localStorage.setItem('saturn34_gh_data', JSON.stringify(d));
+        localStorage.setItem('saturn34_final_db', JSON.stringify(d));
     }
 
     function loadData() {
-        const s = localStorage.getItem('saturn34_gh_data');
+        const s = localStorage.getItem('saturn34_final_db');
         if(s) {
             const d = JSON.parse(s);
             Object.keys(d).forEach(id => {
                 const el = document.getElementById(id);
-                if(el) { el.value = d[id]; if(id.includes('_')) { let ap = id.split('_').pop(); if(!isNaN(ap)) calc(ap, ap <= 20 ? 'A' : 'B'); } }
+                if(el) { 
+                    el.value = d[id]; 
+                    if(id.includes('_')) { 
+                        let ap = id.split('_').pop(); 
+                        if(!isNaN(ap)) calc(ap, ap <= 20 ? 'A' : 'B'); 
+                    } 
+                }
             });
         }
     }
@@ -111,106 +100,107 @@
         const getV = (n) => parseFloat(document.getElementById(n + id).value) || 0;
         const pers = getV('pers_');
         const vAR = getV('mc_') * T[sc].apa;
-        const sums = [vAR, T[sc].dif, pers*T[sc].el, pers*T[sc].salub, pers*T[sc].salari, pers*T[sc].curat, pers*T[sc].adm];
-        const names = ['v_ar_','v_el_','v_salub_','v_salari_','v_curat_','v_adm_'];
         
         document.getElementById('v_ar_'+id).innerText = vAR.toFixed(2);
-        document.getElementById('v_el_'+id).innerText = (pers*T[sc].el).toFixed(2);
-        document.getElementById('v_salub_'+id).innerText = (pers*T[sc].salub).toFixed(2);
-        document.getElementById('v_salari_'+id).innerText = (pers*T[sc].salari).toFixed(2);
-        document.getElementById('v_curat_'+id).innerText = (pers*T[sc].curat).toFixed(2);
-        document.getElementById('v_adm_'+id).innerText = (pers*T[sc].adm).toFixed(2);
+        document.getElementById('v_el_'+id).innerText = (pers * T[sc].el).toFixed(2);
+        document.getElementById('v_salub_'+id).innerText = (pers * T[sc].salub).toFixed(2);
+        document.getElementById('v_salari_'+id).innerText = (pers * T[sc].salari).toFixed(2);
+        document.getElementById('v_curat_'+id).innerText = (pers * T[sc].curat).toFixed(2);
+        document.getElementById('v_adm_'+id).innerText = (pers * T[sc].adm).toFixed(2);
 
-        const tL = sums.reduce((a, b) => a + b, 0);
+        const tL = vAR + T[sc].dif + (pers * T[sc].el) + (pers * T[sc].salub) + (pers * T[sc].salari) + (pers * T[sc].curat) + (pers * T[sc].adm);
         document.getElementById('t_luna_'+id).innerText = tL.toFixed(2);
+        
         const ext = getV('f1_') + getV('f2_') + getV('r1_') + getV('r2_') + getV('r3_') + getV('p_');
         document.getElementById('t_plata_'+id).innerText = (tL + ext).toFixed(2);
         saveData();
- async function uploadToGitHub() {
-    const status = document.getElementById('ghStatus');
-    status.innerText = "⏳ Se verifică conexiunea...";
-    status.style.color = "#f1c40f";
-
-    // Fixăm valorile pentru export
-    document.querySelectorAll('input').forEach(i => i.setAttribute('value', i.value));
-    document.querySelectorAll('textarea').forEach(t => t.innerText = t.value);
-    const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-    
-    const token = document.getElementById('gh_token').value.trim();
-    const user = document.getElementById('gh_user').value.trim();
-    const repo = document.getElementById('gh_repo').value.trim();
-    const path = document.getElementById('gh_path').value.trim() || "index.html";
-
-    if(!token || !user || !repo) { 
-        status.innerText = "❌ Lipsesc date (Token/User/Repo)";
-        return; 
     }
 
-    const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-    
-    try {
-        let sha = "";
-        const resGet = await fetch(url, { 
-            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' } 
-        });
+    async function uploadToGitHub() {
+        const status = document.getElementById('ghStatus');
+        status.innerText = "⏳ Se verifică...";
+        status.style.color = "#f1c40f";
 
-        if(resGet.status === 401) throw new Error("Token invalid sau expirat.");
-        if(resGet.status === 404) {
-            console.log("Fișierul nu există, se va crea unul nou.");
-        } else if(resGet.ok) {
-            const dataGet = await resGet.json();
-            sha = dataGet.sha;
+        document.querySelectorAll('input').forEach(i => i.setAttribute('value', i.value));
+        const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+        
+        const token = document.getElementById('gh_token').value.trim();
+        const user = document.getElementById('gh_user').value.trim();
+        const repo = document.getElementById('gh_repo').value.trim();
+        const path = document.getElementById('gh_path').value.trim() || "index.html";
+
+        const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+        
+        try {
+            let sha = "";
+            const resGet = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+            if(resGet.ok) { const dataGet = await resGet.json(); sha = dataGet.sha; }
+
+            const resPut = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: "Update " + new Date().toLocaleString(),
+                    content: btoa(unescape(encodeURIComponent(htmlContent))),
+                    sha: sha
+                })
+            });
+
+            if(resPut.ok) { status.innerText = "✅ REUȘIT!"; status.style.color = "#2ecc71"; }
+            else { const err = await resPut.json(); throw new Error(err.message); }
+        } catch (e) {
+            status.innerText = "❌ EROARE: " + e.message;
+            status.style.color = "#ff7675";
         }
-
-        const resPut = await fetch(url, {
-            method: 'PUT',
-            headers: { 
-                'Authorization': `token ${token}`, 
-                'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify({
-                message: "Update Saturn 34 - " + new Date().toLocaleString(),
-                content: btoa(unescape(encodeURIComponent(htmlContent))),
-                sha: sha
-            })
-        });
-
-        if(resPut.ok) { 
-            status.innerText = "✅ REUȘIT! Datele sunt pe GitHub."; 
-            status.style.color = "#2ecc71"; 
-        } else {
-            const errData = await resPut.json();
-            throw new Error(errData.message || "Eroare la scriere.");
-        }
-    } catch (e) {
-        status.innerText = "❌ EROARE: " + e.message;
-        status.style.color = "#ff7675";
-        console.error(e);
     }
-}
 
     function build() {
         let hA = "", hB = "";
         for(let i=1; i<=40; i++) {
             let sc = i <= 20 ? 'A' : 'B';
-            let r = `<tr onclick="selR(this)"><td><b>${i}</b></td><td><input type="number" id="mc_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td id="v_ar_${i}">0</td><td><input type="number" id="pers_${i}" value="1" oninput="calc(${i},'${sc}')"></td><td>${T[sc].dif}</td><td id="v_el_${i}">0</td><td id="v_salub_${i}">0</td><td id="v_salari_${i}">0</td><td id="v_curat_${i}">0</td><td id="v_adm_${i}">0</td><td id="t_luna_${i}" style="font-weight:bold">0</td><td><input type="number" id="f1_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td><input type="number" id="f2_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td><input type="number" id="r1_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td><input type="number" id="r2_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td><input type="number" id="r3_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td><input type="number" id="p_${i}" value="0" oninput="calc(${i},'${sc}')"></td><td id="t_plata_${i}" style="color:red; font-weight:bold">0</td><td><input type="number" id="frul_${i}" value="0"></td><td><input type="number" id="frep_${i}" value="0"></td></tr>`;
-            if(i <= 20) hA += r; else hB += r;
+            let row = `<tr>
+                <td><b>${i}</b></td>
+                <td><input type="number" id="mc_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
+                <td id="v_ar_${i}">0</td>
+                <td><input type="number" id="pers_${i}" value="1" oninput="calc(${i},'${sc}')"></td>
+                <td>${T[sc].dif}</td>
+                <td id="v_el_${i}">0</td>
+                <td id="v_salub_${i}">0</td>
+                <td id="v_salari_${i}">0</td>
+                <td id="v_curat_${i}">0</td>
+                <td id="v_adm_${i}">0</td>
+                <td id="t_luna_${i}" style="font-weight:bold">0</td>
+                <td><input type="number" id="f1_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
+                <td><input type="number" id="f2_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
+                <td><input type="number" id="r1_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
+                <td><input type="number" id="r2_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
+                <td><input type="number" id="r3_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
+                <td><input type="number" id="p_${i}" value="0" oninput="calc(${i},'${sc}')"></td>
+                <td id="t_plata_${i}" style="color:red; font-weight:bold">0</td>
+                <td><input type="number" id="frul_${i}" value="0" oninput="saveData()"></td>
+                <td><input type="number" id="frep_${i}" value="0" oninput="saveData()"></td>
+            </tr>`;
+            if(i <= 20) hA += row; else hB += row;
         }
-        document.getElementById('tbodyA').innerHTML = hA; document.getElementById('tbodyB').innerHTML = hB;
+        document.getElementById('tbodyA').innerHTML = hA;
+        document.getElementById('tbodyB').innerHTML = hB;
         loadData();
     }
 
     function verificareParola() {
-        if (document.getElementById('mainBody').classList.contains('readonly-mode')) {
+        const b = document.getElementById('mainBody');
+        if (b.classList.contains('readonly-mode')) {
             if (prompt("Parolă:") === atob(_0xHASH)) {
-                document.getElementById('mainBody').classList.remove('readonly-mode');
+                b.classList.remove('readonly-mode');
                 document.getElementById('ghPanel').style.display = 'grid';
                 document.getElementById('statusLabel').innerText = "MOD ADMIN ACTIV";
+                document.getElementById('statusLabel').style.color = "#27ae60";
             }
         } else {
-            document.getElementById('mainBody').classList.add('readonly-mode');
+            b.classList.add('readonly-mode');
             document.getElementById('ghPanel').style.display = 'none';
             document.getElementById('statusLabel').innerText = "MOD VIZUALIZARE";
+            document.getElementById('statusLabel').style.color = "#c0392b";
         }
     }
 
@@ -221,8 +211,6 @@
         document.getElementById('btnB').classList.toggle('active-b', s === 'B');
     }
 
-    function selR(el) { document.querySelectorAll('tr').forEach(r => r.style.outline = "none"); el.style.outline = "2px solid #f1c40f"; }
-    
     document.addEventListener("DOMContentLoaded", build);
     setInterval(() => { document.getElementById('ceas').innerText = new Date().toLocaleTimeString('ro-RO'); }, 1000);
 </script>
