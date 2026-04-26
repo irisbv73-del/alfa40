@@ -1,248 +1,460 @@
 <!DOCTYPE html>
-<html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <title>Sistem Gestiune Saturn 34 - Header Optimizat</title>
-    <style>
-        @media print {
-            @page { size: A4 landscape; margin: 3mm; }
-            body { zoom: 50%; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .nav-tabs, #lockBtn, .no-print, .curent-header-box { display: none !important; }
-        }
+<html lang="ro"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Saturn 34 - Gestiune Completă</title>
+<style>
+    @media print {
+        @page { size: A4 landscape; margin: 1mm; }
+        body { zoom: 60%; -webkit-print-color-adjust: exact !important; }
+        .no-print, #lockBtn, .calc-master, .nav-tabs { display: none !important; }
+    }
 
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; margin: 0; padding: 10px; }
-        
-        /* HEADER PRINCIPAL */
-        .header-panel {
-            display: grid; grid-template-columns: 200px 1fr 240px 120px;
-            gap: 8px; background: white; padding: 10px;
-            border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            border-top: 5px solid #ff5252; margin: 0 auto 15px auto; max-width: 95%;
-        }
-        
-        .titlu-container { 
-            background: #f8f9fa; padding: 5px 15px; border-radius: 8px; 
-            display: flex; align-items: center; justify-content: center; gap: 12px; border: 1px solid #eeeeee;
-        }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; margin: 0; padding: 5px; color: #000; overflow-x: hidden; }
 
-        .edit-titlu { font-size: 28px; font-weight: 900; text-transform: uppercase; border: none; color: #ff5252 !important; background: transparent; width: 200px; text-align: center; }
+    /* Header */
+    .header-panel {
+        display: grid; grid-template-columns: 280px 1fr 200px 45px; gap: 8px;
+        background: #FFEBEB; padding: 5px; border: 1px solid #ccc; border-top: 4px solid #d32f2f;
+        margin-bottom: 5px; border-radius: 0 0 8px 8px; align-items: center;
+    }
+    .edit-titlu { font-size: 30px; font-weight: 900; color: #333; border: none; background: transparent; width: 100%; text-align: center; text-transform: uppercase; }
 
-        .info-box { background: #ffffff; padding: 5px 8px; border-radius: 6px; border: 1px solid #eceff1; font-size: 10.5px; display: flex; flex-direction: column; justify-content: center; }
-        .info-line { display: flex; justify-content: space-between; margin-bottom: 1px; font-weight: bold; }
-        .info-input { border: none; background: transparent; font-weight: 800; color: #2c3e50; width: 80px; text-align: right; font-size: 10.5px; }
+    /* Nav */
+    .nav-tabs { display: flex; justify-content: center; margin-bottom: 5px; gap: 5px; }
+    .tab-btn { padding: 4px 20px; cursor: pointer; border: 1px solid transparent; font-weight: 700; font-size: 15px; text-transform: uppercase; border-radius: 3px; color: #fff; }
+    .btn-a { background: #1b5e20; } .btn-a.active-a { background: #2e7d32; border-color: #000; }
+    .btn-b { background: #0d47a1; } .btn-b.active-b { background: #1565c0; border-color: #000; }
 
-        /* NAVIGARE */
-        .nav-tabs { 
-            display: flex; align-items: center; justify-content: center; 
-            margin-bottom: 12px; max-width: 1850px; margin-left: auto; margin-right: auto;
-            position: relative;
-        }
-        
-        .tab-btn { padding: 8px 20px; cursor: pointer; border: none; background: #90a4ae; color: white; font-weight: bold; border-radius: 6px; font-size: 13px; margin: 0 5px; }
-        .active-a { background: #1b5e20 !important; } 
-        .active-b { background: #0d47a1 !important; } 
+    /* Tabel */
+    .container { background: #fff; border: 1px solid #000; overflow-x: auto; }
+    table { border-collapse: collapse; font-size: 11px; width: 1450px; table-layout: fixed; margin-left: auto; margin-right: auto; }
+    th { border: 1px solid #fff; padding: 4px 0; font-weight: 900; color: white; line-height: 1; overflow: hidden; text-transform: uppercase; }
+    td { border: 1px solid #999; text-align: center; padding: 6px 0; font-weight: 700; color: #000; }
 
-        /* CASUTA DE CALCUL CURENT (REDUSA CU 30%) */
-        .curent-header-box {
-            position: absolute; right: 0;
-            background: #fff; border: 1.5px solid #ff5252; padding: 4px 8px;
-            border-radius: 6px; display: flex; align-items: center; gap: 6px;
-            font-size: 10px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transform: scale(0.9); /* Reducere vizuală discretă */
-        }
+    /* FIX: font-weight fara px, border cu punct nu virgula */
+    .col-ap { font-weight: 600; border-right: 1px solid #999; }
 
-        .curent-header-box div { display: flex; flex-direction: column; align-items: center; }
-        .curent-header-box input { 
-            width: 45px; text-align: center; font-weight: 900; color: #b71c1c; 
-            border: 1px solid #cfd8dc; border-radius: 3px; padding: 1px; font-size: 10px;
-        }
-        .res-box { background: #ffebee; padding: 2px 6px; border-radius: 3px; border: 1px solid #ffcdd2; min-width: 50px; text-align: center; }
-        .res-val { color: #d32f2f; font-size: 11px; font-weight: 900; display: block; }
+    /* Selectie Rand */
+    tr.active-row td { background-color: #ffff00 !important; outline: 1px solid #000; }
 
-        /* TABEL STABIL */
-        .container { background: white; padding: 10px; border-radius: 10px; overflow-x: auto; }
-        table { border-collapse: collapse; font-size: 12px; width: 1850px; table-layout: fixed; }
-        th, td { border: 1px solid #78909c; text-align: center; padding: 5px 2px; }
-        
-        .scara-a tr:nth-child(even) td { background-color: #a5d6a7; }
-        .scara-b tr:nth-child(even) td { background-color: #90caf9; }
-        tr.active-row td { background-color: #ffff00 !important; color: #000000 !important; font-weight: 900 !important; }
+    /* Zebra */
+    .scara-a-mode tbody tr:nth-child(even):not(.active-row) { background-color: #a5d6a7 !important; }
+    .scara-b-mode tbody tr:nth-child(even):not(.active-row) { background-color: #90caf9 !important; }
+    .scara-a-th th { background: #1b5e20; }
+    .scara-b-th th { background: #0d47a1; }
 
-        th { color: white !important; text-transform: uppercase; font-size: 10px; background-color: #455a64; }
-        .scara-a th { background-color: #1b5e20; }
-        .scara-b th { background-color: #0d47a1; }
+    .res-col { background-color: #ffcdd2 !important; color: #000 !important; font-weight: 700; border-left: 1px solid #000; border-right: 1px solid #000; }
+    .fond-col { background-color: #e1f5fe !important; }
 
-        input[type="number"] { width: 85%; border: 1px solid #cfd8dc; border-radius: 3px; text-align: center; font-weight: bold; font-size: 11px; }
-        .readonly-mode input { border: none !important; background: transparent !important; pointer-events: none; color: black !important; }
-    </style>
+    input[type="number"] { width: 95%; border: none; text-align: center; font-weight: 700; padding: 1px; font-size: 11px; background: transparent; }
+    .readonly-mode input { pointer-events: none; }
+
+    .calc-master { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 2px; background: #FFE5E5; padding: 3px; border: 1px solid #ddd; margin-bottom: 5px; border-radius: 4px; }
+    .calc-group label { font-size: 9px; font-weight: 700; display: block; text-align: center; }
+    /* FIX: font-weight max 900 */
+    .calc-group input { width: 65px; text-align: center; font-weight: 900; border: 1px solid #999; background: #fffde7; font-size: 13px; margin: 0 auto; display: block; }
+    #lockBtn { background: #d32f2f; color: white; padding: 2px 5px; border: none; border-radius: 2px; font-weight: 700; cursor: pointer; font-size: 11px; }
+
+    /* Bara export/import */
+    .export-bar { display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+        background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 4px;
+        padding: 4px 8px; margin-bottom: 5px; }
+    .export-bar span { font-weight: 700; font-size: 11px; color: #1b5e20; margin-right: 4px; }
+    .btn-exp { padding: 4px 10px; border: none; border-radius: 3px; font-weight: 700; font-size: 12px; cursor: pointer; color: #fff; }
+    .btn-json-exp  { background: #1565c0; }
+    .btn-json-imp  { background: #6a1b9a; }
+    .btn-html-save { background: #e65100; }
+    .btn-exp:hover { opacity: 0.85; }
+</style>
 </head>
-<body id="mainBody" class="readonly-mode">
+<body id="mainBody" class="">
 
 <div class="header-panel">
-    <div class="info-box">
-        <div id="ceas" style="font-size:16px; font-weight:900; text-align:center;">00:00:00</div>
-        <div class="info-line">Luna: <input type="text" id="luna_an" class="info-input" value="Aprilie 2026"></div>
-        <div class="info-line">Admin: <input type="text" id="adm_n" class="info-input" value="Ion Popescu"></div>
+    <div class="logo-wrap" style="display:flex; align-items:center; gap:25px;">
+        <svg style="width:55px;height:55px;fill:#d32f2f;" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>
+        <div>
+            <div id="ceas" style="font-size:30px; font-weight: 600;">22:08:06</div>
+            <div style="font-size: 25px;">LUNA: <input type="text" id="l_an" value="MAI 2026" style="width: 100px; font-weight:900; color:#d32f2f; border:none; background:transparent;"></div>
+        </div>
     </div>
-    
-    <div class="titlu-container">
-        <input type="text" id="titlu_main" class="edit-titlu" value="SATURN 34">
-        <div id="statusLabel" style="color:#ff5252; font-size: 9px; font-weight:bold; position: absolute; margin-top: 45px;">MOD LECTURĂ</div>
+    <input type="text" id="titlu" class="edit-titlu" value="GESTIUNE SATURN 34">
+    <div style="text-align:right; font-weight: 600; line-height: 1;">
+        <div style="color: #0d47a1; font-size: 16px;"> PERS: <span id="tot_p">26</span></div>
+        <button id="lockBtn" onclick="verificareParola()">🔓 ADMIN</button>
     </div>
-    
-    <div class="info-box">
-        <div class="info-line">Luni - Marți: <input type="text" id="p_lu" class="info-input" value="08:00 - 16:00"></div>
-        <div class="info-line">Miercuri: <input type="text" id="p_mi" class="info-input" value="09:00 - 17:00"></div>
-        <div class="info-line">Vineri: <input type="text" id="p_vi" class="info-input" value="08:00 - 14:00"></div>
-    </div>
+</div>
 
-    <div style="display: flex; align-items: center;">
-        <button id="lockBtn" class="tab-btn" style="background:#455a64; width:100%; height: 35px; font-size: 11px;" onclick="verificareParola()">🔓 ADMIN</button>
-    </div>
+<div class="calc-master no-print">
+    <div class="calc-group"><label>Pierderi Apă</label><input type="number" id="f_dif" value="396.39" oninput="recalc()"></div>
+    <div class="calc-group"><label>Lumină</label><input type="number" id="f_el" value="40.82" oninput="recalc()"></div>
+    <div class="calc-group"><label>Salarii</label><input type="number" id="f_sal" value="490.56" oninput="recalc()"></div>
+    <div class="calc-group"><label>Curățenie</label><input type="number" id="f_crt" value="200.01" oninput="recalc()"></div>
+    <div class="calc-group"><label>Cheltuieli Sediu</label><input type="number" id="f_sed" value="22.04" oninput="recalc()"></div>
+    <div class="calc-group"><label>Com.Bancă</label><input type="number" id="f_bank" value="15.00" oninput="recalc()"></div>
+    <div class="calc-group"><label>Chirie</label><input type="number" id="f_chir" value="10.00" oninput="recalc()"></div>
+    <div class="calc-group"><label>Gunoi/P</label><input type="number" id="f_gun" value="30.29" oninput="recalc()"></div>
 </div>
 
 <div class="nav-tabs no-print">
-    <button id="btnA" class="tab-btn active-a" onclick="switchS('A')">SCARA A</button>
-    <button id="btnB" class="tab-btn" onclick="switchS('B')">SCARA B</button>
-    <button class="tab-btn" style="background:#546e7a" onclick="window.print()">🖨️ PDF</button>
-
-    <div class="curent-header-box">
-        <div>
-            <label id="label_fac">Factură Sc. A</label>
-            <input type="number" id="fac_val" value="0" step="0.01" oninput="recalc()">
-        </div>
-        <div style="color: #999;">÷</div>
-        <div>
-            <label>Persoane</label>
-            <input type="number" id="p_total_h" value="0" oninput="recalc()">
-        </div>
-        <div style="color: #999;">=</div>
-        <div class="res-box">
-            <label>Lei/Om</label>
-            <span id="lei_om" class="res-val">0.00</span>
-        </div>
-    </div>
+    <button id="btnA" class="tab-btn btn-a active-a" onclick="switchS('A')">Scara A</button>
+    <button id="btnB" class="tab-btn btn-b" onclick="switchS('B')">Scara B</button>
 </div>
 
-<div id="cont-A">
-    <div class="container"><table class="scara-a" id="tableA"><thead><tr id="headRow"></tr></thead><tbody id="tbodyA"></tbody></table></div>
+<div class="export-bar no-print">
+    <span>💾 DATE:</span>
+    <button class="btn-exp btn-json-exp" onclick="exportJSON()" title="" style="opacity: 1; cursor: pointer;">📤 Exportă JSON</button>
+    <button class="btn-exp btn-json-imp" onclick="document.getElementById('importFile').click()" title="" style="opacity: 1; cursor: pointer;">📥 Importă JSON</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
+    <button class="btn-exp btn-html-save" onclick="salveazaHTML()" title="" style="opacity: 1; cursor: pointer;">💾 Salvează HTML complet</button>
+    <span id="expMsg" style="font-size:11px; color:#555; margin-left:6px;"></span>
 </div>
-<div id="cont-B" style="display:none">
-    <div class="container"><table class="scara-b" id="tableB"><thead><tr id="headRowB"></tr></thead><tbody id="tbodyB"></tbody></table></div>
+
+<div class="container scara-a-mode" id="tableCont">
+    <table>
+        <thead>
+            <tr id="headRow" class="scara-a-th">
+                <th width="20">Ap</th>
+                <th width="20">P.</th>
+                <th width="40">Cotă</th>
+                <th width="25">MC</th>
+                <th width="40">V.Apă</th>
+                <th width="40">D.Apă</th>
+                <th width="35">Cur.</th>
+                <th width="35">Gun.</th>
+                <th width="35">Sal.</th>
+                <th width="35">Crt.</th>
+                <th width="35">Sed.</th>
+                <th width="35">Bnk.</th>
+                <th width="35">Chi.</th>
+                <th width="45" class="res-col">TOT LUNA</th>
+                <th width="30">FRul.</th>
+                <th width="30">FRep.</th>
+                <th width="30">Rest.I</th>
+                <th width="30">Pen.</th>
+                <th width="30">Res.F</th>
+                <th width="30">Res.P</th>
+                <th width="45" class="res-col">TOT PLATA</th>
+            </tr>
+        </thead>
+        <tbody id="bodyTable"></tbody>
+    </table>
 </div>
 
 <script>
-    let currentS = 'A';
-    const state = { fA: 0, fB: 0 };
-    const T = {
-        A: { apa: 17.03, dif: 10.82, salub: 30.30, salari: 23.73, curat: 9.59, adm: 1.12 },
-        B: { apa: 17.03, dif: 12.00, salub: 60.60, salari: 25.50, curat: 10.50, adm: 1.40 }
-    };
+    let curS = 'A';
+    const pretApaMC = 17.03;
+    const divizorCota = 49.997;
 
-    function recalc() {
-        const fV = parseFloat(document.getElementById('fac_val').value) || 0;
-        const pT = parseFloat(document.getElementById('p_total_h').value) || 1;
-        const pret = fV / (pT > 0 ? pT : 1);
-        document.getElementById('lei_om').innerText = pret.toFixed(2);
-        
-        if(currentS === 'A') state.fA = fV; else state.fB = fV;
-
-        for(let i=1; i<=40; i++) {
-            let sc = i <= 20 ? 'A' : 'B';
-            let p = parseFloat(document.getElementById('pers_'+i).value) || 0;
-            let mc = parseFloat(document.getElementById('mc_'+i).value) || 0;
-            
-            let vA = mc * T[sc].apa;
-            let vE = (sc === currentS) ? (p * pret) : (parseFloat(document.getElementById('ve_'+i).innerText) || 0);
-            
-            document.getElementById('va_'+i).innerText = vA.toFixed(2);
-            if(sc === currentS) document.getElementById('ve_'+i).innerText = vE.toFixed(2);
-            
-            // Restul coloanelor
-            document.getElementById('vs_'+i).innerText = (p * T[sc].salub).toFixed(2);
-            document.getElementById('vsl_'+i).innerText = (p * T[sc].salari).toFixed(2);
-            document.getElementById('vc_'+i).innerText = (p * T[sc].curat).toFixed(2);
-            document.getElementById('vad_'+i).innerText = (p * T[sc].adm).toFixed(2);
-
-            let tL = vA + T[sc].dif + vE + (p*T[sc].salub) + (p*T[sc].salari) + (p*T[sc].curat) + (p*T[sc].adm);
-            document.getElementById('tl_'+i).innerText = tL.toFixed(2);
-            
-            let rest = (parseFloat(document.getElementById('r1_'+i).value)||0) + (parseFloat(document.getElementById('r2_'+i).value)||0) + (parseFloat(document.getElementById('r3_'+i).value)||0) + (parseFloat(document.getElementById('pen_'+i).value)||0);
-            document.getElementById('tp_'+i).innerText = (tL + rest).toFixed(2);
-        }
-        save();
+    // ---- DEBOUNCE pentru save() ----
+    let saveTimer = null;
+    function saveDebounced() {
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(save, 400);
     }
 
-    function switchS(s) {
-        currentS = s;
-        document.getElementById('cont-A').style.display = s==='A'?'block':'none';
-        document.getElementById('cont-B').style.display = s==='B'?'block':'none';
-        document.getElementById('btnA').classList.toggle('active-a', s==='A');
-        document.getElementById('btnB').classList.toggle('active-b', s==='B');
-        document.getElementById('label_fac').innerText = `Factură Sc. ${s}`;
-        document.getElementById('fac_val').value = (s==='A'?state.fA:state.fB);
-        
-        let sumP = 0; let start = (s==='A'?1:21), end = (s==='A'?20:40);
-        for(let i=start; i<=end; i++) sumP += parseFloat(document.getElementById('pers_'+i).value)||0;
-        document.getElementById('p_total_h').value = sumP;
-        recalc();
+    function markRow(id) {
+        document.querySelectorAll('tr').forEach(r => r.classList.remove('active-row'));
+        const row = document.getElementById('row_' + id);
+        if (row) row.classList.add('active-row');
+    }
+
+    function recalc() {
+        // FIX: calculeaza persoane separat pentru fiecare scara
+        let tP_A = 0, tP_B = 0;
+        for (let i = 1; i <= 20; i++) {
+            let el = document.getElementById('p_' + i);
+            if (el) tP_A += parseFloat(el.value) || 0;
+        }
+        for (let i = 21; i <= 40; i++) {
+            let el = document.getElementById('p_' + i);
+            if (el) tP_B += parseFloat(el.value) || 0;
+        }
+        // Afiseaza total persoane scara activa
+        const tP_activ = (curS === 'A') ? tP_A : tP_B;
+        document.getElementById('tot_p').innerText = tP_activ;
+
+        const fEl  = parseFloat(document.getElementById('f_el').value)   || 0;
+        const fDif = parseFloat(document.getElementById('f_dif').value)  || 0;
+        const fSal = parseFloat(document.getElementById('f_sal').value)  || 0;
+        const fCrt = parseFloat(document.getElementById('f_crt').value)  || 0;
+        const fSed = parseFloat(document.getElementById('f_sed').value)  || 0;
+        const fBnk = parseFloat(document.getElementById('f_bank').value) || 0;
+        const fChr = parseFloat(document.getElementById('f_chir').value) || 0;
+        const vGun = parseFloat(document.getElementById('f_gun').value)  || 0;
+
+        // FIX: fiecare scara are propriul sau divizor persoane si propriul uDif (20 ap/scara)
+        const uEl_A  = tP_A > 0 ? fEl / tP_A : 0;
+        const uEl_B  = tP_B > 0 ? fEl / tP_B : 0;
+        const uDif_A = fDif / 20;
+        const uDif_B = fDif / 20;
+
+        const uSal = fSal / divizorCota;
+        const uCrt = fCrt / divizorCota;
+        const uSed = fSed / divizorCota;
+        const uBnk = fBnk / divizorCota;
+        const uChr = fChr / divizorCota;
+
+        for (let i = 1; i <= 40; i++) {
+            let elP = document.getElementById('p_' + i);
+            if (!elP) continue;
+
+            let p   = parseFloat(elP.value) || 0;
+            let c   = parseFloat(document.getElementById('c_'  + i).value) || 0;
+            let mc  = parseFloat(document.getElementById('mc_' + i).value) || 0;
+
+            // FIX: foloseste uEl si uDif corecte per scara
+            const uEl  = (i <= 20) ? uEl_A  : uEl_B;
+            const uDif = (i <= 20) ? uDif_A : uDif_B;
+
+            const va  = mc * pretApaMC;
+            const vd  = uDif;
+            const ve  = p * uEl;
+            const vg  = p * vGun;
+            const vsl = c * uSal;
+            const vcr = c * uCrt;
+            const vsd = c * uSed;
+            const vbk = c * uBnk;
+            const vch = c * uChr;
+
+            document.getElementById('va_'  + i).innerText = va.toFixed(2);
+            document.getElementById('vd_'  + i).innerText = vd.toFixed(2);
+            document.getElementById('ve_'  + i).innerText = ve.toFixed(2);
+            document.getElementById('vg_'  + i).innerText = vg.toFixed(2);
+            document.getElementById('vsl_' + i).innerText = vsl.toFixed(2);
+            document.getElementById('vcr_' + i).innerText = vcr.toFixed(2);
+            document.getElementById('vsd_' + i).innerText = vsd.toFixed(2);
+            document.getElementById('vbk_' + i).innerText = vbk.toFixed(2);
+            document.getElementById('vch_' + i).innerText = vch.toFixed(2);
+
+            let totL = va + vd + ve + vg + c * (uSal + uCrt + uSed + uBnk + uChr);
+            document.getElementById('tl_' + i).innerText = totL.toFixed(2);
+
+            // FIX: fr si frp NU se includ in TOT PLATA
+            let ri = parseFloat(document.getElementById('ri_' + i).value) || 0;
+            let pn = parseFloat(document.getElementById('pn_' + i).value) || 0;
+            let rf = parseFloat(document.getElementById('rf_' + i).value) || 0;
+            let rp = parseFloat(document.getElementById('rp_' + i).value) || 0;
+
+            document.getElementById('tp_' + i).innerText = (totL + ri + pn + rf + rp).toFixed(2);
+        }
+
+        saveDebounced();
     }
 
     function build() {
-        const cols = ["Ap","MC Apă","Val Apă","Pers","Dif.","Elec.","Salub.","Salarii","Curăț.","Admin.","TOTAL LUNĂ","Rest.I","Rest.F","Rest.P","Penal.","TOTAL PLATĂ","F.Rulm","F.Rep"];
-        const h = cols.map(c=>`<th>${c}</th>`).join('');
-        document.getElementById('headRow').innerHTML = h; document.getElementById('headRowB').innerHTML = h;
-        
-        for(let i=1; i<=40; i++) {
-            let row = `<tr id="tr_${i}" onclick="sel(${i})">
-                <td><b>${i}</b></td>
-                <td><input type="number" id="mc_${i}" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_${i}">0</td>
-                <td><input type="number" id="pers_${i}" value="1" oninput="recalc()"></td>
-                <td>${(i<=20?T.A:T.B).dif}</td>
-                <td id="ve_${i}">0</td><td id="vs_${i}">0</td><td id="vsl_${i}">0</td><td id="vc_${i}">0</td><td id="vad_${i}">0</td>
-                <td id="tl_${i}" style="font-weight:900">0</td>
-                <td><input type="number" id="r1_${i}" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="r2_${i}" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="r3_${i}" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pen_${i}" value="0" oninput="recalc()"></td>
-                <td id="tp_${i}" style="font-weight:900; color:#b71c1c">0</td>
-                <td><input type="number" id="fr_${i}" value="0"></td>
-                <td><input type="number" id="frp_${i}" value="0"></td>
+        let rows = "";
+        for (let i = 1; i <= 40; i++) {
+            let vis = (i <= 20) ? '' : 'display:none;';
+            rows += `<tr id="row_${i}" style="${vis}" onclick="markRow(${i})">
+                <td class="col-ap">${i}</td>
+                <td><input type="number" id="p_${i}"   value="1"     oninput="recalc()"></td>
+                <td><input type="number" id="c_${i}"   value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_${i}"  value="0"     step="0.01"  oninput="recalc()"></td>
+                <td id="va_${i}">0</td><td id="vd_${i}">0</td><td id="ve_${i}">0</td><td id="vg_${i}">0</td>
+                <td id="vsl_${i}">0</td><td id="vcr_${i}">0</td><td id="vsd_${i}">0</td><td id="vbk_${i}">0</td><td id="vch_${i}">0</td>
+                <td id="tl_${i}" class="res-col">0</td>
+                <td class="fond-col"><input type="number" id="fr_${i}"  value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_${i}" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_${i}"  value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_${i}"  value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_${i}"  value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_${i}"  value="0" oninput="recalc()"></td>
+                <td id="tp_${i}" class="res-col">0</td>
             </tr>`;
-            document.getElementById(i<=20?'tbodyA':'tbodyB').innerHTML += row;
         }
-        load();
+        document.getElementById('bodyTable').innerHTML = rows;
+        load(); // FIX: load dupa build, nu pierde datele
+    }
+
+    function switchS(s) {
+        curS = s;
+        document.getElementById('headRow').className   = s === 'A' ? 'scara-a-th' : 'scara-b-th';
+        document.getElementById('tableCont').className = s === 'A' ? 'container scara-a-mode' : 'container scara-b-mode';
+        document.getElementById('btnA').classList.toggle('active-a', s === 'A');
+        document.getElementById('btnB').classList.toggle('active-b', s === 'B');
+        for (let i = 1; i <= 40; i++) {
+            const row = document.getElementById('row_' + i);
+            if (row) row.style.display = ((i <= 20 && s === 'A') || (i > 20 && s === 'B')) ? '' : 'none';
+        }
+        // FIX: recalculeaza dupa schimbare de scara ca sa actualizeze tot_p
+        recalc();
     }
 
     function save() {
-        const data = { state: state, inputs: {} };
-        document.querySelectorAll('input').forEach(el => { if(el.id) data.inputs[el.id] = el.value; });
-        localStorage.setItem('saturn34_final_db', JSON.stringify(data));
+        const d = { in: {} };
+        document.querySelectorAll('input').forEach(el => {
+            if (el.id) d.in[el.id] = el.value;
+        });
+        try {
+            localStorage.setItem('saturn_full_gest_v2', JSON.stringify(d));
+        } catch(e) {
+            console.warn('localStorage save failed:', e);
+        }
     }
 
     function load() {
-        const saved = JSON.parse(localStorage.getItem('saturn34_final_db'));
-        if(saved) {
-            Object.assign(state, saved.state);
-            Object.keys(saved.inputs).forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = saved.inputs[id]; });
-        }
-        switchS('A');
-    }
-
-    function sel(id) { document.querySelectorAll('tr').forEach(r=>r.classList.remove('active-row')); document.getElementById('tr_'+id).classList.add('active-row'); }
-    
-    function verificareParola() {
-        const b = document.getElementById('mainBody'), s = document.getElementById('statusLabel'), l = document.getElementById('lockBtn');
-        if (b.classList.contains('readonly-mode')) {
-            if (prompt("Parola:") === "1234") {
-                b.classList.remove('readonly-mode'); s.innerText = "MOD EDITARE"; s.style.color = "#2ecc71"; l.innerText = "🔒 BLOCARE";
+        try {
+            const raw = localStorage.getItem('saturn_full_gest_v2');
+            if (!raw) { recalc(); return; }
+            const s = JSON.parse(raw);
+            if (s && s.in) {
+                Object.keys(s.in).forEach(id => {
+                    const el = document.getElementById(id);
+                    // FIX: verifica ca elementul exista inainte de a-i seta valoarea
+                    if (el && el.tagName === 'INPUT') el.value = s.in[id];
+                });
             }
-        } else { b.classList.add('readonly-mode'); s.innerText = "MOD LECTURĂ"; s.style.color = "#ff5252"; l.innerText = "🔓 ADMIN"; }
+        } catch(e) {
+            console.warn('localStorage load failed:', e);
+        }
+        recalc();
     }
 
-    document.addEventListener("DOMContentLoaded", build);
-    setInterval(() => { document.getElementById('ceas').innerText = new Date().toLocaleTimeString('ro-RO'); }, 1000);
+    const _h = (s) => s.split('').reduce((a,c)=>Math.imul(31,a)+c.charCodeAt(0)|0, 0);
+    const _ph = _h('1234');
+
+    function setButoaneDateStat(esteAdmin) {
+        ['btn-json-exp','btn-json-imp','btn-html-save'].forEach(function(cls) {
+            document.querySelectorAll('.' + cls).forEach(function(btn) {
+                btn.disabled = !esteAdmin;
+                btn.style.opacity = esteAdmin ? '1' : '0.35';
+                btn.style.cursor  = esteAdmin ? 'pointer' : 'not-allowed';
+                btn.title = esteAdmin ? '' : 'Necesita mod ADMIN';
+            });
+        });
+        var imp = document.getElementById('importFile');
+        if (imp) imp.disabled = !esteAdmin;
+    }
+
+    function verificareParola() {
+        var input = prompt("PAROLA:");
+        if (input !== null && _h(input) === _ph) {
+            document.getElementById('mainBody').classList.toggle('readonly-mode');
+            var esteAdmin = !document.getElementById('mainBody').classList.contains('readonly-mode');
+            document.getElementById('lockBtn').textContent = esteAdmin ? '🔓 ADMIN' : '🔒 BLOCAT';
+            setButoaneDateStat(esteAdmin);
+        } else if (input !== null) {
+            alert('Parola incorecta!');
+        }
+    }
+
+    // ---- EXPORT JSON ----
+    function exportJSON() {
+        const d = { in: {}, _meta: { luna: document.getElementById('l_an').value, titlu: document.getElementById('titlu').value, data: new Date().toLocaleString('ro-RO') } };
+        document.querySelectorAll('input').forEach(el => { if (el.id) d.in[el.id] = el.value; });
+        const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        const luna = (document.getElementById('l_an').value || 'date').replace(/\s+/g, '_');
+        a.download = 'Saturn34_' + luna + '.json';
+        a.click();
+        mesajExp('✅ JSON exportat!');
+    }
+
+    // ---- IMPORT JSON ----
+    function importJSON(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const d = JSON.parse(e.target.result);
+                if (!d.in) throw new Error('Format invalid');
+                Object.keys(d.in).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && el.tagName === 'INPUT') el.value = d.in[id];
+                });
+                recalc();
+                mesajExp('✅ Date importate din: ' + file.name);
+            } catch(err) {
+                alert('Eroare la import: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+        input.value = '';
+    }
+
+    // ---- SALVARE HTML COMPLET (cu date incluse, admin blocat la deschidere) ----
+    function salveazaHTML() {
+        var vals = {};
+        document.querySelectorAll('input').forEach(function(el) { if (el.id) vals[el.id] = el.value; });
+        var jsonDate = JSON.stringify(vals);
+        var luna = (document.getElementById('l_an').value || 'date').replace(/\s+/g, '_');
+
+        // Bloc injectat: restaureaza datele si porneste cu admin blocat
+        var p1 = '<scr', p2 = 'ipt id="date-salvate">', p3 = '<\/sc', p4 = 'ript>';
+        var bloc = '\n' + p1 + p2 + '\n(function(){\n' +
+            '  var d=' + jsonDate + ';\n' +
+            '  document.addEventListener("DOMContentLoaded",function(){\n' +
+            '    setTimeout(function(){\n' +
+            '      var ls=null;try{ls=localStorage.getItem("saturn_full_gest_v2");}catch(e){}\n' +
+            '      if(!ls){Object.keys(d).forEach(function(id){var el=document.getElementById(id);if(el&&el.tagName==="INPUT")el.value=d[id];});if(typeof recalc==="function")recalc();}\n' +
+            '      var lb=document.getElementById("lockBtn");\n' +
+            '      if(lb){lb.textContent="\uD83D\uDD13 ADMIN";}\n' +
+            '      if(typeof setButoaneDateStat==="function")setButoaneDateStat(false);\n' +
+            '    },80);\n' +
+            '  });\n' +
+            '})();\n' + p3 + p4 + '\n';
+
+        fetch(window.location.href)
+            .then(function(r){ return r.text(); })
+            .then(function(sursa){
+                sursa = sursa.replace(/<script id="date-salvate">[\s\S]*?<\/script>\s*/g, '');
+                descarcaHTML(sursa.replace('</body>', bloc + '</body>'), luna);
+            })
+            .catch(function(){
+                var clone = document.documentElement.cloneNode(true);
+                var bt = clone.querySelector('#bodyTable');
+                if (bt) bt.innerHTML = '';
+                var vechi = clone.querySelector('#date-salvate');
+                if (vechi) vechi.remove();
+                var body = clone.querySelector('body');
+                if (body) body.insertAdjacentHTML('beforeend', bloc);
+                descarcaHTML('<!DOCTYPE html>\n' + clone.outerHTML, luna);
+            });
+    }
+
+    function descarcaHTML(html, luna) {
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Saturn34_' + luna + '_COMPLET.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+        mesajExp('✅ HTML complet salvat! Funcționează pe orice calculator.');
+    }
+
+    function mesajExp(txt) {
+        const el = document.getElementById('expMsg');
+        el.textContent = txt;
+        setTimeout(() => { el.textContent = ''; }, 4000);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        build();
+        setButoaneDateStat(false);
+    });
+    setInterval(() => {
+        document.getElementById('ceas').innerText = new Date().toLocaleTimeString('ro-RO');
+    }, 1000);
 </script>
-</body>
-</html>
+
+
+
+<script id="date-salvate">
+(function(){
+  var d={"l_an":"MAI 2026","titlu":"asoc.de prop.alfa.40-bl.129","f_dif":"396.39","f_el":"40.82","f_sal":"490.56","f_crt":"200.01","f_sed":"4.17","f_bank":"14.50","f_chir":"3.37","f_gun":"30.29","importFile":"","p_1":"1","c_1":"2.397","mc_1":"3","fr_1":"","frp_1":"","ri_1":"0","pn_1":"0","rf_1":"0","rp_1":"10","p_2":"1","c_2":"2.397","mc_2":"5","fr_2":"","frp_2":"","ri_2":"0","pn_2":"0","rf_2":"0","rp_2":"10","p_3":"2","c_3":"2.397","mc_3":"3.71","fr_3":"","frp_3":"","ri_3":"0","pn_3":"0","rf_3":"0","rp_3":"10","p_4":"2","c_4":"2.397","mc_4":"6","fr_4":"","frp_4":"","ri_4":"0","pn_4":"0","rf_4":"0","rp_4":"10","p_5":"2","c_5":"2.486","mc_5":"8.10","fr_5":"","frp_5":"","ri_5":"0","pn_5":"0","rf_5":"0","rp_5":"10","p_6":"2","c_6":"2.397","mc_6":"7","fr_6":"","frp_6":"","ri_6":"0","pn_6":"0","rf_6":"0","rp_6":"10","p_7":"2","c_7":"2.397","mc_7":"13.70","fr_7":"","frp_7":"","ri_7":"0","pn_7":"0","rf_7":"0","rp_7":"10","p_8":"2","c_8":"2.964","mc_8":"4.60","fr_8":"","frp_8":"","ri_8":"0","pn_8":"0","rf_8":"0","rp_8":"10","p_9":"0","c_9":"2.486","mc_9":"0","fr_9":"","frp_9":"","ri_9":"0","pn_9":"0","rf_9":"0","rp_9":"10","p_10":"0","c_10":"2.397","mc_10":"0","fr_10":"","frp_10":"","ri_10":"0","pn_10":"0","rf_10":"0","rp_10":"10","p_11":"1","c_11":"2.397","mc_11":"3","fr_11":"","frp_11":"","ri_11":"0","pn_11":"0","rf_11":"0","rp_11":"10","p_12":"1","c_12":"2.964","mc_12":"2.52","fr_12":"","frp_12":"","ri_12":"0","pn_12":"0","rf_12":"0","rp_12":"10","p_13":"0","c_13":"2.486","mc_13":"0","fr_13":"","frp_13":"","ri_13":"0","pn_13":"0","rf_13":"0","rp_13":"10","p_14":"4","c_14":"2.397","mc_14":"10","fr_14":"","frp_14":"","ri_14":"345.54","pn_14":"24","rf_14":"20","rp_14":"10","p_15":"1","c_15":"2.397","mc_15":"1.10","fr_15":"","frp_15":"","ri_15":"0","pn_15":"0","rf_15":"0","rp_15":"10","p_16":"2","c_16":"2.964","mc_16":"4.60","fr_16":"","frp_16":"","ri_16":"0","pn_16":"0","rf_16":"0","rp_16":"10","p_17":"2","c_17":"2.486","mc_17":"13","fr_17":"","frp_17":"","ri_17":"0","pn_17":"0","rf_17":"0","rp_17":"10","p_18":"1","c_18":"2.397","mc_18":"1.89","fr_18":"","frp_18":"","ri_18":"0","pn_18":"0","rf_18":"0","rp_18":"10","p_19":"0","c_19":"2.397","mc_19":"0","fr_19":"","frp_19":"","ri_19":"0","pn_19":"0","rf_19":"0","rp_19":"10","p_20":"0","c_20":"2.397","mc_20":"0","fr_20":"","frp_20":"","ri_20":"0","pn_20":"0","rf_20":"0","rp_20":"10","p_21":"1","c_21":"2.397","mc_21":"0","fr_21":"","frp_21":"","ri_21":"0","pn_21":"0","rf_21":"0","rp_21":"0","p_22":"1","c_22":"2.397","mc_22":"0","fr_22":"","frp_22":"","ri_22":"0","pn_22":"0","rf_22":"0","rp_22":"0","p_23":"1","c_23":"2.397","mc_23":"0","fr_23":"","frp_23":"","ri_23":"0","pn_23":"0","rf_23":"0","rp_23":"0","p_24":"1","c_24":"2.397","mc_24":"0","fr_24":"","frp_24":"","ri_24":"0","pn_24":"0","rf_24":"0","rp_24":"0","p_25":"1","c_25":"2.486","mc_25":"0","fr_25":"","frp_25":"","ri_25":"0","pn_25":"0","rf_25":"0","rp_25":"0","p_26":"1","c_26":"2.397","mc_26":"0","fr_26":"","frp_26":"","ri_26":"0","pn_26":"0","rf_26":"0","rp_26":"0","p_27":"1","c_27":"2.397","mc_27":"0","fr_27":"","frp_27":"","ri_27":"0","pn_27":"0","rf_27":"0","rp_27":"0","p_28":"1","c_28":"2.964","mc_28":"0","fr_28":"","frp_28":"","ri_28":"0","pn_28":"0","rf_28":"0","rp_28":"0","p_29":"1","c_29":"2.486","mc_29":"0","fr_29":"","frp_29":"","ri_29":"0","pn_29":"0","rf_29":"0","rp_29":"0","p_30":"1","c_30":"2.397","mc_30":"0","fr_30":"","frp_30":"","ri_30":"0","pn_30":"0","rf_30":"0","rp_30":"0","p_31":"1","c_31":"2.397","mc_31":"0","fr_31":"","frp_31":"","ri_31":"0","pn_31":"0","rf_31":"0","rp_31":"0","p_32":"1","c_32":"2.964","mc_32":"0","fr_32":"","frp_32":"","ri_32":"0","pn_32":"0","rf_32":"0","rp_32":"0","p_33":"1","c_33":"2.486","mc_33":"0","fr_33":"","frp_33":"","ri_33":"0","pn_33":"0","rf_33":"0","rp_33":"0","p_34":"1","c_34":"2.397","mc_34":"0","fr_34":"","frp_34":"","ri_34":"0","pn_34":"0","rf_34":"0","rp_34":"0","p_35":"1","c_35":"2.397","mc_35":"0","fr_35":"","frp_35":"","ri_35":"0","pn_35":"0","rf_35":"0","rp_35":"0","p_36":"1","c_36":"2.964","mc_36":"0","fr_36":"","frp_36":"","ri_36":"0","pn_36":"0","rf_36":"0","rp_36":"0","p_37":"1","c_37":"2.486","mc_37":"0","fr_37":"","frp_37":"","ri_37":"0","pn_37":"0","rf_37":"0","rp_37":"0","p_38":"1","c_38":"2.397","mc_38":"0","fr_38":"","frp_38":"","ri_38":"0","pn_38":"0","rf_38":"0","rp_38":"0","p_39":"1","c_39":"2.397","mc_39":"0","fr_39":"","frp_39":"","ri_39":"0","pn_39":"0","rf_39":"0","rp_39":"0","p_40":"1","c_40":"2.397","mc_40":"0","fr_40":"","frp_40":"","ri_40":"0","pn_40":"0","rf_40":"0","rp_40":"0"};
+  document.addEventListener("DOMContentLoaded",function(){
+    setTimeout(function(){
+      var ls=null;try{ls=localStorage.getItem("saturn_full_gest_v2");}catch(e){}
+      if(!ls){Object.keys(d).forEach(function(id){var el=document.getElementById(id);if(el&&el.tagName==="INPUT")el.value=d[id];});if(typeof recalc==="function")recalc();}
+      var lb=document.getElementById("lockBtn");
+      if(lb){lb.textContent="🔓 ADMIN";}
+      if(typeof setButoaneDateStat==="function")setButoaneDateStat(false);
+    },80);
+  });
+})();
+</script>
+</body></html>
