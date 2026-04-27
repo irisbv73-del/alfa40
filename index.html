@@ -2,743 +2,547 @@
 <html lang="ro"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <title>Saturn 34 - Gestiune Completă</title>
- <style>
-    @media print {
-        @page { size: A4 landscape; margin: 1mm; }
-        body { zoom: 60%; -webkit-print-color-adjust: exact !important; }
-        .no-print, #lockBtn, .calc-master, .nav-tabs { display: none !important; }
-    }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Roboto&display=swap');
 
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; margin: 0; padding: 5px; color: #000; overflow-x: hidden; }
+:root {
+    --cyan:    #00f5ff;
+    --cyan2:   #00bcd4;
+    --cyan-dim:#003d45;
+    --neon-g:  #39ff14;
+    --neon-r:  #ff2d55;
+    --neon-y:  #ffe600;
+    --bg:      #020d1a;
+    --bg2:     #04192e;
+    --bg3:     #071f35;
+    --panel:   rgba(0,245,255,0.04);
+    --border:  rgba(0,245,255,0.18);
+    --text:    #c8f0ff;
+    --text2:   #7acfdf;
+}
 
-    /* Header */
-    .header-panel {
-        display: grid; grid-template-columns: 280px 1fr 200px 45px; gap: 8px;
-        background: #FFEBEB; padding: 5px; border: 1px solid #ccc; border-top: 4px solid #d32f2f;
-        margin-bottom: 5px; border-radius: 0 0 8px 8px; align-items: center;
-    }
-    .edit-titlu { font-size: 30px; font-weight: 900; color: #333; border: none; background: transparent; width: 100%; text-align: center; text-transform: uppercase; }
+@media print {
+    @page { size: A4 landscape; margin: 1mm; }
+    body { zoom: 60%; -webkit-print-color-adjust: exact !important; background:#fff !important; }
+    .no-print, #lockBtn, .calc-master, .nav-tabs, .export-bar { display: none !important; }
+    body, td, th, input { color: #000 !important; background: #fff !important; }
+}
 
-    /* Nav */
-    .nav-tabs { display: flex; justify-content: center; margin-bottom: 5px; gap: 5px; }
-    .tab-btn { padding: 4px 20px; cursor: pointer; border: 1px solid transparent; font-weight: 700; font-size: 15px; text-transform: uppercase; border-radius: 3px; color: #fff; }
-    .btn-a { background: #1b5e20; } .btn-a.active-a { background: #2e7d32; border-color: #000; }
-    .btn-b { background: #0d47a1; } .btn-b.active-b { background: #1565c0; border-color: #000; }
+* { box-sizing: border-box; }
 
-    /* Tabel */
-    .container { background: #fff; border: 1px solid #000; overflow-x: auto; }
-    table { border-collapse: collapse; font-size: 11px; width: 1450px; table-layout: fixed; margin-left: auto; margin-right: auto; }
-    th { border: 1px solid #fff; padding: 4px 0; font-weight: 900; color: white; line-height: 1; overflow: hidden; text-transform: uppercase; }
-    td { border: 1px solid #999; text-align: center; padding: 6px 0; font-weight: 700; color: #000; }
+body {
+    font-family: 'Roboto', 'Segoe UI', monospace;
+    background: var(--bg);
+    margin: 0; padding: 5px;
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
 
-    /* FIX: font-weight fara px, border cu punct nu virgula */
-    .col-ap { font-weight: 600; border-right: 1px solid #999; }
+/* Grid background - STATIC (optimizat) */
+body::before {
+    content:'';
+    position:fixed; inset:0; z-index:-1;
+    background-image:
+        linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
 
-    /* Selectie Rand */
-    tr.active-row td { background-color: #ffff00 !important; outline: 1px solid #000; }
+/* ===== HEADER ===== */
+.header-panel {
+    display: grid;
+    grid-template-columns: 300px 1fr 160px;
+    gap: 10px;
+    background: rgba(0,20,40,0.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 8px 12px;
+    border: 1px solid var(--cyan);
+    border-top: 3px solid var(--cyan);
+    box-shadow: 0 0 24px rgba(0,245,255,0.25), inset 0 0 40px rgba(0,245,255,0.03);
+    margin-bottom: 5px;
+    border-radius: 0 0 8px 8px;
+    align-items: center;
+    position: relative;
+}
+.header-panel::before {
+    content:'';
+    position:absolute; top:0; left:10%; right:10%; height:1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.6;
+}
 
-    /* Zebra */
-    .scara-a-mode tbody tr:nth-child(even):not(.active-row) { background-color: #a5d6a7 !important; }
-    .scara-b-mode tbody tr:nth-child(even):not(.active-row) { background-color: #90caf9 !important; }
-    .scara-a-th th { background: #1b5e20; }
-    .scara-b-th th { background: #0d47a1; }
+.logo-wrap svg { filter: drop-shadow(0 0 8px #ff2d55); }
 
-    .res-col { background-color: #ffcdd2 !important; color: #000 !important; font-weight: 700; border-left: 1px solid #000; border-right: 1px solid #000; }
-    .fond-col { background-color: #e1f5fe !important; }
+#ceas {
+    font-family: 'Roboto', monospace;
+    font-size: 28px; font-weight: 700;
+    color: var(--cyan);
+    text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan2);
+    letter-spacing: 3px;
+}
+#l_an {
+    font-family: 'Roboto', monospace;
+    font-size: 14px; font-weight: 700;
+    color: var(--neon-r);
+    text-shadow: 0 0 8px var(--neon-r);
+    border: none; background: transparent;
+    width: 150px; letter-spacing: 2px;
+}
 
-    input[type="number"] { width: 95%; border: none; text-align: center; font-weight: 700; padding: 1px; font-size: 11px; background: transparent; }
-    .readonly-mode input { pointer-events: none; }
+.edit-titlu {
+    font-family: 'Roboto', monospace;
+    font-size: 20px; font-weight: 900;
+    color: var(--cyan);
+    text-shadow: 0 0 12px var(--cyan), 0 0 30px var(--cyan2);
+    border: none; background: transparent;
+    width: 100%; text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 0 0 14px var(--cyan), 0 0 30px var(--cyan2);
+}
 
-    .calc-master { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 2px; background: #FFE5E5; padding: 3px; border: 1px solid #ddd; margin-bottom: 5px; border-radius: 4px; }
-    .calc-group label { font-size: 9px; font-weight: 700; display: block; text-align: center; }
-    /* FIX: font-weight max 900 */
-    .calc-group input { width: 65px; text-align: center; font-weight: 900; border: 1px solid #999; background: #fffde7; font-size: 13px; margin: 0 auto; display: block; }
-    #lockBtn { background: #d32f2f; color: white; padding: 2px 5px; border: none; border-radius: 2px; font-weight: 700; cursor: pointer; font-size: 11px; }
+#tot_p {
+    color: var(--neon-g);
+    text-shadow: 0 0 8px var(--neon-g);
+    font-size: 21px; font-weight: 900;
+}
 
-    /* Bara export/import */
-    .export-bar { display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
-        background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 4px;
-        padding: 4px 8px; margin-bottom: 5px; }
-    .export-bar span { font-weight: 700; font-size: 11px; color: #1b5e20; margin-right: 4px; }
-    .btn-exp { padding: 4px 10px; border: none; border-radius: 3px; font-weight: 700; font-size: 12px; cursor: pointer; color: #fff; }
-    .btn-json-exp  { background: #1565c0; }
-    .btn-json-imp  { background: #6a1b9a; }
-    .btn-html-save { background: #e65100; }
-    .btn-exp:hover { opacity: 0.85; }
+#lockBtn {
+    font-family: 'Roboto', monospace;
+    background: linear-gradient(135deg, #1a0010, #3d0020);
+    color: var(--neon-r);
+    border: 1px solid var(--neon-r);
+    box-shadow: 0 0 8px rgba(255,45,85,0.4);
+    padding: 4px 8px; border-radius: 3px;
+    font-weight: 700; cursor: pointer; font-size: 10px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+#lockBtn:hover { box-shadow: 0 0 16px rgba(255,45,85,0.8); }
+
+/* ===== CALC MASTER ===== */
+.calc-master {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 3px;
+    background: rgba(0,15,30,0.8);
+    backdrop-filter: blur(4px);
+    padding: 4px;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 12px rgba(0,245,255,0.1);
+    margin-bottom: 5px; border-radius: 4px;
+}
+.calc-group label {
+    font-size: 13px; font-weight: 900; display: block; text-align: center;
+    color: var(--cyan2); text-transform: uppercase; letter-spacing: 1px;
+    text-shadow: 0 0 5px var(--cyan2);
+}
+.calc-group input {
+    width: 75px; text-align: center; font-weight: 700;
+    border: 1px solid var(--cyan-dim);
+    background: rgba(0,245,255,0.06);
+    color: var(--neon-y);
+    text-shadow: 0 0 6px var(--neon-y);
+    font-size: 18px; margin: 0 auto; display: block;
+    border-radius: 2px; padding: 2px;
+    font-family: 'Roboto', monospace;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.calc-group input:focus {
+    outline: none;
+    border-color: var(--cyan);
+    box-shadow: 0 0 8px rgba(0,245,255,0.5);
+}
+
+/* ===== NAV + PROGRAM ===== */
+.nav-tabs {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+    background: rgba(0,15,30,0.85);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 5px 12px;
+    box-shadow: 0 0 14px rgba(0,245,255,0.08);
+}
+.nav-btns { display: flex; gap: 8px; align-items: center; }
+.tab-btn {
+    font-family: 'Roboto', monospace;
+    padding: 5px 22px; cursor: pointer;
+    border: 1px solid transparent;
+    font-weight: 700; font-size: 12px;
+    text-transform: uppercase; border-radius: 3px;
+    color: #fff; letter-spacing: 2px;
+    transition: box-shadow 0.2s, color 0.2s;
+    will-change: box-shadow;
+}
+.btn-a { background: linear-gradient(135deg,#0a1f0a,#1b5e20); border-color: #2e7d32; }
+.btn-a.active-a {
+    background: linear-gradient(135deg,#1b5e20,#2e7d32);
+    border-color: var(--neon-g);
+    box-shadow: 0 0 14px rgba(57,255,20,0.5);
+    color: var(--neon-g); text-shadow: 0 0 8px var(--neon-g);
+}
+.btn-b { background: linear-gradient(135deg,#020c1e,#0d47a1); border-color: #1565c0; }
+.btn-b.active-b {
+    background: linear-gradient(135deg,#0d47a1,#1565c0);
+    border-color: var(--cyan);
+    box-shadow: 0 0 14px rgba(0,245,255,0.5);
+    color: var(--cyan); text-shadow: 0 0 8px var(--cyan);
+}
+
+/* Program functionare */
+.program-grid {
+    display: grid;
+    grid-template-columns: auto repeat(5, 1fr);
+    grid-template-rows: auto auto;
+    gap: 2px 8px;
+    align-items: center;
+}
+.prog-label {
+    font-family: 'Roboto', monospace;
+    font-size:13px; font-weight: 900;
+    color: var(--cyan2);
+    text-shadow: 0 0 6px var(--cyan2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    grid-row: 1 / span 2;
+    padding-right: 6px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+    line-height: 1.4;
+}
+.prog-zi-name {
+    font-family: 'Roboto', monospace;
+    font-size: 13px; font-weight: 800;
+    text-align: center;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.prog-zi-name.luni    { color: var(--cyan); text-shadow: 0 0 5px var(--cyan); }
+.prog-zi-name.marti   { color: var(--cyan); text-shadow: 0 0 5px var(--cyan); }
+.prog-zi-name.mierc   { color: var(--cyan); text-shadow: 0 0 5px var(--cyan); }
+.prog-zi-name.joi     { color: var(--cyan); text-shadow: 0 0 5px var(--cyan); }
+.prog-zi-name.vineri  { color: var(--cyan); text-shadow: 0 0 5px var(--cyan); }
+.prog-ora {
+    font-family: 'Roboto', monospace;
+    font-size: 15px; font-weight: 800;
+    text-align: center; width: 100%;
+    border: none;
+    background: rgba(0,245,255,0.06);
+    border-bottom: 1px solid var(--cyan-dim);
+    color: var(--neon-y);
+    text-shadow: 0 0 5px rgba(255,230,0,0.5);
+    border-radius: 2px;
+    padding: 1px 2px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.prog-ora:focus {
+    outline: none;
+    border-bottom-color: var(--cyan);
+    box-shadow: 0 2px 8px rgba(0,245,255,0.3);
+    background: rgba(0,245,255,0.1);
+}
+.readonly-mode .prog-ora { pointer-events: none; }
+
+/* ===== EXPORT BAR ===== */
+.export-bar {
+    display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+    background: rgba(0,20,10,0.8);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(57,255,20,0.25);
+    box-shadow: 0 0 10px rgba(57,255,20,0.08);
+    border-radius: 4px; padding: 4px 8px; margin-bottom: 5px;
+}
+.export-bar > span {
+    font-weight: 700; font-size: 11px;
+    color: var(--neon-g); margin-right: 4px;
+    text-shadow: 0 0 6px var(--neon-g);
+    font-family: 'Roboto', monospace;
+}
+.btn-exp {
+    padding: 4px 10px; border: 1px solid transparent;
+    border-radius: 3px; font-weight: 700; font-size: 11px;
+    cursor: pointer; color: #fff;
+    font-family: 'Roboto', monospace;
+    letter-spacing: 1px; transition: all 0.2s;
+}
+.btn-json-exp  { background: linear-gradient(135deg,#0a1a3a,#1565c0); border-color: var(--cyan2); }
+.btn-json-imp  { background: linear-gradient(135deg,#1a0a3a,#6a1b9a); border-color: #9c27b0; }
+.btn-html-save { background: linear-gradient(135deg,#2a0a00,#e65100); border-color: #ff6d00; }
+.btn-exp:hover:not(:disabled) {
+    box-shadow: 0 0 12px currentColor;
+    transform: translateY(-1px);
+}
+
+/* ===== TABEL CONTAINER ===== */
+.container {
+    background: rgba(5,45,61,0.9);
+    border: 1px solid var(--border);
+    box-shadow: 0 0 20px rgba(0,245,255,0.1);
+    overflow-x: auto;
+    border-radius: 4px;
+    position: relative;
+}
+
+/* Overlay de tranzitie intre scari */
+#tranzitie-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(ellipse at center, rgba(0,245,255,0.18) 0%, transparent 70%);
+    transition: opacity 0.15s ease;
+}
+#tranzitie-overlay.activ { opacity: 1; }
+
+/* Scanline sweep la tranzitie */
+#tranzitie-sweep {
+    position: fixed;
+    left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--cyan2), var(--cyan), transparent);
+    box-shadow: 0 0 18px var(--cyan), 0 0 40px var(--cyan2);
+    z-index: 10000;
+    top: -4px;
+    transition: none;
+}
+#tranzitie-sweep.sweep {
+    animation: sweepDown 0.45s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+@keyframes sweepDown {
+    0%   { top: -4px; opacity: 1; }
+    100% { top: 100vh; opacity: 0.3; }
+}
+
+/* Flash border pe tabel */
+.container.flash-a {
+    animation: flashA 0.5s ease-out;
+}
+.container.flash-b {
+    animation: flashB 0.5s ease-out;
+}
+@keyframes flashA {
+    0%   { box-shadow: 0 0 60px rgba(57,255,20,0.8), 0 0 20px rgba(0,245,255,0.1); border-color: var(--neon-g); }
+    100% { box-shadow: 0 0 20px rgba(0,245,255,0.1); border-color: var(--border); }
+}
+@keyframes flashB {
+    0%   { box-shadow: 0 0 60px rgba(0,245,255,0.8), 0 0 20px rgba(0,245,255,0.1); border-color: var(--cyan); }
+    100% { box-shadow: 0 0 20px rgba(0,245,255,0.1); border-color: var(--border); }
+}
+
+table {
+    border-collapse: collapse;
+    font-size: 15px; width: 1450px;
+    table-layout: fixed;
+    margin-left: auto; margin-right: auto;
+    font-family: 'Roboto', monospace;
+    contain: layout style;
+}
+
+/* Header tabel */
+th {
+    border: 1px solid rgba(0,245,255,0.2);
+    padding: 5px 0; font-weight: 900;
+    color: var(--cyan); line-height: 1;
+    overflow: hidden; text-transform: uppercase;
+    font-size: 9px; letter-spacing: 1px;
+    text-shadow: 0 0 6px var(--cyan);
+}
+.scara-a-th th {
+    background: linear-gradient(180deg, #0a2010, #0d3018);
+    border-bottom: 2px solid var(--neon-g);
+}
+.scara-b-th th {
+    background: linear-gradient(180deg, #020c20, #041530);
+    border-bottom: 2px solid var(--cyan);
+}
+
+/* Celule normale */
+td {
+    border: 1px solid rgba(0,245,255,0.08);
+    text-align: center; padding: 5px 0;
+    font-weight: 700; color: var(--text);
+}
+
+.col-ap {
+    font-weight: 900; border-right: 1px solid var(--border);
+    color: var(--cyan2);
+    text-shadow: 0 0 5px var(--cyan2);
+}
+
+/* Zebra futurista Scara A - verde inchis */
+.scara-a-mode tbody tr:nth-child(even):not(.active-row) td {
+    background: rgba(0,60,20,0.35) !important;
+}
+.scara-a-mode tbody tr:nth-child(odd):not(.active-row) td {
+    background: rgba(0,30,10,0.2) !important;
+}
+
+/* Zebra futurista Scara B - albastru inchis */
+.scara-b-mode tbody tr:nth-child(even):not(.active-row) td {
+    background: rgba(0,30,80,0.4) !important;
+}
+.scara-b-mode tbody tr:nth-child(odd):not(.active-row) td {
+    background: rgba(0,15,40,0.2) !important;
+}
+
+/* Selectie rand - CYAN NEON */
+tr.active-row td {
+    background: rgba(0,245,255,0.12) !important;
+    border-top: 1px solid var(--cyan) !important;
+    border-bottom: 1px solid var(--cyan) !important;
+    color: var(--cyan) !important;
+    text-shadow: 0 0 8px var(--cyan);
+    box-shadow: inset 0 0 20px rgba(0,245,255,0.15);
+    box-shadow: inset 0 0 22px rgba(0,245,255,0.2);
+}
+
+/* Coloane rezultat */
+.res-col {
+    background: rgba(255,45,85,0.1) !important;
+    color: var(--neon-r) !important;
+    text-shadow: 0 0 6px var(--neon-r);
+    font-weight: 900;
+    border-left: 1px solid rgba(255,45,85,0.4) !important;
+    border-right: 1px solid rgba(255,45,85,0.4) !important;
+}
+tr.active-row .res-col {
+    background: rgba(0,245,255,0.2) !important;
+    color: var(--cyan) !important;
+    text-shadow: 0 0 12px var(--cyan);
+}
+
+.fond-col {
+    background: rgba(0,100,150,0.15) !important;
+}
+
+/* Inputs in tabel */
+input[type="number"] {
+    width: 95%; border: none; text-align: center;
+    font-weight: 800; padding: 1px; font-size: 13px;
+    background: transparent;
+    color: var(--neon-y);
+    font-family: 'Roboto', monospace;
+}
+input[type="number"]:focus {
+    outline: 1px solid var(--cyan);
+    background: rgba(0,245,255,0.05);
+    border-radius: 2px;
+}
+
+.readonly-mode input { pointer-events: none; }
+
+/* Scrollbar futurista */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan2); box-shadow: 0 0 6px var(--cyan); }
+
+/* expMsg */
+#expMsg { font-size: 11px; color: var(--neon-g); margin-left: 6px; text-shadow: 0 0 6px var(--neon-g); }
 </style>
+</head>
+<body id="mainBody" class="">
+<div id="tranzitie-overlay" class=""></div>
+<div id="tranzitie-sweep" class="sweep" style="background: linear-gradient(90deg, transparent, rgb(57, 255, 20), rgb(0, 245, 255), rgb(57, 255, 20), transparent); box-shadow: rgb(57, 255, 20) 0px 0px 18px, rgb(57, 255, 20) 0px 0px 40px;"></div>
+
 <div class="header-panel">
-    <div class="logo-wrap" style="display:flex; align-items:center; gap:25px;">
-        <svg style="width:55px;height:55px;fill:#d32f2f;" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>
+    <div class="logo-wrap" style="display:flex; align-items:center; gap:18px;">
+        <svg style="width:52px;height:52px;fill:#ff2d55;" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>
         <div>
-            <div id="ceas" style="font-size:30px; font-weight: 600;">22:44:40</div>
-            <div style="font-size: 25px;">LUNA: <input type="text" id="l_an" value="MAI 2026" style="width: 100px; font-weight:900; color:#d32f2f; border:none; background:transparent;"></div>
+            <div id="ceas">16:17:08</div>
+            <div style="font-size:13px; color:var(--text2); font-family:'Roboto',monospace; letter-spacing:1px;">
+                LUNA:&nbsp;<input type="text" id="l_an" value="MAI 2026">
+            </div>
         </div>
     </div>
-    <input type="text" id="titlu" class="edit-titlu" value="GESTIUNE SATURN 34">
-    <div style="text-align:right; font-weight: 600; line-height: 1;">
-        <div style="color: #0d47a1; font-size: 16px;"> PERS: <span id="tot_p">26</span></div>
-        <button id="lockBtn" onclick="verificareParola()">🔒 BLOCAT</button>
+
+    <div style="text-align:center;">
+        <input type="text" id="titlu" class="edit-titlu" value="GESTIUNE SATURN 34">
+    </div>
+
+    <div style="text-align:right; line-height:1.6;">
+        <div style="font-family:'Roboto',monospace; font-size:13px; color:var(--text2);">
+            PERS:&nbsp;<span id="tot_p">26</span>
+        </div>
+        <button id="lockBtn" onclick="verificareParola()">🔓 ADMIN</button>
     </div>
 </div>
 
 <div class="calc-master no-print">
-    <div class="calc-group"><label>Pierderi Apă</label><input type="number" id="f_dif" value="396.39" oninput="recalc()"></div>
-    <div class="calc-group"><label>Lumină</label><input type="number" id="f_el" value="40.82" oninput="recalc()"></div>
+    <div class="calc-group"><label>Pier.Apa</label><input type="number" id="f_dif" value="396.39" oninput="recalc()"></div>
+    <div class="calc-group"><label>Lumina</label><input type="number" id="f_el" value="40.82" oninput="recalc()"></div>
     <div class="calc-group"><label>Salarii</label><input type="number" id="f_sal" value="490.56" oninput="recalc()"></div>
-    <div class="calc-group"><label>Curățenie</label><input type="number" id="f_crt" value="200.01" oninput="recalc()"></div>
-    <div class="calc-group"><label>Cheltuieli Sediu</label><input type="number" id="f_sed" value="22.04" oninput="recalc()"></div>
-    <div class="calc-group"><label>Com.Bancă</label><input type="number" id="f_bank" value="15.00" oninput="recalc()"></div>
+    <div class="calc-group"><label>Curatenie</label><input type="number" id="f_crt" value="200.01" oninput="recalc()"></div>
+    <div class="calc-group"><label>Chelt.Sediu</label><input type="number" id="f_sed" value="22.04" oninput="recalc()"></div>
+    <div class="calc-group"><label>Com.Banca</label><input type="number" id="f_bank" value="15.00" oninput="recalc()"></div>
     <div class="calc-group"><label>Chirie</label><input type="number" id="f_chir" value="10.00" oninput="recalc()"></div>
     <div class="calc-group"><label>Gunoi/P</label><input type="number" id="f_gun" value="30.29" oninput="recalc()"></div>
 </div>
 
 <div class="nav-tabs no-print">
-    <button id="btnA" class="tab-btn btn-a active-a" onclick="switchS(&#39;A&#39;)">Scara A</button>
-    <button id="btnB" class="tab-btn btn-b" onclick="switchS(&#39;B&#39;)">Scara B</button>
+    <div class="nav-btns">
+        <button id="btnA" class="tab-btn btn-a active-a" onclick="switchS('A')">■ Scara A</button>
+        <button id="btnB" class="tab-btn btn-b" onclick="switchS('B')">■ Scara B</button>
+    </div>
+
+    <div class="program-grid">
+        <div class="prog-label">🕐<br>PROGRAM<br>FUNC.</div>
+
+        <div class="prog-zi-name luni">Luni</div>
+        <div class="prog-zi-name marti">Marti</div>
+        <div class="prog-zi-name mierc">Mierc.</div>
+        <div class="prog-zi-name joi">Joi</div>
+        <div class="prog-zi-name vineri">Vineri</div>
+
+        <input class="prog-ora" type="text" id="prog_l" value="08:00-16:00" placeholder="--:--">
+        <input class="prog-ora" type="text" id="prog_ma" value="08:00-16:00" placeholder="--:--">
+        <input class="prog-ora" type="text" id="prog_mi" value="08:00-16:00" placeholder="--:--">
+        <input class="prog-ora" type="text" id="prog_j" value="08:00-16:00" placeholder="--:--">
+        <input class="prog-ora" type="text" id="prog_v" value="08:00-14:00" placeholder="--:--">
+    </div>
+
+    <div style="font-family:'Roboto',monospace; font-size:8px; color:var(--text2); text-align:right; line-height:1.6; opacity:0.6;">
+        👤 PERS ACTIVE<br>
+        <span style="font-size:14px; color:var(--neon-g); text-shadow:0 0 8px var(--neon-g); font-weight:900;" id="tot_p2">26</span>
+    </div>
 </div>
 
 <div class="export-bar no-print">
     <span>💾 DATE:</span>
-    <button class="btn-exp btn-json-exp" onclick="exportJSON()" title="Necesita mod ADMIN" style="opacity: 0.35; cursor: not-allowed;" disabled="">📤 Exportă JSON</button>
-    <button class="btn-exp btn-json-imp" onclick="document.getElementById(&#39;importFile&#39;).click()" title="Necesita mod ADMIN" style="opacity: 0.35; cursor: not-allowed;" disabled="">📥 Importă JSON</button>
-    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)" disabled="">
-    <button class="btn-exp btn-html-save" onclick="salveazaHTML()" title="Necesita mod ADMIN" style="opacity: 0.35; cursor: not-allowed;" disabled="">💾 Salvează HTML complet</button>
-    <span id="expMsg" style="font-size:11px; color:#555; margin-left:6px;"></span>
+    <button class="btn-exp btn-json-exp" onclick="exportJSON()" title="" style="opacity: 1; cursor: pointer;">📤 Export JSON</button>
+    <button class="btn-exp btn-json-imp" onclick="document.getElementById('importFile').click()" title="" style="opacity: 1; cursor: pointer;">📥 Import JSON</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
+    <button class="btn-exp btn-html-save" onclick="salveazaHTML()" title="" style="opacity: 1; cursor: pointer;">💾 Salvează HTML</button>
+    <span id="expMsg"></span>
 </div>
 
-<div class="container scara-a-mode" id="tableCont">
+<div class="container scara-a-mode flash-a" id="tableCont">
     <table>
         <thead>
             <tr id="headRow" class="scara-a-th">
-                <th width="20">Ap</th>
-                <th width="20">P.</th>
-                <th width="40">Cotă</th>
-                <th width="25">MC</th>
-                <th width="40">V.Apă</th>
-                <th width="40">D.Apă</th>
-                <th width="35">Cur.</th>
-                <th width="35">Gun.</th>
-                <th width="35">Sal.</th>
-                <th width="35">Crt.</th>
-                <th width="35">Sed.</th>
-                <th width="35">Bnk.</th>
-                <th width="35">Chi.</th>
+                <th width="20">Ap</th><th width="20">Nr.P</th><th width="40">Cota parte</th><th width="30">Index Apa</th>
+                <th width="40">V.Apa</th><th width="40">Pierderi</th><th width="35">Lumina</th><th width="35">Gunoi.</th>
+                <th width="35">Salarii.</th><th width="35">Crt.</th><th width="35">Sed.</th><th width="35">Bnk.</th><th width="35">Chi.</th>
                 <th width="45" class="res-col">TOT LUNA</th>
-                <th width="30">FRul.</th>
-                <th width="30">FRep.</th>
-                <th width="30">Rest.I</th>
-                <th width="30">Pen.</th>
-                <th width="30">Res.F</th>
-                <th width="30">Res.P</th>
+                <th width="30">FRul.</th><th width="30">FRep.</th>
+                <th width="30">Rest.I</th><th width="30">Pen.</th><th width="30">Res.F</th><th width="30">Res.P</th>
                 <th width="45" class="res-col">TOT PLATA</th>
             </tr>
         </thead>
-        <tbody id="bodyTable"><tr id="row_1" style="" onclick="markRow(1)">
-                <td class="col-ap">1</td>
-                <td><input type="number" id="p_1" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_1" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_1" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_1">51.09</td><td id="vd_1">19.82</td><td id="ve_1">1.57</td><td id="vg_1">30.29</td>
-                <td id="vsl_1">23.52</td><td id="vcr_1">9.59</td><td id="vsd_1">0.20</td><td id="vbk_1">0.70</td><td id="vch_1">0.16</td>
-                <td id="tl_1" class="res-col">136.93</td>
-                <td class="fond-col"><input type="number" id="fr_1" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_1" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_1" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_1" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_1" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_1" value="0" oninput="recalc()"></td>
-                <td id="tp_1" class="res-col">146.93</td>
-            </tr><tr id="row_2" style="" onclick="markRow(2)">
-                <td class="col-ap">2</td>
-                <td><input type="number" id="p_2" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_2" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_2" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_2">85.15</td><td id="vd_2">19.82</td><td id="ve_2">1.57</td><td id="vg_2">30.29</td>
-                <td id="vsl_2">23.52</td><td id="vcr_2">9.59</td><td id="vsd_2">0.20</td><td id="vbk_2">0.70</td><td id="vch_2">0.16</td>
-                <td id="tl_2" class="res-col">170.99</td>
-                <td class="fond-col"><input type="number" id="fr_2" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_2" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_2" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_2" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_2" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_2" value="0" oninput="recalc()"></td>
-                <td id="tp_2" class="res-col">180.99</td>
-            </tr><tr id="row_3" style="" onclick="markRow(3)">
-                <td class="col-ap">3</td>
-                <td><input type="number" id="p_3" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_3" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_3" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_3">63.18</td><td id="vd_3">19.82</td><td id="ve_3">3.14</td><td id="vg_3">60.58</td>
-                <td id="vsl_3">23.52</td><td id="vcr_3">9.59</td><td id="vsd_3">0.20</td><td id="vbk_3">0.70</td><td id="vch_3">0.16</td>
-                <td id="tl_3" class="res-col">180.89</td>
-                <td class="fond-col"><input type="number" id="fr_3" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_3" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_3" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_3" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_3" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_3" value="0" oninput="recalc()"></td>
-                <td id="tp_3" class="res-col">190.89</td>
-            </tr><tr id="row_4" style="" onclick="markRow(4)">
-                <td class="col-ap">4</td>
-                <td><input type="number" id="p_4" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_4" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_4" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_4">102.18</td><td id="vd_4">19.82</td><td id="ve_4">3.14</td><td id="vg_4">60.58</td>
-                <td id="vsl_4">23.52</td><td id="vcr_4">9.59</td><td id="vsd_4">0.20</td><td id="vbk_4">0.70</td><td id="vch_4">0.16</td>
-                <td id="tl_4" class="res-col">219.88</td>
-                <td class="fond-col"><input type="number" id="fr_4" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_4" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_4" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_4" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_4" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_4" value="0" oninput="recalc()"></td>
-                <td id="tp_4" class="res-col">229.88</td>
-            </tr><tr id="row_5" style="" onclick="markRow(5)">
-                <td class="col-ap">5</td>
-                <td><input type="number" id="p_5" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_5" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_5" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_5">137.94</td><td id="vd_5">19.82</td><td id="ve_5">3.14</td><td id="vg_5">60.58</td>
-                <td id="vsl_5">24.39</td><td id="vcr_5">9.95</td><td id="vsd_5">0.21</td><td id="vbk_5">0.72</td><td id="vch_5">0.17</td>
-                <td id="tl_5" class="res-col">256.92</td>
-                <td class="fond-col"><input type="number" id="fr_5" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_5" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_5" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_5" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_5" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_5" value="0" oninput="recalc()"></td>
-                <td id="tp_5" class="res-col">266.92</td>
-            </tr><tr id="row_6" style="" onclick="markRow(6)">
-                <td class="col-ap">6</td>
-                <td><input type="number" id="p_6" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_6" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_6" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_6">119.21</td><td id="vd_6">19.82</td><td id="ve_6">3.14</td><td id="vg_6">60.58</td>
-                <td id="vsl_6">23.52</td><td id="vcr_6">9.59</td><td id="vsd_6">0.20</td><td id="vbk_6">0.70</td><td id="vch_6">0.16</td>
-                <td id="tl_6" class="res-col">236.91</td>
-                <td class="fond-col"><input type="number" id="fr_6" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_6" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_6" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_6" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_6" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_6" value="0" oninput="recalc()"></td>
-                <td id="tp_6" class="res-col">246.91</td>
-            </tr><tr id="row_7" style="" onclick="markRow(7)">
-                <td class="col-ap">7</td>
-                <td><input type="number" id="p_7" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_7" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_7" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_7">233.31</td><td id="vd_7">19.82</td><td id="ve_7">3.14</td><td id="vg_7">60.58</td>
-                <td id="vsl_7">23.52</td><td id="vcr_7">9.59</td><td id="vsd_7">0.20</td><td id="vbk_7">0.70</td><td id="vch_7">0.16</td>
-                <td id="tl_7" class="res-col">351.02</td>
-                <td class="fond-col"><input type="number" id="fr_7" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_7" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_7" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_7" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_7" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_7" value="0" oninput="recalc()"></td>
-                <td id="tp_7" class="res-col">361.02</td>
-            </tr><tr id="row_8" style="" onclick="markRow(8)">
-                <td class="col-ap">8</td>
-                <td><input type="number" id="p_8" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_8" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_8" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_8">78.34</td><td id="vd_8">19.82</td><td id="ve_8">3.14</td><td id="vg_8">60.58</td>
-                <td id="vsl_8">29.08</td><td id="vcr_8">11.86</td><td id="vsd_8">0.25</td><td id="vbk_8">0.86</td><td id="vch_8">0.20</td>
-                <td id="tl_8" class="res-col">204.12</td>
-                <td class="fond-col"><input type="number" id="fr_8" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_8" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_8" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_8" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_8" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_8" value="0" oninput="recalc()"></td>
-                <td id="tp_8" class="res-col">214.12</td>
-            </tr><tr id="row_9" style="" onclick="markRow(9)" class="active-row">
-                <td class="col-ap">9</td>
-                <td><input type="number" id="p_9" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_9" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_9" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_9">0.00</td><td id="vd_9">19.82</td><td id="ve_9">0.00</td><td id="vg_9">0.00</td>
-                <td id="vsl_9">24.39</td><td id="vcr_9">9.95</td><td id="vsd_9">0.21</td><td id="vbk_9">0.72</td><td id="vch_9">0.17</td>
-                <td id="tl_9" class="res-col">55.25</td>
-                <td class="fond-col"><input type="number" id="fr_9" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_9" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_9" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_9" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_9" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_9" value="0" oninput="recalc()"></td>
-                <td id="tp_9" class="res-col">65.25</td>
-            </tr><tr id="row_10" style="" onclick="markRow(10)">
-                <td class="col-ap">10</td>
-                <td><input type="number" id="p_10" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_10" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_10" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_10">0.00</td><td id="vd_10">19.82</td><td id="ve_10">0.00</td><td id="vg_10">0.00</td>
-                <td id="vsl_10">23.52</td><td id="vcr_10">9.59</td><td id="vsd_10">0.20</td><td id="vbk_10">0.70</td><td id="vch_10">0.16</td>
-                <td id="tl_10" class="res-col">53.98</td>
-                <td class="fond-col"><input type="number" id="fr_10" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_10" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_10" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_10" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_10" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_10" value="0" oninput="recalc()"></td>
-                <td id="tp_10" class="res-col">63.98</td>
-            </tr><tr id="row_11" style="" onclick="markRow(11)">
-                <td class="col-ap">11</td>
-                <td><input type="number" id="p_11" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_11" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_11" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_11">51.09</td><td id="vd_11">19.82</td><td id="ve_11">1.57</td><td id="vg_11">30.29</td>
-                <td id="vsl_11">23.52</td><td id="vcr_11">9.59</td><td id="vsd_11">0.20</td><td id="vbk_11">0.70</td><td id="vch_11">0.16</td>
-                <td id="tl_11" class="res-col">136.93</td>
-                <td class="fond-col"><input type="number" id="fr_11" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_11" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_11" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_11" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_11" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_11" value="0" oninput="recalc()"></td>
-                <td id="tp_11" class="res-col">146.93</td>
-            </tr><tr id="row_12" style="" onclick="markRow(12)">
-                <td class="col-ap">12</td>
-                <td><input type="number" id="p_12" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_12" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_12" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_12">42.92</td><td id="vd_12">19.82</td><td id="ve_12">1.57</td><td id="vg_12">30.29</td>
-                <td id="vsl_12">29.08</td><td id="vcr_12">11.86</td><td id="vsd_12">0.25</td><td id="vbk_12">0.86</td><td id="vch_12">0.20</td>
-                <td id="tl_12" class="res-col">136.84</td>
-                <td class="fond-col"><input type="number" id="fr_12" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_12" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_12" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_12" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_12" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_12" value="0" oninput="recalc()"></td>
-                <td id="tp_12" class="res-col">146.84</td>
-            </tr><tr id="row_13" style="" onclick="markRow(13)">
-                <td class="col-ap">13</td>
-                <td><input type="number" id="p_13" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_13" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_13" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_13">0.00</td><td id="vd_13">19.82</td><td id="ve_13">0.00</td><td id="vg_13">0.00</td>
-                <td id="vsl_13">24.39</td><td id="vcr_13">9.95</td><td id="vsd_13">0.21</td><td id="vbk_13">0.72</td><td id="vch_13">0.17</td>
-                <td id="tl_13" class="res-col">55.25</td>
-                <td class="fond-col"><input type="number" id="fr_13" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_13" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_13" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_13" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_13" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_13" value="0" oninput="recalc()"></td>
-                <td id="tp_13" class="res-col">65.25</td>
-            </tr><tr id="row_14" style="" onclick="markRow(14)">
-                <td class="col-ap">14</td>
-                <td><input type="number" id="p_14" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_14" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_14" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_14">170.30</td><td id="vd_14">19.82</td><td id="ve_14">6.28</td><td id="vg_14">121.16</td>
-                <td id="vsl_14">23.52</td><td id="vcr_14">9.59</td><td id="vsd_14">0.20</td><td id="vbk_14">0.70</td><td id="vch_14">0.16</td>
-                <td id="tl_14" class="res-col">351.72</td>
-                <td class="fond-col"><input type="number" id="fr_14" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_14" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_14" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_14" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_14" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_14" value="0" oninput="recalc()"></td>
-                <td id="tp_14" class="res-col">751.26</td>
-            </tr><tr id="row_15" style="" onclick="markRow(15)">
-                <td class="col-ap">15</td>
-                <td><input type="number" id="p_15" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_15" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_15" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_15">18.73</td><td id="vd_15">19.82</td><td id="ve_15">1.57</td><td id="vg_15">30.29</td>
-                <td id="vsl_15">23.52</td><td id="vcr_15">9.59</td><td id="vsd_15">0.20</td><td id="vbk_15">0.70</td><td id="vch_15">0.16</td>
-                <td id="tl_15" class="res-col">104.58</td>
-                <td class="fond-col"><input type="number" id="fr_15" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_15" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_15" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_15" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_15" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_15" value="0" oninput="recalc()"></td>
-                <td id="tp_15" class="res-col">114.58</td>
-            </tr><tr id="row_16" style="" onclick="markRow(16)">
-                <td class="col-ap">16</td>
-                <td><input type="number" id="p_16" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_16" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_16" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_16">78.34</td><td id="vd_16">19.82</td><td id="ve_16">3.14</td><td id="vg_16">60.58</td>
-                <td id="vsl_16">29.08</td><td id="vcr_16">11.86</td><td id="vsd_16">0.25</td><td id="vbk_16">0.86</td><td id="vch_16">0.20</td>
-                <td id="tl_16" class="res-col">204.12</td>
-                <td class="fond-col"><input type="number" id="fr_16" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_16" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_16" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_16" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_16" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_16" value="0" oninput="recalc()"></td>
-                <td id="tp_16" class="res-col">214.12</td>
-            </tr><tr id="row_17" style="" onclick="markRow(17)">
-                <td class="col-ap">17</td>
-                <td><input type="number" id="p_17" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_17" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_17" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_17">221.39</td><td id="vd_17">19.82</td><td id="ve_17">3.14</td><td id="vg_17">60.58</td>
-                <td id="vsl_17">24.39</td><td id="vcr_17">9.95</td><td id="vsd_17">0.21</td><td id="vbk_17">0.72</td><td id="vch_17">0.17</td>
-                <td id="tl_17" class="res-col">340.36</td>
-                <td class="fond-col"><input type="number" id="fr_17" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_17" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_17" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_17" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_17" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_17" value="0" oninput="recalc()"></td>
-                <td id="tp_17" class="res-col">350.36</td>
-            </tr><tr id="row_18" style="" onclick="markRow(18)">
-                <td class="col-ap">18</td>
-                <td><input type="number" id="p_18" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_18" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_18" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_18">32.19</td><td id="vd_18">19.82</td><td id="ve_18">1.57</td><td id="vg_18">30.29</td>
-                <td id="vsl_18">23.52</td><td id="vcr_18">9.59</td><td id="vsd_18">0.20</td><td id="vbk_18">0.70</td><td id="vch_18">0.16</td>
-                <td id="tl_18" class="res-col">118.03</td>
-                <td class="fond-col"><input type="number" id="fr_18" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_18" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_18" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_18" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_18" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_18" value="0" oninput="recalc()"></td>
-                <td id="tp_18" class="res-col">128.03</td>
-            </tr><tr id="row_19" style="" onclick="markRow(19)">
-                <td class="col-ap">19</td>
-                <td><input type="number" id="p_19" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_19" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_19" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_19">0.00</td><td id="vd_19">19.82</td><td id="ve_19">0.00</td><td id="vg_19">0.00</td>
-                <td id="vsl_19">23.52</td><td id="vcr_19">9.59</td><td id="vsd_19">0.20</td><td id="vbk_19">0.70</td><td id="vch_19">0.16</td>
-                <td id="tl_19" class="res-col">53.98</td>
-                <td class="fond-col"><input type="number" id="fr_19" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_19" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_19" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_19" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_19" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_19" value="0" oninput="recalc()"></td>
-                <td id="tp_19" class="res-col">63.98</td>
-            </tr><tr id="row_20" style="" onclick="markRow(20)">
-                <td class="col-ap">20</td>
-                <td><input type="number" id="p_20" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_20" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_20" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_20">0.00</td><td id="vd_20">19.82</td><td id="ve_20">0.00</td><td id="vg_20">0.00</td>
-                <td id="vsl_20">23.52</td><td id="vcr_20">9.59</td><td id="vsd_20">0.20</td><td id="vbk_20">0.70</td><td id="vch_20">0.16</td>
-                <td id="tl_20" class="res-col">53.98</td>
-                <td class="fond-col"><input type="number" id="fr_20" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_20" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_20" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_20" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_20" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_20" value="0" oninput="recalc()"></td>
-                <td id="tp_20" class="res-col">63.98</td>
-            </tr><tr id="row_21" style="display:none;" onclick="markRow(21)">
-                <td class="col-ap">21</td>
-                <td><input type="number" id="p_21" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_21" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_21" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_21">0.00</td><td id="vd_21">19.82</td><td id="ve_21">2.04</td><td id="vg_21">30.29</td>
-                <td id="vsl_21">23.52</td><td id="vcr_21">9.59</td><td id="vsd_21">0.20</td><td id="vbk_21">0.70</td><td id="vch_21">0.16</td>
-                <td id="tl_21" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_21" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_21" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_21" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_21" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_21" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_21" value="0" oninput="recalc()"></td>
-                <td id="tp_21" class="res-col">86.32</td>
-            </tr><tr id="row_22" style="display:none;" onclick="markRow(22)">
-                <td class="col-ap">22</td>
-                <td><input type="number" id="p_22" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_22" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_22" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_22">0.00</td><td id="vd_22">19.82</td><td id="ve_22">2.04</td><td id="vg_22">30.29</td>
-                <td id="vsl_22">23.52</td><td id="vcr_22">9.59</td><td id="vsd_22">0.20</td><td id="vbk_22">0.70</td><td id="vch_22">0.16</td>
-                <td id="tl_22" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_22" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_22" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_22" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_22" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_22" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_22" value="0" oninput="recalc()"></td>
-                <td id="tp_22" class="res-col">86.32</td>
-            </tr><tr id="row_23" style="display:none;" onclick="markRow(23)">
-                <td class="col-ap">23</td>
-                <td><input type="number" id="p_23" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_23" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_23" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_23">0.00</td><td id="vd_23">19.82</td><td id="ve_23">2.04</td><td id="vg_23">30.29</td>
-                <td id="vsl_23">23.52</td><td id="vcr_23">9.59</td><td id="vsd_23">0.20</td><td id="vbk_23">0.70</td><td id="vch_23">0.16</td>
-                <td id="tl_23" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_23" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_23" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_23" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_23" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_23" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_23" value="0" oninput="recalc()"></td>
-                <td id="tp_23" class="res-col">86.32</td>
-            </tr><tr id="row_24" style="display:none;" onclick="markRow(24)">
-                <td class="col-ap">24</td>
-                <td><input type="number" id="p_24" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_24" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_24" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_24">0.00</td><td id="vd_24">19.82</td><td id="ve_24">2.04</td><td id="vg_24">30.29</td>
-                <td id="vsl_24">23.52</td><td id="vcr_24">9.59</td><td id="vsd_24">0.20</td><td id="vbk_24">0.70</td><td id="vch_24">0.16</td>
-                <td id="tl_24" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_24" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_24" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_24" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_24" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_24" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_24" value="0" oninput="recalc()"></td>
-                <td id="tp_24" class="res-col">86.32</td>
-            </tr><tr id="row_25" style="display:none;" onclick="markRow(25)">
-                <td class="col-ap">25</td>
-                <td><input type="number" id="p_25" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_25" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_25" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_25">0.00</td><td id="vd_25">19.82</td><td id="ve_25">2.04</td><td id="vg_25">30.29</td>
-                <td id="vsl_25">24.39</td><td id="vcr_25">9.95</td><td id="vsd_25">0.21</td><td id="vbk_25">0.72</td><td id="vch_25">0.17</td>
-                <td id="tl_25" class="res-col">87.58</td>
-                <td class="fond-col"><input type="number" id="fr_25" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_25" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_25" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_25" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_25" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_25" value="0" oninput="recalc()"></td>
-                <td id="tp_25" class="res-col">87.58</td>
-            </tr><tr id="row_26" style="display:none;" onclick="markRow(26)">
-                <td class="col-ap">26</td>
-                <td><input type="number" id="p_26" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_26" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_26" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_26">0.00</td><td id="vd_26">19.82</td><td id="ve_26">2.04</td><td id="vg_26">30.29</td>
-                <td id="vsl_26">23.52</td><td id="vcr_26">9.59</td><td id="vsd_26">0.20</td><td id="vbk_26">0.70</td><td id="vch_26">0.16</td>
-                <td id="tl_26" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_26" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_26" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_26" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_26" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_26" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_26" value="0" oninput="recalc()"></td>
-                <td id="tp_26" class="res-col">86.32</td>
-            </tr><tr id="row_27" style="display:none;" onclick="markRow(27)">
-                <td class="col-ap">27</td>
-                <td><input type="number" id="p_27" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_27" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_27" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_27">0.00</td><td id="vd_27">19.82</td><td id="ve_27">2.04</td><td id="vg_27">30.29</td>
-                <td id="vsl_27">23.52</td><td id="vcr_27">9.59</td><td id="vsd_27">0.20</td><td id="vbk_27">0.70</td><td id="vch_27">0.16</td>
-                <td id="tl_27" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_27" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_27" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_27" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_27" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_27" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_27" value="0" oninput="recalc()"></td>
-                <td id="tp_27" class="res-col">86.32</td>
-            </tr><tr id="row_28" style="display:none;" onclick="markRow(28)">
-                <td class="col-ap">28</td>
-                <td><input type="number" id="p_28" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_28" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_28" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_28">0.00</td><td id="vd_28">19.82</td><td id="ve_28">2.04</td><td id="vg_28">30.29</td>
-                <td id="vsl_28">29.08</td><td id="vcr_28">11.86</td><td id="vsd_28">0.25</td><td id="vbk_28">0.86</td><td id="vch_28">0.20</td>
-                <td id="tl_28" class="res-col">94.40</td>
-                <td class="fond-col"><input type="number" id="fr_28" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_28" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_28" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_28" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_28" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_28" value="0" oninput="recalc()"></td>
-                <td id="tp_28" class="res-col">94.40</td>
-            </tr><tr id="row_29" style="display:none;" onclick="markRow(29)">
-                <td class="col-ap">29</td>
-                <td><input type="number" id="p_29" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_29" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_29" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_29">0.00</td><td id="vd_29">19.82</td><td id="ve_29">2.04</td><td id="vg_29">30.29</td>
-                <td id="vsl_29">24.39</td><td id="vcr_29">9.95</td><td id="vsd_29">0.21</td><td id="vbk_29">0.72</td><td id="vch_29">0.17</td>
-                <td id="tl_29" class="res-col">87.58</td>
-                <td class="fond-col"><input type="number" id="fr_29" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_29" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_29" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_29" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_29" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_29" value="0" oninput="recalc()"></td>
-                <td id="tp_29" class="res-col">87.58</td>
-            </tr><tr id="row_30" style="display:none;" onclick="markRow(30)">
-                <td class="col-ap">30</td>
-                <td><input type="number" id="p_30" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_30" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_30" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_30">0.00</td><td id="vd_30">19.82</td><td id="ve_30">2.04</td><td id="vg_30">30.29</td>
-                <td id="vsl_30">23.52</td><td id="vcr_30">9.59</td><td id="vsd_30">0.20</td><td id="vbk_30">0.70</td><td id="vch_30">0.16</td>
-                <td id="tl_30" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_30" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_30" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_30" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_30" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_30" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_30" value="0" oninput="recalc()"></td>
-                <td id="tp_30" class="res-col">86.32</td>
-            </tr><tr id="row_31" style="display:none;" onclick="markRow(31)">
-                <td class="col-ap">31</td>
-                <td><input type="number" id="p_31" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_31" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_31" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_31">0.00</td><td id="vd_31">19.82</td><td id="ve_31">2.04</td><td id="vg_31">30.29</td>
-                <td id="vsl_31">23.52</td><td id="vcr_31">9.59</td><td id="vsd_31">0.20</td><td id="vbk_31">0.70</td><td id="vch_31">0.16</td>
-                <td id="tl_31" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_31" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_31" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_31" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_31" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_31" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_31" value="0" oninput="recalc()"></td>
-                <td id="tp_31" class="res-col">86.32</td>
-            </tr><tr id="row_32" style="display:none;" onclick="markRow(32)">
-                <td class="col-ap">32</td>
-                <td><input type="number" id="p_32" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_32" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_32" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_32">0.00</td><td id="vd_32">19.82</td><td id="ve_32">2.04</td><td id="vg_32">30.29</td>
-                <td id="vsl_32">29.08</td><td id="vcr_32">11.86</td><td id="vsd_32">0.25</td><td id="vbk_32">0.86</td><td id="vch_32">0.20</td>
-                <td id="tl_32" class="res-col">94.40</td>
-                <td class="fond-col"><input type="number" id="fr_32" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_32" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_32" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_32" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_32" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_32" value="0" oninput="recalc()"></td>
-                <td id="tp_32" class="res-col">94.40</td>
-            </tr><tr id="row_33" style="display:none;" onclick="markRow(33)">
-                <td class="col-ap">33</td>
-                <td><input type="number" id="p_33" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_33" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_33" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_33">0.00</td><td id="vd_33">19.82</td><td id="ve_33">2.04</td><td id="vg_33">30.29</td>
-                <td id="vsl_33">24.39</td><td id="vcr_33">9.95</td><td id="vsd_33">0.21</td><td id="vbk_33">0.72</td><td id="vch_33">0.17</td>
-                <td id="tl_33" class="res-col">87.58</td>
-                <td class="fond-col"><input type="number" id="fr_33" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_33" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_33" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_33" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_33" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_33" value="0" oninput="recalc()"></td>
-                <td id="tp_33" class="res-col">87.58</td>
-            </tr><tr id="row_34" style="display:none;" onclick="markRow(34)">
-                <td class="col-ap">34</td>
-                <td><input type="number" id="p_34" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_34" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_34" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_34">0.00</td><td id="vd_34">19.82</td><td id="ve_34">2.04</td><td id="vg_34">30.29</td>
-                <td id="vsl_34">23.52</td><td id="vcr_34">9.59</td><td id="vsd_34">0.20</td><td id="vbk_34">0.70</td><td id="vch_34">0.16</td>
-                <td id="tl_34" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_34" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_34" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_34" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_34" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_34" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_34" value="0" oninput="recalc()"></td>
-                <td id="tp_34" class="res-col">86.32</td>
-            </tr><tr id="row_35" style="display:none;" onclick="markRow(35)">
-                <td class="col-ap">35</td>
-                <td><input type="number" id="p_35" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_35" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_35" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_35">0.00</td><td id="vd_35">19.82</td><td id="ve_35">2.04</td><td id="vg_35">30.29</td>
-                <td id="vsl_35">23.52</td><td id="vcr_35">9.59</td><td id="vsd_35">0.20</td><td id="vbk_35">0.70</td><td id="vch_35">0.16</td>
-                <td id="tl_35" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_35" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_35" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_35" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_35" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_35" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_35" value="0" oninput="recalc()"></td>
-                <td id="tp_35" class="res-col">86.32</td>
-            </tr><tr id="row_36" style="display:none;" onclick="markRow(36)">
-                <td class="col-ap">36</td>
-                <td><input type="number" id="p_36" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_36" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_36" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_36">0.00</td><td id="vd_36">19.82</td><td id="ve_36">2.04</td><td id="vg_36">30.29</td>
-                <td id="vsl_36">29.08</td><td id="vcr_36">11.86</td><td id="vsd_36">0.25</td><td id="vbk_36">0.86</td><td id="vch_36">0.20</td>
-                <td id="tl_36" class="res-col">94.40</td>
-                <td class="fond-col"><input type="number" id="fr_36" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_36" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_36" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_36" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_36" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_36" value="0" oninput="recalc()"></td>
-                <td id="tp_36" class="res-col">94.40</td>
-            </tr><tr id="row_37" style="display:none;" onclick="markRow(37)">
-                <td class="col-ap">37</td>
-                <td><input type="number" id="p_37" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_37" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_37" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_37">0.00</td><td id="vd_37">19.82</td><td id="ve_37">2.04</td><td id="vg_37">30.29</td>
-                <td id="vsl_37">24.39</td><td id="vcr_37">9.95</td><td id="vsd_37">0.21</td><td id="vbk_37">0.72</td><td id="vch_37">0.17</td>
-                <td id="tl_37" class="res-col">87.58</td>
-                <td class="fond-col"><input type="number" id="fr_37" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_37" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_37" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_37" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_37" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_37" value="0" oninput="recalc()"></td>
-                <td id="tp_37" class="res-col">87.58</td>
-            </tr><tr id="row_38" style="display:none;" onclick="markRow(38)">
-                <td class="col-ap">38</td>
-                <td><input type="number" id="p_38" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_38" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_38" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_38">0.00</td><td id="vd_38">19.82</td><td id="ve_38">2.04</td><td id="vg_38">30.29</td>
-                <td id="vsl_38">23.52</td><td id="vcr_38">9.59</td><td id="vsd_38">0.20</td><td id="vbk_38">0.70</td><td id="vch_38">0.16</td>
-                <td id="tl_38" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_38" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_38" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_38" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_38" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_38" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_38" value="0" oninput="recalc()"></td>
-                <td id="tp_38" class="res-col">86.32</td>
-            </tr><tr id="row_39" style="display:none;" onclick="markRow(39)">
-                <td class="col-ap">39</td>
-                <td><input type="number" id="p_39" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_39" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_39" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_39">0.00</td><td id="vd_39">19.82</td><td id="ve_39">2.04</td><td id="vg_39">30.29</td>
-                <td id="vsl_39">23.52</td><td id="vcr_39">9.59</td><td id="vsd_39">0.20</td><td id="vbk_39">0.70</td><td id="vch_39">0.16</td>
-                <td id="tl_39" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_39" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_39" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_39" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_39" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_39" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_39" value="0" oninput="recalc()"></td>
-                <td id="tp_39" class="res-col">86.32</td>
-            </tr><tr id="row_40" style="display:none;" onclick="markRow(40)">
-                <td class="col-ap">40</td>
-                <td><input type="number" id="p_40" value="1" oninput="recalc()"></td>
-                <td><input type="number" id="c_40" value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_40" value="0" step="0.01" oninput="recalc()"></td>
-                <td id="va_40">0.00</td><td id="vd_40">19.82</td><td id="ve_40">2.04</td><td id="vg_40">30.29</td>
-                <td id="vsl_40">23.52</td><td id="vcr_40">9.59</td><td id="vsd_40">0.20</td><td id="vbk_40">0.70</td><td id="vch_40">0.16</td>
-                <td id="tl_40" class="res-col">86.32</td>
-                <td class="fond-col"><input type="number" id="fr_40" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_40" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_40" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_40" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_40" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_40" value="0" oninput="recalc()"></td>
-                <td id="tp_40" class="res-col">86.32</td>
-            </tr></tbody>
+        <tbody id="bodyTable"></tbody>
     </table>
 </div>
 
 <script>
-    let curS = 'A';
+let curS = 'A';
     const pretApaMC = 17.03;
     const divizorCota = 49.997;
 
@@ -749,7 +553,55 @@
         saveTimer = setTimeout(save, 400);
     }
 
+    // ---- WEB AUDIO - Sunet sci-fi click rand ----
+    var _actx = null;
+    function getAudioCtx() {
+        if (!_actx) {
+            try { _actx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+        }
+        return _actx;
+    }
+
+    function playClickSF() {
+        var ctx = getAudioCtx(); if (!ctx) return;
+        var t = ctx.currentTime;
+
+        // Sunet 1: beep scurt cyberpunk (descendent)
+        var osc1 = ctx.createOscillator();
+        var gain1 = ctx.createGain();
+        osc1.connect(gain1); gain1.connect(ctx.destination);
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(880, t);
+        osc1.frequency.exponentialRampToValueAtTime(220, t + 0.12);
+        gain1.gain.setValueAtTime(0.18, t);
+        gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+        osc1.start(t); osc1.stop(t + 0.15);
+
+        // Sunet 2: click metalic (noise scurt)
+        var osc2 = ctx.createOscillator();
+        var gain2 = ctx.createGain();
+        osc2.connect(gain2); gain2.connect(ctx.destination);
+        osc2.type = 'square';
+        osc2.frequency.setValueAtTime(1200, t);
+        osc2.frequency.exponentialRampToValueAtTime(400, t + 0.04);
+        gain2.gain.setValueAtTime(0.08, t);
+        gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+        osc2.start(t); osc2.stop(t + 0.05);
+
+        // Sunet 3: ton confirmare (scurt, sus)
+        var osc3 = ctx.createOscillator();
+        var gain3 = ctx.createGain();
+        osc3.connect(gain3); gain3.connect(ctx.destination);
+        osc3.type = 'triangle';
+        osc3.frequency.setValueAtTime(1760, t + 0.06);
+        gain3.gain.setValueAtTime(0.0, t + 0.06);
+        gain3.gain.linearRampToValueAtTime(0.12, t + 0.08);
+        gain3.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+        osc3.start(t + 0.06); osc3.stop(t + 0.19);
+    }
+
     function markRow(id) {
+        playClickSF();
         document.querySelectorAll('tr').forEach(r => r.classList.remove('active-row'));
         const row = document.getElementById('row_' + id);
         if (row) row.classList.add('active-row');
@@ -769,6 +621,8 @@
         // Afiseaza total persoane scara activa
         const tP_activ = (curS === 'A') ? tP_A : tP_B;
         document.getElementById('tot_p').innerText = tP_activ;
+        var tp2 = document.getElementById('tot_p2');
+        if (tp2) tp2.innerText = tP_activ;
 
         const fEl  = parseFloat(document.getElementById('f_el').value)   || 0;
         const fDif = parseFloat(document.getElementById('f_dif').value)  || 0;
@@ -863,18 +717,88 @@
         load(); // FIX: load dupa build, nu pierde datele
     }
 
+    // ---- SUNET tranzitie scara ----
+    function playSwitchSF(scara) {
+        var ctx = getAudioCtx(); if (!ctx) return;
+        var t = ctx.currentTime;
+        var freqs = scara === 'A'
+            ? [330, 440, 660, 880]   // Scara A - urcator verde
+            : [880, 660, 440, 330];  // Scara B - coborator albastru
+
+        freqs.forEach(function(f, i) {
+            var osc = ctx.createOscillator();
+            var g   = ctx.createGain();
+            osc.connect(g); g.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = f;
+            var st = t + i * 0.07;
+            g.gain.setValueAtTime(0, st);
+            g.gain.linearRampToValueAtTime(0.15, st + 0.03);
+            g.gain.exponentialRampToValueAtTime(0.001, st + 0.12);
+            osc.start(st); osc.stop(st + 0.13);
+        });
+
+        // Whoosh
+        var buf = ctx.createBuffer(1, ctx.sampleRate * 0.3, ctx.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var j = 0; j < data.length; j++) data[j] = (Math.random()*2-1) * (1 - j/data.length);
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        var filt = ctx.createBiquadFilter();
+        filt.type = 'bandpass';
+        filt.frequency.value = scara === 'A' ? 800 : 400;
+        filt.Q.value = 1.5;
+        var gw = ctx.createGain();
+        gw.gain.setValueAtTime(0.06, t);
+        gw.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+        src.connect(filt); filt.connect(gw); gw.connect(ctx.destination);
+        src.start(t); src.stop(t + 0.3);
+    }
+
     function switchS(s) {
-        curS = s;
-        document.getElementById('headRow').className   = s === 'A' ? 'scara-a-th' : 'scara-b-th';
-        document.getElementById('tableCont').className = s === 'A' ? 'container scara-a-mode' : 'container scara-b-mode';
-        document.getElementById('btnA').classList.toggle('active-a', s === 'A');
-        document.getElementById('btnB').classList.toggle('active-b', s === 'B');
-        for (let i = 1; i <= 40; i++) {
-            const row = document.getElementById('row_' + i);
-            if (row) row.style.display = ((i <= 20 && s === 'A') || (i > 20 && s === 'B')) ? '' : 'none';
-        }
-        // FIX: recalculeaza dupa schimbare de scara ca sa actualizeze tot_p
-        recalc();
+        if (s === curS) return;
+        playSwitchSF(s);
+
+        // Animatie: sweep line + overlay flash
+        var overlay = document.getElementById('tranzitie-overlay');
+        var sweep   = document.getElementById('tranzitie-sweep');
+        var cont    = document.getElementById('tableCont');
+
+        // Schimba culoarea sweep in functie de scara
+        sweep.style.background = s === 'A'
+            ? 'linear-gradient(90deg, transparent, #39ff14, #00f5ff, #39ff14, transparent)'
+            : 'linear-gradient(90deg, transparent, #00f5ff, #00bcd4, #00f5ff, transparent)';
+        sweep.style.boxShadow = s === 'A'
+            ? '0 0 18px #39ff14, 0 0 40px #39ff14'
+            : '0 0 18px #00f5ff, 0 0 40px #00bcd4';
+
+        // Pornim animatia
+        overlay.classList.add('activ');
+        sweep.classList.remove('sweep');
+        void sweep.offsetWidth; // reflow
+        sweep.classList.add('sweep');
+
+        // Schimbam continutul la jumatatea animatiei (220ms)
+        setTimeout(function() {
+            curS = s;
+            document.getElementById('headRow').className   = s === 'A' ? 'scara-a-th' : 'scara-b-th';
+            document.getElementById('tableCont').className = s === 'A' ? 'container scara-a-mode' : 'container scara-b-mode';
+            document.getElementById('btnA').classList.toggle('active-a', s === 'A');
+            document.getElementById('btnB').classList.toggle('active-b', s === 'B');
+            for (var i = 1; i <= 40; i++) {
+                var row = document.getElementById('row_' + i);
+                if (row) row.style.display = ((i <= 20 && s === 'A') || (i > 20 && s === 'B')) ? '' : 'none';
+            }
+            recalc();
+
+            // Flash border pe tabel
+            cont.classList.remove('flash-a','flash-b');
+            void cont.offsetWidth;
+            cont.classList.add(s === 'A' ? 'flash-a' : 'flash-b');
+
+            // Stingem overlay-ul
+            overlay.classList.remove('activ');
+        }, 220);
     }
 
     function save() {
@@ -1040,9 +964,11 @@
 
 
 
+
+
 <script id="date-salvate">
 (function(){
-  var d={"l_an":"MAI 2026","titlu":"asoc.de prop.alfa.40-bl.129","f_dif":"396.39","f_el":"40.82","f_sal":"490.56","f_crt":"200.01","f_sed":"4.17","f_bank":"14.50","f_chir":"3.37","f_gun":"30.29","importFile":"","p_1":"1","c_1":"2.397","mc_1":"3","fr_1":"","frp_1":"","ri_1":"0","pn_1":"0","rf_1":"0","rp_1":"10","p_2":"1","c_2":"2.397","mc_2":"5","fr_2":"","frp_2":"","ri_2":"0","pn_2":"0","rf_2":"0","rp_2":"10","p_3":"2","c_3":"2.397","mc_3":"3.71","fr_3":"","frp_3":"","ri_3":"0","pn_3":"0","rf_3":"0","rp_3":"10","p_4":"2","c_4":"2.397","mc_4":"6","fr_4":"","frp_4":"","ri_4":"0","pn_4":"0","rf_4":"0","rp_4":"10","p_5":"2","c_5":"2.486","mc_5":"8.10","fr_5":"","frp_5":"","ri_5":"0","pn_5":"0","rf_5":"0","rp_5":"10","p_6":"2","c_6":"2.397","mc_6":"7","fr_6":"","frp_6":"","ri_6":"0","pn_6":"0","rf_6":"0","rp_6":"10","p_7":"2","c_7":"2.397","mc_7":"13.70","fr_7":"","frp_7":"","ri_7":"0","pn_7":"0","rf_7":"0","rp_7":"10","p_8":"2","c_8":"2.964","mc_8":"4.60","fr_8":"","frp_8":"","ri_8":"0","pn_8":"0","rf_8":"0","rp_8":"10","p_9":"0","c_9":"2.486","mc_9":"0","fr_9":"","frp_9":"","ri_9":"0","pn_9":"0","rf_9":"0","rp_9":"10","p_10":"0","c_10":"2.397","mc_10":"0","fr_10":"","frp_10":"","ri_10":"0","pn_10":"0","rf_10":"0","rp_10":"10","p_11":"1","c_11":"2.397","mc_11":"3","fr_11":"","frp_11":"","ri_11":"0","pn_11":"0","rf_11":"0","rp_11":"10","p_12":"1","c_12":"2.964","mc_12":"2.52","fr_12":"","frp_12":"","ri_12":"0","pn_12":"0","rf_12":"0","rp_12":"10","p_13":"0","c_13":"2.486","mc_13":"0","fr_13":"","frp_13":"","ri_13":"0","pn_13":"0","rf_13":"0","rp_13":"10","p_14":"4","c_14":"2.397","mc_14":"10","fr_14":"","frp_14":"","ri_14":"345.54","pn_14":"24","rf_14":"20","rp_14":"10","p_15":"1","c_15":"2.397","mc_15":"1.10","fr_15":"","frp_15":"","ri_15":"0","pn_15":"0","rf_15":"0","rp_15":"10","p_16":"2","c_16":"2.964","mc_16":"4.60","fr_16":"","frp_16":"","ri_16":"0","pn_16":"0","rf_16":"0","rp_16":"10","p_17":"2","c_17":"2.486","mc_17":"13","fr_17":"","frp_17":"","ri_17":"0","pn_17":"0","rf_17":"0","rp_17":"10","p_18":"1","c_18":"2.397","mc_18":"1.89","fr_18":"","frp_18":"","ri_18":"0","pn_18":"0","rf_18":"0","rp_18":"10","p_19":"0","c_19":"2.397","mc_19":"0","fr_19":"","frp_19":"","ri_19":"0","pn_19":"0","rf_19":"0","rp_19":"10","p_20":"0","c_20":"2.397","mc_20":"0","fr_20":"","frp_20":"","ri_20":"0","pn_20":"0","rf_20":"0","rp_20":"10","p_21":"1","c_21":"2.397","mc_21":"0","fr_21":"","frp_21":"","ri_21":"0","pn_21":"0","rf_21":"0","rp_21":"0","p_22":"1","c_22":"2.397","mc_22":"0","fr_22":"","frp_22":"","ri_22":"0","pn_22":"0","rf_22":"0","rp_22":"0","p_23":"1","c_23":"2.397","mc_23":"0","fr_23":"","frp_23":"","ri_23":"0","pn_23":"0","rf_23":"0","rp_23":"0","p_24":"1","c_24":"2.397","mc_24":"0","fr_24":"","frp_24":"","ri_24":"0","pn_24":"0","rf_24":"0","rp_24":"0","p_25":"1","c_25":"2.486","mc_25":"0","fr_25":"","frp_25":"","ri_25":"0","pn_25":"0","rf_25":"0","rp_25":"0","p_26":"1","c_26":"2.397","mc_26":"0","fr_26":"","frp_26":"","ri_26":"0","pn_26":"0","rf_26":"0","rp_26":"0","p_27":"1","c_27":"2.397","mc_27":"0","fr_27":"","frp_27":"","ri_27":"0","pn_27":"0","rf_27":"0","rp_27":"0","p_28":"1","c_28":"2.964","mc_28":"0","fr_28":"","frp_28":"","ri_28":"0","pn_28":"0","rf_28":"0","rp_28":"0","p_29":"1","c_29":"2.486","mc_29":"0","fr_29":"","frp_29":"","ri_29":"0","pn_29":"0","rf_29":"0","rp_29":"0","p_30":"1","c_30":"2.397","mc_30":"0","fr_30":"","frp_30":"","ri_30":"0","pn_30":"0","rf_30":"0","rp_30":"0","p_31":"1","c_31":"2.397","mc_31":"0","fr_31":"","frp_31":"","ri_31":"0","pn_31":"0","rf_31":"0","rp_31":"0","p_32":"1","c_32":"2.964","mc_32":"0","fr_32":"","frp_32":"","ri_32":"0","pn_32":"0","rf_32":"0","rp_32":"0","p_33":"1","c_33":"2.486","mc_33":"0","fr_33":"","frp_33":"","ri_33":"0","pn_33":"0","rf_33":"0","rp_33":"0","p_34":"1","c_34":"2.397","mc_34":"0","fr_34":"","frp_34":"","ri_34":"0","pn_34":"0","rf_34":"0","rp_34":"0","p_35":"1","c_35":"2.397","mc_35":"0","fr_35":"","frp_35":"","ri_35":"0","pn_35":"0","rf_35":"0","rp_35":"0","p_36":"1","c_36":"2.964","mc_36":"0","fr_36":"","frp_36":"","ri_36":"0","pn_36":"0","rf_36":"0","rp_36":"0","p_37":"1","c_37":"2.486","mc_37":"0","fr_37":"","frp_37":"","ri_37":"0","pn_37":"0","rf_37":"0","rp_37":"0","p_38":"1","c_38":"2.397","mc_38":"0","fr_38":"","frp_38":"","ri_38":"0","pn_38":"0","rf_38":"0","rp_38":"0","p_39":"1","c_39":"2.397","mc_39":"0","fr_39":"","frp_39":"","ri_39":"0","pn_39":"0","rf_39":"0","rp_39":"0","p_40":"1","c_40":"2.397","mc_40":"0","fr_40":"","frp_40":"","ri_40":"0","pn_40":"0","rf_40":"0","rp_40":"0"};
+  var d={"l_an":"APRILIE-2026","titlu":"GESTIUNE SATURN 34-bl.129","f_dif":"396.39","f_el":"40.82","f_sal":"490.56","f_crt":"200.01","f_sed":"4.17","f_bank":"14.50","f_chir":"3.37","f_gun":"30.29","prog_l":"15:00-18:00","prog_ma":"11:00-14:00","prog_mi":"15:00-18.00","prog_j":"10:00-13:00","prog_v":"inchis","importFile":"","p_1":"1","c_1":"2.397","mc_1":"3","fr_1":"","frp_1":"","ri_1":"0","pn_1":"0","rf_1":"0","rp_1":"10","p_2":"1","c_2":"2.397","mc_2":"5","fr_2":"","frp_2":"","ri_2":"0","pn_2":"0","rf_2":"0","rp_2":"10","p_3":"2","c_3":"2.397","mc_3":"3.71","fr_3":"0","frp_3":"","ri_3":"0","pn_3":"0","rf_3":"0","rp_3":"10","p_4":"2","c_4":"2.397","mc_4":"6","fr_4":"","frp_4":"","ri_4":"0","pn_4":"0","rf_4":"0","rp_4":"10","p_5":"2","c_5":"2.486","mc_5":"8.10","fr_5":"","frp_5":"","ri_5":"0","pn_5":"0","rf_5":"0","rp_5":"10","p_6":"2","c_6":"2.397","mc_6":"7","fr_6":"","frp_6":"","ri_6":"0","pn_6":"0","rf_6":"0","rp_6":"10","p_7":"2","c_7":"2.397","mc_7":"13.70","fr_7":"","frp_7":"","ri_7":"0","pn_7":"0","rf_7":"0","rp_7":"10","p_8":"2","c_8":"2.964","mc_8":"4.60","fr_8":"","frp_8":"","ri_8":"0","pn_8":"0","rf_8":"0","rp_8":"10","p_9":"0","c_9":"2.486","mc_9":"0","fr_9":"","frp_9":"","ri_9":"0","pn_9":"0","rf_9":"0","rp_9":"10","p_10":"0","c_10":"2.397","mc_10":"0.01","fr_10":"","frp_10":"","ri_10":"0","pn_10":"0","rf_10":"0","rp_10":"10","p_11":"1","c_11":"2.397","mc_11":"3","fr_11":"","frp_11":"","ri_11":"0","pn_11":"0","rf_11":"0","rp_11":"10","p_12":"1","c_12":"2.964","mc_12":"2.52","fr_12":"","frp_12":"","ri_12":"0","pn_12":"0","rf_12":"0","rp_12":"10","p_13":"0","c_13":"2.486","mc_13":"0","fr_13":"","frp_13":"","ri_13":"0","pn_13":"0","rf_13":"0","rp_13":"10","p_14":"4","c_14":"2.397","mc_14":"10","fr_14":"","frp_14":"","ri_14":"345.54","pn_14":"24","rf_14":"20","rp_14":"10","p_15":"1","c_15":"2.397","mc_15":"1.10","fr_15":"","frp_15":"","ri_15":"0","pn_15":"0","rf_15":"0","rp_15":"10","p_16":"2","c_16":"2.964","mc_16":"4.60","fr_16":"","frp_16":"","ri_16":"0","pn_16":"0","rf_16":"0","rp_16":"10","p_17":"2","c_17":"2.486","mc_17":"13","fr_17":"","frp_17":"","ri_17":"0","pn_17":"0","rf_17":"0","rp_17":"10","p_18":"1","c_18":"2.397","mc_18":"1.89","fr_18":"","frp_18":"","ri_18":"0","pn_18":"0","rf_18":"0","rp_18":"10","p_19":"0","c_19":"2.397","mc_19":"0","fr_19":"","frp_19":"","ri_19":"0","pn_19":"0","rf_19":"0","rp_19":"10","p_20":"0","c_20":"2.397","mc_20":"0","fr_20":"","frp_20":"","ri_20":"0","pn_20":"0","rf_20":"0","rp_20":"10","p_21":"1","c_21":"2.397","mc_21":"0","fr_21":"","frp_21":"","ri_21":"0","pn_21":"0","rf_21":"0","rp_21":"0","p_22":"1","c_22":"2.397","mc_22":"0","fr_22":"","frp_22":"","ri_22":"0","pn_22":"0","rf_22":"0","rp_22":"0","p_23":"1","c_23":"2.397","mc_23":"0","fr_23":"","frp_23":"","ri_23":"0","pn_23":"0","rf_23":"0","rp_23":"0","p_24":"1","c_24":"2.397","mc_24":"0","fr_24":"","frp_24":"","ri_24":"0","pn_24":"0","rf_24":"0","rp_24":"0","p_25":"1","c_25":"2.486","mc_25":"0","fr_25":"","frp_25":"","ri_25":"0","pn_25":"0","rf_25":"0","rp_25":"0","p_26":"1","c_26":"2.397","mc_26":"0","fr_26":"","frp_26":"","ri_26":"0","pn_26":"0","rf_26":"0","rp_26":"0","p_27":"1","c_27":"2.397","mc_27":"0","fr_27":"","frp_27":"","ri_27":"0","pn_27":"0","rf_27":"0","rp_27":"0","p_28":"1","c_28":"2.964","mc_28":"0","fr_28":"","frp_28":"","ri_28":"0","pn_28":"0","rf_28":"0","rp_28":"0","p_29":"1","c_29":"2.486","mc_29":"0","fr_29":"","frp_29":"","ri_29":"0","pn_29":"0","rf_29":"0","rp_29":"0","p_30":"1","c_30":"2.397","mc_30":"0","fr_30":"","frp_30":"","ri_30":"0","pn_30":"0","rf_30":"0","rp_30":"0","p_31":"1","c_31":"2.397","mc_31":"0","fr_31":"","frp_31":"","ri_31":"0","pn_31":"0","rf_31":"0","rp_31":"0","p_32":"1","c_32":"2.964","mc_32":"0","fr_32":"","frp_32":"","ri_32":"0","pn_32":"0","rf_32":"0","rp_32":"0","p_33":"1","c_33":"2.486","mc_33":"0","fr_33":"","frp_33":"","ri_33":"0","pn_33":"0","rf_33":"0","rp_33":"0","p_34":"1","c_34":"2.397","mc_34":"0","fr_34":"","frp_34":"","ri_34":"0","pn_34":"0","rf_34":"0","rp_34":"0","p_35":"1","c_35":"2.397","mc_35":"0","fr_35":"","frp_35":"","ri_35":"0","pn_35":"0","rf_35":"0","rp_35":"0","p_36":"1","c_36":"2.964","mc_36":"0","fr_36":"","frp_36":"","ri_36":"0","pn_36":"0","rf_36":"0","rp_36":"0","p_37":"1","c_37":"2.486","mc_37":"0","fr_37":"","frp_37":"","ri_37":"0","pn_37":"0","rf_37":"0","rp_37":"0","p_38":"1","c_38":"2.397","mc_38":"0","fr_38":"","frp_38":"","ri_38":"0","pn_38":"0","rf_38":"0","rp_38":"0","p_39":"1","c_39":"2.397","mc_39":"0","fr_39":"","frp_39":"","ri_39":"0","pn_39":"0","rf_39":"0","rp_39":"0","p_40":"1","c_40":"2.397","mc_40":"0","fr_40":"","frp_40":"","ri_40":"0","pn_40":"0","rf_40":"0","rp_40":"0"};
   document.addEventListener("DOMContentLoaded",function(){
     setTimeout(function(){
       var ls=null;try{ls=localStorage.getItem("saturn_full_gest_v2");}catch(e){}
@@ -1054,4 +980,4 @@
   });
 })();
 </script>
-
+</body></html>
