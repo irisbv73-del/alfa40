@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- saved from url=(0076)file:///C:/Users/admin/Music/Saturn%2034%20-%20Gestiune%20Complet%C4%83.html -->
 <html lang="ro"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <title>Saturn 34 - Gestiune Completă</title>
@@ -449,7 +450,7 @@ input[type="number"]:focus {
 #expMsg { font-size: 11px; color: var(--neon-g); margin-left: 6px; text-shadow: 0 0 6px var(--neon-g); }
 </style>
 </head>
-<body id="mainBody" class="">
+<body id="mainBody" class="readonly-mode">
 <div id="tranzitie-overlay" class=""></div>
 <div id="tranzitie-sweep" class="sweep" style="background: linear-gradient(90deg, transparent, rgb(57, 255, 20), rgb(0, 245, 255), rgb(57, 255, 20), transparent); box-shadow: rgb(57, 255, 20) 0px 0px 18px, rgb(57, 255, 20) 0px 0px 40px;"></div>
 
@@ -457,8 +458,8 @@ input[type="number"]:focus {
     <div class="logo-wrap" style="display:flex; align-items:center; gap:18px;">
         <svg style="width:52px;height:52px;fill:#ff2d55;" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>
         <div>
-            <div id="ceas">16:17:08</div>
-            <div style="font-size:13px; color:var(--text2); font-family:'Roboto',monospace; letter-spacing:1px;">
+            <div id="ceas">22:38:33</div>
+            <div style="font-size:13px; color:var(--text2); font-family:&#39;Roboto&#39;,monospace; letter-spacing:1px;">
                 LUNA:&nbsp;<input type="text" id="l_an" value="MAI 2026">
             </div>
         </div>
@@ -469,10 +470,10 @@ input[type="number"]:focus {
     </div>
 
     <div style="text-align:right; line-height:1.6;">
-        <div style="font-family:'Roboto',monospace; font-size:13px; color:var(--text2);">
+        <div style="font-family:&#39;Roboto&#39;,monospace; font-size:13px; color:var(--text2);">
             PERS:&nbsp;<span id="tot_p">26</span>
         </div>
-        <button id="lockBtn" onclick="verificareParola()">🔓 ADMIN</button>
+        <button id="lockBtn" onclick="verificareParola()">🔒 BLOCAT</button>
     </div>
 </div>
 
@@ -489,8 +490,8 @@ input[type="number"]:focus {
 
 <div class="nav-tabs no-print">
     <div class="nav-btns">
-        <button id="btnA" class="tab-btn btn-a active-a" onclick="switchS('A')">■ Scara A</button>
-        <button id="btnB" class="tab-btn btn-b" onclick="switchS('B')">■ Scara B</button>
+        <button id="btnA" class="tab-btn btn-a active-a" onclick="switchS(&#39;A&#39;)">■ Scara A</button>
+        <button id="btnB" class="tab-btn btn-b" onclick="switchS(&#39;B&#39;)">■ Scara B</button>
     </div>
 
     <div class="program-grid">
@@ -509,7 +510,7 @@ input[type="number"]:focus {
         <input class="prog-ora" type="text" id="prog_v" value="08:00-14:00" placeholder="--:--">
     </div>
 
-    <div style="font-family:'Roboto',monospace; font-size:8px; color:var(--text2); text-align:right; line-height:1.6; opacity:0.6;">
+    <div style="font-family:&#39;Roboto&#39;,monospace; font-size:8px; color:var(--text2); text-align:right; line-height:1.6; opacity:0.6;">
         👤 PERS ACTIVE<br>
         <span style="font-size:14px; color:var(--neon-g); text-shadow:0 0 8px var(--neon-g); font-weight:900;" id="tot_p2">26</span>
     </div>
@@ -517,10 +518,10 @@ input[type="number"]:focus {
 
 <div class="export-bar no-print">
     <span>💾 DATE:</span>
-    <button class="btn-exp btn-json-exp" onclick="exportJSON()" title="" style="opacity: 1; cursor: pointer;">📤 Export JSON</button>
-    <button class="btn-exp btn-json-imp" onclick="document.getElementById('importFile').click()" title="" style="opacity: 1; cursor: pointer;">📥 Import JSON</button>
-    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
-    <button class="btn-exp btn-html-save" onclick="salveazaHTML()" title="" style="opacity: 1; cursor: pointer;">💾 Salvează HTML</button>
+    <button class="btn-exp btn-json-exp" onclick="exportJSON()" title="Necesita mod ADMIN" style="opacity: 0.35; cursor: not-allowed;" disabled="">📤 Export JSON</button>
+    <button class="btn-exp btn-json-imp" onclick="document.getElementById(&#39;importFile&#39;).click()" title="Necesita mod ADMIN" style="opacity: 0.35; cursor: not-allowed;" disabled="">📥 Import JSON</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)" disabled="">
+    <button class="btn-exp btn-html-save" onclick="salveazaHTML()" title="Necesita mod ADMIN" style="opacity: 0.35; cursor: not-allowed;" disabled="">💾 Salvează HTML</button>
     <span id="expMsg"></span>
 </div>
 
@@ -537,7 +538,607 @@ input[type="number"]:focus {
                 <th width="45" class="res-col">TOT PLATA</th>
             </tr>
         </thead>
-        <tbody id="bodyTable"></tbody>
+        <tbody id="bodyTable"><tr id="row_1" style="" onclick="markRow(1)">
+                <td class="col-ap">1</td>
+                <td><input type="number" id="p_1" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_1" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_1" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_1">51.09</td><td id="vd_1">19.82</td><td id="ve_1">1.57</td><td id="vg_1">30.29</td>
+                <td id="vsl_1">23.52</td><td id="vcr_1">9.59</td><td id="vsd_1">0.20</td><td id="vbk_1">0.70</td><td id="vch_1">0.16</td>
+                <td id="tl_1" class="res-col">136.93</td>
+                <td class="fond-col"><input type="number" id="fr_1" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_1" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_1" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_1" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_1" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_1" value="0" oninput="recalc()"></td>
+                <td id="tp_1" class="res-col">146.93</td>
+            </tr><tr id="row_2" style="" onclick="markRow(2)">
+                <td class="col-ap">2</td>
+                <td><input type="number" id="p_2" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_2" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_2" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_2">85.15</td><td id="vd_2">19.82</td><td id="ve_2">1.57</td><td id="vg_2">30.29</td>
+                <td id="vsl_2">23.52</td><td id="vcr_2">9.59</td><td id="vsd_2">0.20</td><td id="vbk_2">0.70</td><td id="vch_2">0.16</td>
+                <td id="tl_2" class="res-col">170.99</td>
+                <td class="fond-col"><input type="number" id="fr_2" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_2" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_2" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_2" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_2" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_2" value="0" oninput="recalc()"></td>
+                <td id="tp_2" class="res-col">180.99</td>
+            </tr><tr id="row_3" style="" onclick="markRow(3)" class="">
+                <td class="col-ap">3</td>
+                <td><input type="number" id="p_3" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_3" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_3" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_3">63.18</td><td id="vd_3">19.82</td><td id="ve_3">3.14</td><td id="vg_3">60.58</td>
+                <td id="vsl_3">23.52</td><td id="vcr_3">9.59</td><td id="vsd_3">0.20</td><td id="vbk_3">0.70</td><td id="vch_3">0.16</td>
+                <td id="tl_3" class="res-col">180.89</td>
+                <td class="fond-col"><input type="number" id="fr_3" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_3" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_3" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_3" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_3" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_3" value="0" oninput="recalc()"></td>
+                <td id="tp_3" class="res-col">190.89</td>
+            </tr><tr id="row_4" style="" onclick="markRow(4)" class="">
+                <td class="col-ap">4</td>
+                <td><input type="number" id="p_4" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_4" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_4" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_4">102.18</td><td id="vd_4">19.82</td><td id="ve_4">3.14</td><td id="vg_4">60.58</td>
+                <td id="vsl_4">23.52</td><td id="vcr_4">9.59</td><td id="vsd_4">0.20</td><td id="vbk_4">0.70</td><td id="vch_4">0.16</td>
+                <td id="tl_4" class="res-col">219.88</td>
+                <td class="fond-col"><input type="number" id="fr_4" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_4" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_4" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_4" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_4" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_4" value="0" oninput="recalc()"></td>
+                <td id="tp_4" class="res-col">229.88</td>
+            </tr><tr id="row_5" style="" onclick="markRow(5)" class="">
+                <td class="col-ap">5</td>
+                <td><input type="number" id="p_5" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_5" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_5" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_5">137.94</td><td id="vd_5">19.82</td><td id="ve_5">3.14</td><td id="vg_5">60.58</td>
+                <td id="vsl_5">24.39</td><td id="vcr_5">9.95</td><td id="vsd_5">0.21</td><td id="vbk_5">0.72</td><td id="vch_5">0.17</td>
+                <td id="tl_5" class="res-col">256.92</td>
+                <td class="fond-col"><input type="number" id="fr_5" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_5" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_5" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_5" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_5" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_5" value="0" oninput="recalc()"></td>
+                <td id="tp_5" class="res-col">266.92</td>
+            </tr><tr id="row_6" style="" onclick="markRow(6)" class="active-row">
+                <td class="col-ap">6</td>
+                <td><input type="number" id="p_6" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_6" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_6" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_6">119.38</td><td id="vd_6">19.82</td><td id="ve_6">3.14</td><td id="vg_6">60.58</td>
+                <td id="vsl_6">23.52</td><td id="vcr_6">9.59</td><td id="vsd_6">0.20</td><td id="vbk_6">0.70</td><td id="vch_6">0.16</td>
+                <td id="tl_6" class="res-col">237.08</td>
+                <td class="fond-col"><input type="number" id="fr_6" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_6" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_6" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_6" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_6" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_6" value="0" oninput="recalc()"></td>
+                <td id="tp_6" class="res-col">247.08</td>
+            </tr><tr id="row_7" style="" onclick="markRow(7)">
+                <td class="col-ap">7</td>
+                <td><input type="number" id="p_7" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_7" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_7" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_7">233.31</td><td id="vd_7">19.82</td><td id="ve_7">3.14</td><td id="vg_7">60.58</td>
+                <td id="vsl_7">23.52</td><td id="vcr_7">9.59</td><td id="vsd_7">0.20</td><td id="vbk_7">0.70</td><td id="vch_7">0.16</td>
+                <td id="tl_7" class="res-col">351.02</td>
+                <td class="fond-col"><input type="number" id="fr_7" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_7" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_7" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_7" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_7" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_7" value="0" oninput="recalc()"></td>
+                <td id="tp_7" class="res-col">361.02</td>
+            </tr><tr id="row_8" style="" onclick="markRow(8)">
+                <td class="col-ap">8</td>
+                <td><input type="number" id="p_8" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_8" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_8" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_8">78.34</td><td id="vd_8">19.82</td><td id="ve_8">3.14</td><td id="vg_8">60.58</td>
+                <td id="vsl_8">29.08</td><td id="vcr_8">11.86</td><td id="vsd_8">0.25</td><td id="vbk_8">0.86</td><td id="vch_8">0.20</td>
+                <td id="tl_8" class="res-col">204.12</td>
+                <td class="fond-col"><input type="number" id="fr_8" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_8" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_8" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_8" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_8" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_8" value="0" oninput="recalc()"></td>
+                <td id="tp_8" class="res-col">214.12</td>
+            </tr><tr id="row_9" style="" onclick="markRow(9)">
+                <td class="col-ap">9</td>
+                <td><input type="number" id="p_9" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_9" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_9" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_9">0.00</td><td id="vd_9">19.82</td><td id="ve_9">0.00</td><td id="vg_9">0.00</td>
+                <td id="vsl_9">24.39</td><td id="vcr_9">9.95</td><td id="vsd_9">0.21</td><td id="vbk_9">0.72</td><td id="vch_9">0.17</td>
+                <td id="tl_9" class="res-col">55.25</td>
+                <td class="fond-col"><input type="number" id="fr_9" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_9" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_9" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_9" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_9" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_9" value="0" oninput="recalc()"></td>
+                <td id="tp_9" class="res-col">65.25</td>
+            </tr><tr id="row_10" style="" onclick="markRow(10)">
+                <td class="col-ap">10</td>
+                <td><input type="number" id="p_10" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_10" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_10" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_10">0.17</td><td id="vd_10">19.82</td><td id="ve_10">0.00</td><td id="vg_10">0.00</td>
+                <td id="vsl_10">23.52</td><td id="vcr_10">9.59</td><td id="vsd_10">0.20</td><td id="vbk_10">0.70</td><td id="vch_10">0.16</td>
+                <td id="tl_10" class="res-col">54.15</td>
+                <td class="fond-col"><input type="number" id="fr_10" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_10" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_10" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_10" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_10" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_10" value="0" oninput="recalc()"></td>
+                <td id="tp_10" class="res-col">64.15</td>
+            </tr><tr id="row_11" style="" onclick="markRow(11)">
+                <td class="col-ap">11</td>
+                <td><input type="number" id="p_11" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_11" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_11" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_11">51.09</td><td id="vd_11">19.82</td><td id="ve_11">1.57</td><td id="vg_11">30.29</td>
+                <td id="vsl_11">23.52</td><td id="vcr_11">9.59</td><td id="vsd_11">0.20</td><td id="vbk_11">0.70</td><td id="vch_11">0.16</td>
+                <td id="tl_11" class="res-col">136.93</td>
+                <td class="fond-col"><input type="number" id="fr_11" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_11" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_11" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_11" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_11" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_11" value="0" oninput="recalc()"></td>
+                <td id="tp_11" class="res-col">146.93</td>
+            </tr><tr id="row_12" style="" onclick="markRow(12)">
+                <td class="col-ap">12</td>
+                <td><input type="number" id="p_12" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_12" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_12" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_12">42.92</td><td id="vd_12">19.82</td><td id="ve_12">1.57</td><td id="vg_12">30.29</td>
+                <td id="vsl_12">29.08</td><td id="vcr_12">11.86</td><td id="vsd_12">0.25</td><td id="vbk_12">0.86</td><td id="vch_12">0.20</td>
+                <td id="tl_12" class="res-col">136.84</td>
+                <td class="fond-col"><input type="number" id="fr_12" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_12" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_12" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_12" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_12" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_12" value="0" oninput="recalc()"></td>
+                <td id="tp_12" class="res-col">146.84</td>
+            </tr><tr id="row_13" style="" onclick="markRow(13)">
+                <td class="col-ap">13</td>
+                <td><input type="number" id="p_13" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_13" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_13" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_13">0.00</td><td id="vd_13">19.82</td><td id="ve_13">0.00</td><td id="vg_13">0.00</td>
+                <td id="vsl_13">24.39</td><td id="vcr_13">9.95</td><td id="vsd_13">0.21</td><td id="vbk_13">0.72</td><td id="vch_13">0.17</td>
+                <td id="tl_13" class="res-col">55.25</td>
+                <td class="fond-col"><input type="number" id="fr_13" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_13" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_13" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_13" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_13" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_13" value="0" oninput="recalc()"></td>
+                <td id="tp_13" class="res-col">65.25</td>
+            </tr><tr id="row_14" style="" onclick="markRow(14)">
+                <td class="col-ap">14</td>
+                <td><input type="number" id="p_14" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_14" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_14" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_14">170.30</td><td id="vd_14">19.82</td><td id="ve_14">6.28</td><td id="vg_14">121.16</td>
+                <td id="vsl_14">23.52</td><td id="vcr_14">9.59</td><td id="vsd_14">0.20</td><td id="vbk_14">0.70</td><td id="vch_14">0.16</td>
+                <td id="tl_14" class="res-col">351.72</td>
+                <td class="fond-col"><input type="number" id="fr_14" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_14" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_14" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_14" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_14" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_14" value="0" oninput="recalc()"></td>
+                <td id="tp_14" class="res-col">751.26</td>
+            </tr><tr id="row_15" style="" onclick="markRow(15)">
+                <td class="col-ap">15</td>
+                <td><input type="number" id="p_15" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_15" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_15" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_15">18.73</td><td id="vd_15">19.82</td><td id="ve_15">1.57</td><td id="vg_15">30.29</td>
+                <td id="vsl_15">23.52</td><td id="vcr_15">9.59</td><td id="vsd_15">0.20</td><td id="vbk_15">0.70</td><td id="vch_15">0.16</td>
+                <td id="tl_15" class="res-col">104.58</td>
+                <td class="fond-col"><input type="number" id="fr_15" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_15" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_15" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_15" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_15" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_15" value="0" oninput="recalc()"></td>
+                <td id="tp_15" class="res-col">114.58</td>
+            </tr><tr id="row_16" style="" onclick="markRow(16)">
+                <td class="col-ap">16</td>
+                <td><input type="number" id="p_16" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_16" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_16" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_16">78.34</td><td id="vd_16">19.82</td><td id="ve_16">3.14</td><td id="vg_16">60.58</td>
+                <td id="vsl_16">29.08</td><td id="vcr_16">11.86</td><td id="vsd_16">0.25</td><td id="vbk_16">0.86</td><td id="vch_16">0.20</td>
+                <td id="tl_16" class="res-col">204.12</td>
+                <td class="fond-col"><input type="number" id="fr_16" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_16" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_16" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_16" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_16" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_16" value="0" oninput="recalc()"></td>
+                <td id="tp_16" class="res-col">214.12</td>
+            </tr><tr id="row_17" style="" onclick="markRow(17)">
+                <td class="col-ap">17</td>
+                <td><input type="number" id="p_17" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_17" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_17" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_17">221.39</td><td id="vd_17">19.82</td><td id="ve_17">3.14</td><td id="vg_17">60.58</td>
+                <td id="vsl_17">24.39</td><td id="vcr_17">9.95</td><td id="vsd_17">0.21</td><td id="vbk_17">0.72</td><td id="vch_17">0.17</td>
+                <td id="tl_17" class="res-col">340.36</td>
+                <td class="fond-col"><input type="number" id="fr_17" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_17" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_17" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_17" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_17" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_17" value="0" oninput="recalc()"></td>
+                <td id="tp_17" class="res-col">350.36</td>
+            </tr><tr id="row_18" style="" onclick="markRow(18)">
+                <td class="col-ap">18</td>
+                <td><input type="number" id="p_18" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_18" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_18" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_18">32.19</td><td id="vd_18">19.82</td><td id="ve_18">1.57</td><td id="vg_18">30.29</td>
+                <td id="vsl_18">23.52</td><td id="vcr_18">9.59</td><td id="vsd_18">0.20</td><td id="vbk_18">0.70</td><td id="vch_18">0.16</td>
+                <td id="tl_18" class="res-col">118.03</td>
+                <td class="fond-col"><input type="number" id="fr_18" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_18" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_18" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_18" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_18" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_18" value="0" oninput="recalc()"></td>
+                <td id="tp_18" class="res-col">128.03</td>
+            </tr><tr id="row_19" style="" onclick="markRow(19)">
+                <td class="col-ap">19</td>
+                <td><input type="number" id="p_19" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_19" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_19" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_19">0.00</td><td id="vd_19">19.82</td><td id="ve_19">0.00</td><td id="vg_19">0.00</td>
+                <td id="vsl_19">23.52</td><td id="vcr_19">9.59</td><td id="vsd_19">0.20</td><td id="vbk_19">0.70</td><td id="vch_19">0.16</td>
+                <td id="tl_19" class="res-col">53.98</td>
+                <td class="fond-col"><input type="number" id="fr_19" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_19" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_19" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_19" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_19" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_19" value="0" oninput="recalc()"></td>
+                <td id="tp_19" class="res-col">63.98</td>
+            </tr><tr id="row_20" style="" onclick="markRow(20)">
+                <td class="col-ap">20</td>
+                <td><input type="number" id="p_20" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_20" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_20" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_20">0.00</td><td id="vd_20">19.82</td><td id="ve_20">0.00</td><td id="vg_20">0.00</td>
+                <td id="vsl_20">23.52</td><td id="vcr_20">9.59</td><td id="vsd_20">0.20</td><td id="vbk_20">0.70</td><td id="vch_20">0.16</td>
+                <td id="tl_20" class="res-col">53.98</td>
+                <td class="fond-col"><input type="number" id="fr_20" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_20" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_20" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_20" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_20" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_20" value="0" oninput="recalc()"></td>
+                <td id="tp_20" class="res-col">63.98</td>
+            </tr><tr id="row_21" style="display: none;" onclick="markRow(21)">
+                <td class="col-ap">21</td>
+                <td><input type="number" id="p_21" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_21" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_21" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_21">0.00</td><td id="vd_21">19.82</td><td id="ve_21">2.04</td><td id="vg_21">30.29</td>
+                <td id="vsl_21">23.52</td><td id="vcr_21">9.59</td><td id="vsd_21">0.20</td><td id="vbk_21">0.70</td><td id="vch_21">0.16</td>
+                <td id="tl_21" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_21" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_21" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_21" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_21" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_21" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_21" value="0" oninput="recalc()"></td>
+                <td id="tp_21" class="res-col">86.32</td>
+            </tr><tr id="row_22" style="display: none;" onclick="markRow(22)">
+                <td class="col-ap">22</td>
+                <td><input type="number" id="p_22" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_22" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_22" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_22">0.00</td><td id="vd_22">19.82</td><td id="ve_22">2.04</td><td id="vg_22">30.29</td>
+                <td id="vsl_22">23.52</td><td id="vcr_22">9.59</td><td id="vsd_22">0.20</td><td id="vbk_22">0.70</td><td id="vch_22">0.16</td>
+                <td id="tl_22" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_22" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_22" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_22" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_22" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_22" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_22" value="0" oninput="recalc()"></td>
+                <td id="tp_22" class="res-col">86.32</td>
+            </tr><tr id="row_23" style="display: none;" onclick="markRow(23)">
+                <td class="col-ap">23</td>
+                <td><input type="number" id="p_23" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_23" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_23" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_23">0.00</td><td id="vd_23">19.82</td><td id="ve_23">2.04</td><td id="vg_23">30.29</td>
+                <td id="vsl_23">23.52</td><td id="vcr_23">9.59</td><td id="vsd_23">0.20</td><td id="vbk_23">0.70</td><td id="vch_23">0.16</td>
+                <td id="tl_23" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_23" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_23" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_23" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_23" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_23" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_23" value="0" oninput="recalc()"></td>
+                <td id="tp_23" class="res-col">86.32</td>
+            </tr><tr id="row_24" style="display: none;" onclick="markRow(24)">
+                <td class="col-ap">24</td>
+                <td><input type="number" id="p_24" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_24" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_24" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_24">0.00</td><td id="vd_24">19.82</td><td id="ve_24">2.04</td><td id="vg_24">30.29</td>
+                <td id="vsl_24">23.52</td><td id="vcr_24">9.59</td><td id="vsd_24">0.20</td><td id="vbk_24">0.70</td><td id="vch_24">0.16</td>
+                <td id="tl_24" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_24" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_24" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_24" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_24" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_24" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_24" value="0" oninput="recalc()"></td>
+                <td id="tp_24" class="res-col">86.32</td>
+            </tr><tr id="row_25" style="display: none;" onclick="markRow(25)">
+                <td class="col-ap">25</td>
+                <td><input type="number" id="p_25" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_25" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_25" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_25">0.00</td><td id="vd_25">19.82</td><td id="ve_25">2.04</td><td id="vg_25">30.29</td>
+                <td id="vsl_25">24.39</td><td id="vcr_25">9.95</td><td id="vsd_25">0.21</td><td id="vbk_25">0.72</td><td id="vch_25">0.17</td>
+                <td id="tl_25" class="res-col">87.58</td>
+                <td class="fond-col"><input type="number" id="fr_25" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_25" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_25" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_25" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_25" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_25" value="0" oninput="recalc()"></td>
+                <td id="tp_25" class="res-col">87.58</td>
+            </tr><tr id="row_26" style="display: none;" onclick="markRow(26)">
+                <td class="col-ap">26</td>
+                <td><input type="number" id="p_26" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_26" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_26" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_26">0.00</td><td id="vd_26">19.82</td><td id="ve_26">2.04</td><td id="vg_26">30.29</td>
+                <td id="vsl_26">23.52</td><td id="vcr_26">9.59</td><td id="vsd_26">0.20</td><td id="vbk_26">0.70</td><td id="vch_26">0.16</td>
+                <td id="tl_26" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_26" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_26" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_26" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_26" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_26" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_26" value="0" oninput="recalc()"></td>
+                <td id="tp_26" class="res-col">86.32</td>
+            </tr><tr id="row_27" style="display: none;" onclick="markRow(27)">
+                <td class="col-ap">27</td>
+                <td><input type="number" id="p_27" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_27" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_27" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_27">0.00</td><td id="vd_27">19.82</td><td id="ve_27">2.04</td><td id="vg_27">30.29</td>
+                <td id="vsl_27">23.52</td><td id="vcr_27">9.59</td><td id="vsd_27">0.20</td><td id="vbk_27">0.70</td><td id="vch_27">0.16</td>
+                <td id="tl_27" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_27" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_27" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_27" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_27" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_27" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_27" value="0" oninput="recalc()"></td>
+                <td id="tp_27" class="res-col">86.32</td>
+            </tr><tr id="row_28" style="display: none;" onclick="markRow(28)">
+                <td class="col-ap">28</td>
+                <td><input type="number" id="p_28" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_28" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_28" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_28">0.00</td><td id="vd_28">19.82</td><td id="ve_28">2.04</td><td id="vg_28">30.29</td>
+                <td id="vsl_28">29.08</td><td id="vcr_28">11.86</td><td id="vsd_28">0.25</td><td id="vbk_28">0.86</td><td id="vch_28">0.20</td>
+                <td id="tl_28" class="res-col">94.40</td>
+                <td class="fond-col"><input type="number" id="fr_28" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_28" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_28" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_28" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_28" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_28" value="0" oninput="recalc()"></td>
+                <td id="tp_28" class="res-col">94.40</td>
+            </tr><tr id="row_29" style="display: none;" onclick="markRow(29)">
+                <td class="col-ap">29</td>
+                <td><input type="number" id="p_29" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_29" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_29" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_29">0.00</td><td id="vd_29">19.82</td><td id="ve_29">2.04</td><td id="vg_29">30.29</td>
+                <td id="vsl_29">24.39</td><td id="vcr_29">9.95</td><td id="vsd_29">0.21</td><td id="vbk_29">0.72</td><td id="vch_29">0.17</td>
+                <td id="tl_29" class="res-col">87.58</td>
+                <td class="fond-col"><input type="number" id="fr_29" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_29" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_29" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_29" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_29" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_29" value="0" oninput="recalc()"></td>
+                <td id="tp_29" class="res-col">87.58</td>
+            </tr><tr id="row_30" style="display: none;" onclick="markRow(30)">
+                <td class="col-ap">30</td>
+                <td><input type="number" id="p_30" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_30" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_30" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_30">0.00</td><td id="vd_30">19.82</td><td id="ve_30">2.04</td><td id="vg_30">30.29</td>
+                <td id="vsl_30">23.52</td><td id="vcr_30">9.59</td><td id="vsd_30">0.20</td><td id="vbk_30">0.70</td><td id="vch_30">0.16</td>
+                <td id="tl_30" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_30" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_30" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_30" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_30" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_30" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_30" value="0" oninput="recalc()"></td>
+                <td id="tp_30" class="res-col">86.32</td>
+            </tr><tr id="row_31" style="display: none;" onclick="markRow(31)">
+                <td class="col-ap">31</td>
+                <td><input type="number" id="p_31" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_31" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_31" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_31">0.00</td><td id="vd_31">19.82</td><td id="ve_31">2.04</td><td id="vg_31">30.29</td>
+                <td id="vsl_31">23.52</td><td id="vcr_31">9.59</td><td id="vsd_31">0.20</td><td id="vbk_31">0.70</td><td id="vch_31">0.16</td>
+                <td id="tl_31" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_31" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_31" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_31" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_31" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_31" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_31" value="0" oninput="recalc()"></td>
+                <td id="tp_31" class="res-col">86.32</td>
+            </tr><tr id="row_32" style="display: none;" onclick="markRow(32)">
+                <td class="col-ap">32</td>
+                <td><input type="number" id="p_32" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_32" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_32" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_32">0.00</td><td id="vd_32">19.82</td><td id="ve_32">2.04</td><td id="vg_32">30.29</td>
+                <td id="vsl_32">29.08</td><td id="vcr_32">11.86</td><td id="vsd_32">0.25</td><td id="vbk_32">0.86</td><td id="vch_32">0.20</td>
+                <td id="tl_32" class="res-col">94.40</td>
+                <td class="fond-col"><input type="number" id="fr_32" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_32" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_32" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_32" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_32" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_32" value="0" oninput="recalc()"></td>
+                <td id="tp_32" class="res-col">94.40</td>
+            </tr><tr id="row_33" style="display: none;" onclick="markRow(33)">
+                <td class="col-ap">33</td>
+                <td><input type="number" id="p_33" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_33" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_33" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_33">0.00</td><td id="vd_33">19.82</td><td id="ve_33">2.04</td><td id="vg_33">30.29</td>
+                <td id="vsl_33">24.39</td><td id="vcr_33">9.95</td><td id="vsd_33">0.21</td><td id="vbk_33">0.72</td><td id="vch_33">0.17</td>
+                <td id="tl_33" class="res-col">87.58</td>
+                <td class="fond-col"><input type="number" id="fr_33" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_33" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_33" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_33" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_33" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_33" value="0" oninput="recalc()"></td>
+                <td id="tp_33" class="res-col">87.58</td>
+            </tr><tr id="row_34" style="display: none;" onclick="markRow(34)">
+                <td class="col-ap">34</td>
+                <td><input type="number" id="p_34" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_34" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_34" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_34">0.00</td><td id="vd_34">19.82</td><td id="ve_34">2.04</td><td id="vg_34">30.29</td>
+                <td id="vsl_34">23.52</td><td id="vcr_34">9.59</td><td id="vsd_34">0.20</td><td id="vbk_34">0.70</td><td id="vch_34">0.16</td>
+                <td id="tl_34" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_34" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_34" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_34" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_34" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_34" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_34" value="0" oninput="recalc()"></td>
+                <td id="tp_34" class="res-col">86.32</td>
+            </tr><tr id="row_35" style="display: none;" onclick="markRow(35)">
+                <td class="col-ap">35</td>
+                <td><input type="number" id="p_35" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_35" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_35" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_35">0.00</td><td id="vd_35">19.82</td><td id="ve_35">2.04</td><td id="vg_35">30.29</td>
+                <td id="vsl_35">23.52</td><td id="vcr_35">9.59</td><td id="vsd_35">0.20</td><td id="vbk_35">0.70</td><td id="vch_35">0.16</td>
+                <td id="tl_35" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_35" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_35" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_35" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_35" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_35" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_35" value="0" oninput="recalc()"></td>
+                <td id="tp_35" class="res-col">86.32</td>
+            </tr><tr id="row_36" style="display: none;" onclick="markRow(36)">
+                <td class="col-ap">36</td>
+                <td><input type="number" id="p_36" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_36" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_36" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_36">0.00</td><td id="vd_36">19.82</td><td id="ve_36">2.04</td><td id="vg_36">30.29</td>
+                <td id="vsl_36">29.08</td><td id="vcr_36">11.86</td><td id="vsd_36">0.25</td><td id="vbk_36">0.86</td><td id="vch_36">0.20</td>
+                <td id="tl_36" class="res-col">94.40</td>
+                <td class="fond-col"><input type="number" id="fr_36" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_36" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_36" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_36" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_36" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_36" value="0" oninput="recalc()"></td>
+                <td id="tp_36" class="res-col">94.40</td>
+            </tr><tr id="row_37" style="display: none;" onclick="markRow(37)">
+                <td class="col-ap">37</td>
+                <td><input type="number" id="p_37" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_37" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_37" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_37">0.00</td><td id="vd_37">19.82</td><td id="ve_37">2.04</td><td id="vg_37">30.29</td>
+                <td id="vsl_37">24.39</td><td id="vcr_37">9.95</td><td id="vsd_37">0.21</td><td id="vbk_37">0.72</td><td id="vch_37">0.17</td>
+                <td id="tl_37" class="res-col">87.58</td>
+                <td class="fond-col"><input type="number" id="fr_37" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_37" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_37" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_37" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_37" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_37" value="0" oninput="recalc()"></td>
+                <td id="tp_37" class="res-col">87.58</td>
+            </tr><tr id="row_38" style="display: none;" onclick="markRow(38)">
+                <td class="col-ap">38</td>
+                <td><input type="number" id="p_38" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_38" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_38" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_38">0.00</td><td id="vd_38">19.82</td><td id="ve_38">2.04</td><td id="vg_38">30.29</td>
+                <td id="vsl_38">23.52</td><td id="vcr_38">9.59</td><td id="vsd_38">0.20</td><td id="vbk_38">0.70</td><td id="vch_38">0.16</td>
+                <td id="tl_38" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_38" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_38" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_38" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_38" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_38" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_38" value="0" oninput="recalc()"></td>
+                <td id="tp_38" class="res-col">86.32</td>
+            </tr><tr id="row_39" style="display: none;" onclick="markRow(39)">
+                <td class="col-ap">39</td>
+                <td><input type="number" id="p_39" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_39" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_39" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_39">0.00</td><td id="vd_39">19.82</td><td id="ve_39">2.04</td><td id="vg_39">30.29</td>
+                <td id="vsl_39">23.52</td><td id="vcr_39">9.59</td><td id="vsd_39">0.20</td><td id="vbk_39">0.70</td><td id="vch_39">0.16</td>
+                <td id="tl_39" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_39" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_39" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_39" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_39" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_39" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_39" value="0" oninput="recalc()"></td>
+                <td id="tp_39" class="res-col">86.32</td>
+            </tr><tr id="row_40" style="display: none;" onclick="markRow(40)">
+                <td class="col-ap">40</td>
+                <td><input type="number" id="p_40" value="1" oninput="recalc()"></td>
+                <td><input type="number" id="c_40" value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_40" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_40">0.00</td><td id="vd_40">19.82</td><td id="ve_40">2.04</td><td id="vg_40">30.29</td>
+                <td id="vsl_40">23.52</td><td id="vcr_40">9.59</td><td id="vsd_40">0.20</td><td id="vbk_40">0.70</td><td id="vch_40">0.16</td>
+                <td id="tl_40" class="res-col">86.32</td>
+                <td class="fond-col"><input type="number" id="fr_40" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_40" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_40" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_40" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_40" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_40" value="0" oninput="recalc()"></td>
+                <td id="tp_40" class="res-col">86.32</td>
+            </tr></tbody>
     </table>
 </div>
 
