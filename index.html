@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ro"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Saturn 34 - Gestiune Completă</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+
+:root {
+    --cyan:    #00f5ff;
+    --cyan2:   #00bcd4;
+    --cyan-dim:#003d45;
+    --neon-g:  #39ff14;
+    --neon-r:  #ff2d55;
+    --neon-y:  #ffe600;
+    --bg:      #020d1a;
+    --border:  rgba(0,245,255,0.18);
+    --text:    #c8f0ff;
+    --text2:   #7acfdf;
+}
+
+@media print {
+    @page { size: A4 landscape; margin: 1mm; }
+    body { zoom: 60%; -webkit-print-color-adjust: exact !important; }
+    .no-print, #lockBtn, .calc-master, .nav-tabs, .export-bar, .crt-overlay, .transition-wipe { display: none !important; }
+    body, td, th, input { color: #000 !important; background: #fff !important; }
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: var(--bg);
+    margin: 0; padding: 10px;
+    color: var(--text);
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* EFECTE VIZUALE */
+.crt-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+    background-size: 100% 3px, 3px 100%;
+    pointer-events: none; z-index: 100;
+}
+
+.transition-wipe {
+    position: fixed; top: -100%; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
+    backdrop-filter: blur(15px); opacity: 0; z-index: 200; pointer-events: none;
+}
+
+.wipe-active { animation: wipeAnim 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+@keyframes wipeAnim {
+    0% { top: -100%; opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { top: 100%; opacity: 0; }
+}
+
+/* PANOURI */
+.header-panel, .calc-master, .nav-tabs, .export-bar, .container {
+    width: 100%;
+    max-width: 1450px;
+}
+
+.header-panel {
+    display: grid; grid-template-columns: 300px 1fr 160px;
+    background: rgba(0,20,40,0.85); backdrop-filter: blur(6px);
+    padding: 10px 20px; border: 1px solid var(--cyan);
+    box-shadow: 0 0 20px rgba(0,245,255,0.2);
+    margin-bottom: 8px; border-radius: 4px; align-items: center;
+}
+
+#ceas { font-size: 28px; font-weight: 900; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); letter-spacing: 2px; }
+.edit-titlu { font-size: 22px; font-weight: 900; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); border: none; background: transparent; text-align: center; width: 100%; text-transform: uppercase; letter-spacing: 3px; }
+
+#lockBtn {
+    background: #1a0010; color: var(--neon-r); border: 1px solid var(--neon-r);
+    padding: 6px 12px; cursor: pointer; font-weight: bold; border-radius: 3px;
+}
+
+.calc-master {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 5px; background: rgba(0,15,30,0.8); padding: 8px; border: 1px solid var(--border);
+    margin-bottom: 8px; border-radius: 4px;
+}
+.calc-group label { font-size: 14px; display: block; text-align: center; color: var(--cyan2); text-transform: uppercase; margin-bottom: 3px; }
+.calc-group input { width: 100%; text-align: center; background: rgba(0,245,255,0.06); color: var(--neon-y); border: 1px solid var(--cyan-dim); font-size: 18px; font-weight: 900; }
+
+.nav-tabs {
+    display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 20px;
+    background: rgba(0,15,30,0.85); padding: 10px; border: 1px solid var(--border); margin-bottom: 8px; border-radius: 4px;
+}
+.tab-btn { padding: 8px 25px; cursor: pointer; font-weight: 900; border: 1px solid transparent; color: #fff; border-radius: 3px; }
+.btn-a { background: #1b5e20; }
+.btn-a.active-a { border-color: var(--neon-g); box-shadow: 0 0 15px var(--neon-g); color: var(--neon-g); }
+.btn-b { background: #0d47a1; }
+.btn-b.active-b { border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan); color: var(--cyan); }
+
+.program-wrapper { display: flex; gap: 10px; margin: 0 auto; }
+.day-block { display: flex; flex-direction: column; align-items: center; }
+.day-label { font-size:12px; color: var(--cyan2); font-weight: 900; text-transform: uppercase; margin-bottom: 2px; }
+.prog-ora { font-family: 'Roboto', monospace; font-size: 14px; font-weight: 800; text-align: center; background: rgba(0,245,255,0.05); color: var(--neon-y); border: none; border-bottom: 1px solid var(--cyan-dim); }
+
+/* ZONA DE MESAJE ȘI EXPORT */
+.export-bar { 
+    padding: 8px 15px; 
+    background: rgba(0,20,10,0.8); 
+    border: 1px solid var(--neon-g); 
+    margin-bottom: 8px; 
+    display: grid; 
+    grid-template-columns: auto 1fr auto; 
+    align-items: center; 
+    gap: 15px; 
+    border-radius: 4px; 
+}
+.admin-msg-box {
+    background: rgba(57, 255, 20, 0.05);
+    border: 1px solid rgba(57, 255, 20, 0.2);
+    color: var(--neon-g);
+    padding: 5px 10px;
+    font-family: 'Roboto', monospace;
+    font-size: 13px;
+    outline: none;
+    width: 100%;
+}
+.btn-html-save { background: #e65100; color: white; padding: 8px 20px; cursor: pointer; border: none; font-weight: 900; border-radius: 3px; white-space: nowrap; box-shadow: 0 0 15px var(--cyan); color: var(--orange);  }
+
+/* TABEL ȘI EFECT DE SELECȚIE */
+.container { 
+    background: rgba(5,45,61,0.9); border: 1px solid var(--border); 
+    overflow-x: auto; border-radius: 4px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+table { border-collapse: collapse; width: 100%; min-width: 1400px; table-layout: fixed; }
+th { border: 1px solid rgba(0,245,255,0.2); color: var(--cyan); font-size: 10px; padding: 8px 2px; text-transform: uppercase; background: rgba(0,245,255,0.03); }
+td { border: 1px solid rgba(0,245,255,0.1); text-align: center; padding: 5px 2px; height: 35px; transition: background 0.3s; }
+.res-col { background: rgba(255,45,85,0.12) !important; color: var(--neon-r) !important; font-weight: 900; }
+
+/* BLUR PE RÂNDUL SELECTAT */
+tr.row-focus td {
+    background: rgba(0, 255, 42, 0.15) !important;
+    border-top: 1px solid var(--cyan);
+    border-bottom: 1px solid var(--cyan);
+    box-shadow: inset 0 0 15px rgba(0, 245, 255, 0.1);
+}
+
+input { background: transparent; border: none; color: var(--neon-y); text-align: center; width: 100%; outline: none; font-weight: 900; font-family: 'Roboto', sans-serif; font-size: 15px; }
+.readonly-mode input { pointer-events: none; }
+.readonly-mode .admin-msg-box { pointer-events: none; }
+</style>
+</head>
+<body id="mainBody" class="readonly-mode">
+
+<div class="crt-overlay"></div>
+<div id="wipe" class="transition-wipe"></div>
+
+<div class="header-panel">
+    <div>
+        <div id="ceas">00:00:00</div>
+        <input type="text" id="l_an" style="color:var(--neon-r); text-align:left; font-size: 14px;" value="MAI 2026">
+    </div>
+    <input type="text" id="titlu" class="edit-titlu" value="GESTIUNE SATURN 34">
+    <div style="text-align:right;">
+        <div style="font-size:12px; margin-bottom:5px; color:var(--text2);">PERSOANE: <span id="tot_p" style="color:var(--neon-g); font-size:18px;">0</span></div>
+        <button id="lockBtn" onclick="verificareParola()">🔒 BLOCAT</button>
+    </div>
+</div>
+
+<div class="calc-master no-print">
+    <div class="calc-group"><label>Pierderi Apa</label><input type="number" id="f_dif" value="0" oninput="recalc()"></div>
+    <div class="calc-group"><label>Lumina</label><input type="number" id="f_el" value="0" oninput="recalc()"></div>
+    <div class="calc-group"><label>Salarii</label><input type="number" id="f_sal" value="0" oninput="recalc()"></div>
+    <div class="calc-group"><label>Curatenie</label><input type="number" id="f_crt" value="0" oninput="recalc()"></div>
+    <div class="calc-group"><label>Chelt.Sediu</label><input type="number" id="f_sed" value="0" oninput="recalc()"></div>
+    <div class="calc-group"><label>Comision.Banca</label><input type="number" id="f_bank" value="0" oninput="recalc()"></div>
+    <div class="calc-group"><label>Chirie</label><input type="number" id="f_chir" value="0" oninput="recalc()"></div>
+    <div class="calc-group"><label>Gunoi/P</label><input type="number" id="f_gun" value="0" oninput="recalc()"></div>
+</div>
+
+<div class="nav-tabs no-print">
+    <div>
+        <button id="btnA" class="tab-btn btn-a active-a" onclick="switchS('A')">SCARA A</button>
+        <button id="btnB" class="tab-btn btn-b" onclick="switchS('B')">SCARA B</button>
+    </div>
+    <div class="program-wrapper">
+	    <div style="font-size: 11px; color: var(--cyan2); font-weight: bold;">Program</div>
+		<div style="font-size: 11px; color: var(--cyan2); font-weight: bold;">Functionare:</div>
+        <div class="day-block"><span class="day-label">Luni</span><input class="prog-ora" type="text" id="prog_l" value="08:00-16:00"></div>
+        <div class="day-block"><span class="day-label">Marți</span><input class="prog-ora" type="text" id="prog_ma" value="08:00-16:00"></div>
+        <div class="day-block"><span class="day-label">Miercuri</span><input class="prog-ora" type="text" id="prog_mi" value="08:00-16:00"></div>
+        <div class="day-block"><span class="day-label">Joi</span><input class="prog-ora" type="text" id="prog_j" value="08:00-16:00"></div>
+        <div class="day-block"><span class="day-label">Vineri</span><input class="prog-ora" type="text" id="prog_v" value="08:00-14:00"></div>
+    </div>
+</div>
+
+<div class="export-bar no-print">
+    <button class="btn-html-save" onclick="salveazaHTML()">💾 SALVEAZĂ DATELE</button>
+    <input type="text" id="admin_notite" class="admin-msg-box" placeholder="TRANSMITE UN MESAJ SAU NOTIȚĂ AICI...">
+    <span id="expMsg" style="color:var(--neon-g); font-weight:bold;"></span>
+</div>
+
+<div class="container" id="tableCont">
+    <table>
+        <thead>
+            <tr>
+                <th width="35">Ap</th><th width="35">P.</th><th width="55">Cota</th><th width="45">Ind.A</th>
+                <th width="55">V.Apa</th><th width="55">Pierd.</th><th width="45">Lum.</th><th width="45">Gun.</th>
+                <th width="45">Sal.</th><th width="45">Crt.</th><th width="45">Sed.</th><th width="45">Bnk.</th><th width="45">Chi.</th>
+                <th width="70" class="res-col">TOT L.</th>
+                <th width="45">FRul.</th><th width="45">FRep.</th>
+                <th width="45">Res.I</th><th width="45">Pen.</th><th width="45">Res.F</th><th width="45">Res.P</th>
+                <th width="75" class="res-col">TOTAL</th>
+            </tr>
+        </thead>
+        <tbody id="bodyTable"></tbody>
+    </table>
+</div>
+
+<script id="dataScript">
+    var bazaDeDateSalvate = {}; 
+    let curS = 'A';
+    const pretApaMC = 17.03;
+    const divizorCota = 49.997;
+
+    function build() {
+        let rows = "";
+        for (let i = 1; i <= 40; i++) {
+            let vis = (i <= 20) ? '' : 'display:none;';
+            rows += `<tr id="row_${i}" style="${vis}" onclick="focusRow(this)">
+                <td style="color:var(--cyan); font-weight:900;">${i}</td>
+                <td><input type="number" id="p_${i}" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="c_${i}" value="0" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_${i}" value="0" step="0.01" oninput="recalc()"></td>
+                <td id="va_${i}">0</td><td id="vd_${i}">0</td><td id="ve_${i}">0</td><td id="vg_${i}">0</td>
+                <td id="vsl_${i}">0</td><td id="vcr_${i}">0</td><td id="vsd_${i}">0</td><td id="vbk_${i}">0</td><td id="vch_${i}">0</td>
+                <td id="tl_${i}" class="res-col">0</td>
+                <td><input type="number" id="fr_${i}" value="0"></td>
+                <td><input type="number" id="frp_${i}" value="0"></td>
+                <td><input type="number" id="ri_${i}" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_${i}" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_${i}" value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_${i}" value="0" oninput="recalc()"></td>
+                <td id="tp_${i}" class="res-col">0</td>
+            </tr>`;
+        }
+        document.getElementById('bodyTable').innerHTML = rows;
+        
+        if(Object.keys(bazaDeDateSalvate).length > 0) {
+            Object.keys(bazaDeDateSalvate).forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.value = bazaDeDateSalvate[id];
+            });
+        }
+        recalc();
+    }
+
+    // Funcția pentru fixare Focus pe rând
+    function focusRow(rowEl) {
+        document.querySelectorAll('tr').forEach(r => r.classList.remove('row-focus'));
+        rowEl.classList.add('row-focus');
+    }
+
+    function switchS(s) {
+        if(curS === s) return;
+        const wipe = document.getElementById('wipe');
+        wipe.classList.add('wipe-active');
+        setTimeout(() => {
+            curS = s;
+            document.getElementById('btnA').classList.toggle('active-a', s === 'A');
+            document.getElementById('btnB').classList.toggle('active-b', s === 'B');
+            for (let i = 1; i <= 40; i++) {
+                document.getElementById(`row_${i}`).style.display = ((i <= 20 && s === 'A') || (i > 20 && s === 'B')) ? '' : 'none';
+            }
+            wipe.classList.remove('wipe-active');
+            recalc();
+        }, 300);
+    }
+
+    function recalc() {
+        let tP_A = 0, tP_B = 0;
+        for (let i = 1; i <= 20; i++) tP_A += parseFloat(document.getElementById('p_'+i).value) || 0;
+        for (let i = 21; i <= 40; i++) tP_B += parseFloat(document.getElementById('p_'+i).value) || 0;
+        document.getElementById('tot_p').innerText = (curS === 'A') ? tP_A : tP_B;
+
+        const fEl = parseFloat(document.getElementById('f_el').value) || 0;
+        const fDif = parseFloat(document.getElementById('f_dif').value) || 0;
+        const fSal = parseFloat(document.getElementById('f_sal').value) || 0;
+        const fCrt = parseFloat(document.getElementById('f_crt').value) || 0;
+        const fSed = parseFloat(document.getElementById('f_sed').value) || 0;
+        const fBnk = parseFloat(document.getElementById('f_bank').value) || 0;
+        const fChr = parseFloat(document.getElementById('f_chir').value) || 0;
+        const vGun = parseFloat(document.getElementById('f_gun').value) || 0;
+
+        for (let i = 1; i <= 40; i++) {
+            let p = parseFloat(document.getElementById('p_'+i).value) || 0;
+            let c = parseFloat(document.getElementById('c_'+i).value) || 0;
+            let mc = parseFloat(document.getElementById('mc_'+i).value) || 0;
+
+            let va = mc * pretApaMC;
+            let vd = fDif / 40;
+            let ve = p * (i <= 20 ? (tP_A > 0 ? fEl/tP_A : 0) : (tP_B > 0 ? fEl/tP_B : 0));
+            let vg = p * vGun;
+
+            document.getElementById('va_'+i).innerText = va.toFixed(2);
+            document.getElementById('vd_'+i).innerText = vd.toFixed(2);
+            document.getElementById('ve_'+i).innerText = ve.toFixed(2);
+            document.getElementById('vg_'+i).innerText = vg.toFixed(2);
+            document.getElementById('vsl_'+i).innerText = (c * (fSal/divizorCota)).toFixed(2);
+            document.getElementById('vcr_'+i).innerText = (c * (fCrt/divizorCota)).toFixed(2);
+            document.getElementById('vsd_'+i).innerText = (c * (fSed/divizorCota)).toFixed(2);
+            document.getElementById('vbk_'+i).innerText = (c * (fBnk/divizorCota)).toFixed(2);
+            document.getElementById('vch_'+i).innerText = (c * (fChr/divizorCota)).toFixed(2);
+
+            let totL = va + vd + ve + vg + (c * ((fSal+fCrt+fSed+fBnk+fChr)/divizorCota));
+            document.getElementById('tl_'+i).innerText = totL.toFixed(2);
+            let ri = parseFloat(document.getElementById('ri_'+i).value) || 0;
+            let pn = parseFloat(document.getElementById('pn_'+i).value) || 0;
+            let rf = parseFloat(document.getElementById('rf_'+i).value) || 0;
+            let rp = parseFloat(document.getElementById('rp_'+i).value) || 0;
+            document.getElementById('tp_'+i).innerText = (totL + ri + pn + rf + rp).toFixed(2);
+        }
+    }
+
+    function verificareParola() {
+        let p = prompt("PAROLA:");
+        if(p === "alfa.40") {
+            document.getElementById('mainBody').classList.remove('readonly-mode');
+            document.getElementById('lockBtn').innerHTML = "🔓 ADMIN ACTIV";
+            document.getElementById('lockBtn').style.color = "var(--neon-g)";
+        }
+    }
+
+    function salveazaHTML() {
+        document.getElementById('mainBody').classList.add('readonly-mode');
+        document.getElementById('lockBtn').innerHTML = "🔒 BLOCAT";
+        document.getElementById('lockBtn').style.color = "var(--neon-r)";
+
+        let dateNoi = {};
+        document.querySelectorAll('input').forEach(el => { if(el.id) dateNoi[el.id] = el.value; });
+        
+        let scriptData = `var bazaDeDateSalvate = ${JSON.stringify(dateNoi, null, 2)};`;
+        let sursa = document.documentElement.outerHTML.replace(/var bazaDeDateSalvate = \{[\s\S]*?\};/, scriptData);
+
+        const blob = new Blob(["<!DOCTYPE html>\n" + sursa], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `Gestiune_Update.html`;
+        a.click();
+        
+        document.getElementById('expMsg').innerText = "✅ SALVAT!";
+        setTimeout(() => document.getElementById('expMsg').innerText = "", 3000);
+    }
+
+    window.onload = build;
+    setInterval(() => { document.getElementById('ceas').innerText = new Date().toLocaleTimeString('ro-RO'); }, 1000);
+</script>
+</body></html>
