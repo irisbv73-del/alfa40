@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="ro"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<title>Saturn 34 - Gestiune Completă</title>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<title>GESTIUNE SATURN 34-bl.129 - MASTER</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
 
@@ -13,6 +14,9 @@
     --neon-r:  #ff2d55;
     --neon-y:  #ffe600;
     --bg:      #020d1a;
+    --bg2:     #04192e;
+    --bg3:     #071f35;
+    --panel:   rgba(0,245,255,0.04);
     --border:  rgba(0,245,255,0.18);
     --text:    #c8f0ff;
     --text2:   #7acfdf;
@@ -20,342 +24,1602 @@
 
 @media print {
     @page { size: A4 landscape; margin: 1mm; }
-    body { zoom: 60%; -webkit-print-color-adjust: exact !important; }
-    .no-print, #lockBtn, .calc-master, .nav-tabs, .export-bar, .crt-overlay, .transition-wipe { display: none !important; }
+    body { zoom: 60%; -webkit-print-color-adjust: exact !important; background:#fff !important; }
+    .no-print, #lockBtn, .calc-master, .nav-tabs, .export-bar { display: none !important; }
     body, td, th, input { color: #000 !important; background: #fff !important; }
 }
 
 * { box-sizing: border-box; }
 
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', 'Segoe UI', monospace;
     background: var(--bg);
-    margin: 0; padding: 10px;
+    margin: 0; padding: 5px;
     color: var(--text);
     overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    min-height: 100vh;
 }
 
-/* EFECTE VIZUALE */
+/* Grid background - STATIC (optimizat) */
+body::before {
+    content:'';
+    position:fixed; inset:0; z-index:-1;
+    background-image:
+        linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
 .crt-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
     background-size: 100% 3px, 3px 100%;
     pointer-events: none; z-index: 100;
 }
 
-.transition-wipe {
-    position: fixed; top: -100%; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
-    backdrop-filter: blur(15px); opacity: 0; z-index: 200; pointer-events: none;
-}
-
-.wipe-active { animation: wipeAnim 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-@keyframes wipeAnim {
-    0% { top: -100%; opacity: 0; }
-    50% { opacity: 0.5; }
-    100% { top: 100%; opacity: 0; }
-}
-
-/* PANOURI */
-.header-panel, .calc-master, .nav-tabs, .export-bar, .container {
-    width: 100%;
-    max-width: 1450px;
-}
-
+/* ===== HEADER ===== */
 .header-panel {
-    display: grid; grid-template-columns: 300px 1fr 160px;
-    background: rgba(0,20,40,0.85); backdrop-filter: blur(6px);
-    padding: 10px 20px; border: 1px solid var(--cyan);
-    box-shadow: 0 0 20px rgba(0,245,255,0.2);
-    margin-bottom: 8px; border-radius: 4px; align-items: center;
+    display: grid;
+    grid-template-columns: 300px 1fr 160px;
+    gap: 10px;
+    background: rgba(0,20,40,0.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 8px 12px;
+    border: 1px solid var(--cyan);
+    border-top: 3px solid var(--cyan);
+    box-shadow: 0 0 24px rgba(0,245,255,0.25), inset 0 0 40px rgba(0,245,255,0.03);
+    margin-bottom: 5px;
+    border-radius: 0 0 8px 8px;
+    align-items: center;
+    position: relative;
+}
+.header-panel::before {
+    content:'';
+    position:absolute; top:0; left:10%; right:10%; height:1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.6;
 }
 
-#ceas { font-size: 28px; font-weight: 900; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); letter-spacing: 2px; }
-.edit-titlu { font-size: 22px; font-weight: 900; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); border: none; background: transparent; text-align: center; width: 100%; text-transform: uppercase; letter-spacing: 3px; }
+.logo-wrap svg { filter: drop-shadow(0 0 8px #ff2d55); }
+
+#ceas {
+    font-family: 'Roboto', monospace;
+    font-size: 28px; font-weight: 700;
+    color: var(--cyan);
+    text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan2);
+    letter-spacing: 3px;
+}
+#l_an {
+    font-family: 'Roboto', monospace;
+    font-size: 14px; font-weight: 700;
+    color: var(--neon-r);
+    text-shadow: 0 0 8px var(--neon-r);
+    border: none; background: transparent;
+    width: 150px; letter-spacing: 2px;
+}
+
+.edit-titlu {
+    font-family: 'Roboto', monospace;
+    font-size: 35px; font-weight: 900;
+    color: var(--neon-r);
+    border: none; background: transparent;
+    width: 100%; text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+   
+}
+
+#tot_p {
+    color: var(--neon-g);
+    font-size: 25px; font-weight: 900;
+}
 
 #lockBtn {
-    background: #1a0010; color: var(--neon-r); border: 1px solid var(--neon-r);
-    padding: 6px 12px; cursor: pointer; font-weight: bold; border-radius: 3px;
+    font-family: 'Roboto', monospace;
+    background: linear-gradient(135deg, #1a0010, #3d0020);
+    color: var(--neon-r);
+    border: 1px solid var(--neon-r);
+    box-shadow: 0 0 8px rgba(255,45,85,0.4);
+    padding: 4px 8px; border-radius: 3px;
+    font-weight: 700; cursor: pointer; font-size: 15px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
 }
+#lockBtn:hover { box-shadow: 0 0 16px rgba(255,45,85,0.8); }
 
+/* ===== CALC MASTER ===== */
 .calc-master {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: 5px; background: rgba(0,15,30,0.8); padding: 8px; border: 1px solid var(--border);
-    margin-bottom: 8px; border-radius: 4px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 3px;
+    background: rgba(0,15,30,0.8);
+    backdrop-filter: blur(4px);
+    padding: 4px;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 12px rgba(0,245,255,0.1);
+    margin-bottom: 5px; border-radius: 4px;
 }
-.calc-group label { font-size: 14px; display: block; text-align: center; color: var(--cyan2); text-transform: uppercase; margin-bottom: 3px; }
-.calc-group input { width: 100%; text-align: center; background: rgba(0,245,255,0.06); color: var(--neon-y); border: 1px solid var(--cyan-dim); font-size: 18px; font-weight: 900; }
+.calc-group label {
+    font-size: 13px; font-weight: 900; display: block; text-align: center;
+    color: var(--cyan2); text-transform: uppercase; letter-spacing: 1px;
+    
+}
+.calc-group input {
+    width: 75px; text-align: center; font-weight: 700;
+    border: 1px solid var(--cyan-dim);
+    background: rgba(0,245,255,0.06);
+    color: var(--neon-y);
+    font-size: 18px; margin: 0 auto; display: block;
+    border-radius: 2px; padding: 2px;
+    font-family: 'Roboto', monospace;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.calc-group input:focus {
+    outline: none;
+    border-color: var(--cyan);
+    box-shadow: 0 0 8px rgba(0,245,255,0.5);
+}
 
+/* ===== NAV + PROGRAM ===== */
 .nav-tabs {
-    display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 20px;
-    background: rgba(0,15,30,0.85); padding: 10px; border: 1px solid var(--border); margin-bottom: 8px; border-radius: 4px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+    background: rgba(0,15,30,0.85);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 5px 12px;
+    box-shadow: 0 0 14px rgba(0,245,255,0.08);
 }
-.tab-btn { padding: 8px 25px; cursor: pointer; font-weight: 900; border: 1px solid transparent; color: #fff; border-radius: 3px; }
-.btn-a { background: #1b5e20; }
-.btn-a.active-a { border-color: var(--neon-g); box-shadow: 0 0 15px var(--neon-g); color: var(--neon-g); }
-.btn-b { background: #0d47a1; }
-.btn-b.active-b { border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan); color: var(--cyan); }
-
-.program-wrapper { display: flex; gap: 10px; margin: 0 auto; }
-.day-block { display: flex; flex-direction: column; align-items: center; }
-.day-label { font-size:12px; color: var(--cyan2); font-weight: 900; text-transform: uppercase; margin-bottom: 2px; }
-.prog-ora { font-family: 'Roboto', monospace; font-size: 14px; font-weight: 800; text-align: center; background: rgba(0,245,255,0.05); color: var(--neon-y); border: none; border-bottom: 1px solid var(--cyan-dim); }
-
-/* ZONA DE MESAJE ȘI EXPORT */
-.export-bar { 
-    padding: 8px 15px; 
-    background: rgba(0,20,10,0.8); 
-    border: 1px solid var(--neon-g); 
-    margin-bottom: 8px; 
-    display: grid; 
-    grid-template-columns: auto 1fr auto; 
-    align-items: center; 
-    gap: 15px; 
-    border-radius: 4px; 
+.nav-btns { display: flex; gap: 8px; align-items: center; }
+.tab-btn {
+    font-family: 'Roboto', monospace;
+    padding: 5px 22px; cursor: pointer;
+    border: 1px solid transparent;
+    font-weight: 700; font-size: 12px;
+    text-transform: uppercase; border-radius: 3px;
+    color: #fff; letter-spacing: 2px;
+    transition: box-shadow 0.2s, color 0.2s;
+    will-change: box-shadow;
 }
-.admin-msg-box {
-    background: rgba(57, 255, 20, 0.05);
-    border: 1px solid rgba(57, 255, 20, 0.2);
+.btn-a { background: linear-gradient(135deg,#0a1f0a,#1b5e20); border-color: #2e7d32; }
+.btn-a.active-a {
+    background: linear-gradient(135deg,#1b5e20,#2e7d32);
+    border-color: var(--neon-g);
+    box-shadow: 0 0 14px rgba(57,255,20,0.5);
+    color: var(--neon-g); text-shadow: 0 0 8px var(--neon-g);
+}
+.btn-b { background: linear-gradient(135deg,#020c1e,#0d47a1); border-color: #1565c0; }
+.btn-b.active-b {
+    background: linear-gradient(135deg,#0d47a1,#1565c0);
+    border-color: var(--cyan);
+    box-shadow: 0 0 14px rgba(0,245,255,0.5);
+    color: var(--cyan); text-shadow: 0 0 8px var(--cyan);
+}
+
+/* Program functionare */
+.program-grid {
+    display: grid;
+    grid-template-columns: auto repeat(5, 1fr);
+    grid-template-rows: auto auto;
+    gap: 2px 8px;
+    align-items: center;
+}
+.prog-label {
+    font-family: 'Roboto', monospace;
+    font-size:15px; font-weight: 900;
+    color: var(--cyan2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    grid-row: 1 / span 2;
+    padding-right: 6px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+    line-height: 1.4;
+}
+.prog-zi-name {
+    font-family: 'Roboto', monospace;
+    font-size: 15px; font-weight: 800;
+    text-align: center;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.prog-zi-name.luni    { color: var(--cyan);  }
+.prog-zi-name.marti   { color: var(--cyan);  }
+.prog-zi-name.mierc   { color: var(--cyan);  }
+.prog-zi-name.joi     { color: var(--cyan);  }
+.prog-zi-name.vineri  { color: var(--cyan);  }
+.prog-ora {
+    font-family: 'Roboto', monospace;
+    font-size: 19px; font-weight: 800;
+    text-align: center; width: 100%;
+    border: none;
+    background: rgba(0,245,255,0.06);
+    border-bottom: 1px solid var(--cyan-dim);
+    color: var(--neon-y);
+    border-radius: 2px;
+    padding: 1px 2px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.prog-ora:focus {
+    outline: none;
+    border-bottom-color: var(--cyan);
+    box-shadow: 0 2px 8px rgba(0,245,255,0.3);
+    background: rgba(0,245,255,0.1);
+}
+.readonly-mode .prog-ora { pointer-events: none; }
+
+/* ===== EXPORT BAR ===== */
+.export-bar {
+    display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+    background: rgba(0,20,10,0.8);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(57,255,20,0.25);
+    box-shadow: 0 0 10px rgba(57,255,20,0.08);
+    border-radius: 4px; padding: 4px 8px; margin-bottom: 5px;
+}
+.export-bar > span {
+    font-weight: 700; font-size: 11px;
+    color: var(--neon-g); margin-right: 4px;
+    font-family: 'Roboto', monospace;
+}
+.btn-exp {
+    padding: 4px 10px; border: 1px solid transparent;
+    border-radius: 3px; font-weight: 700; font-size: 11px;
+    cursor: pointer; color: #fff;
+    font-family: 'Roboto', monospace;
+    letter-spacing: 1px; transition: all 0.2s;
+}
+.btn-json-exp  { background: linear-gradient(135deg,#0a1a3a,#1565c0); border-color: var(--cyan2); }
+.btn-json-imp  { background: linear-gradient(135deg,#1a0a3a,#6a1b9a); border-color: #9c27b0; }
+.btn-html-save { background: linear-gradient(135deg,#2a0a00,#e65100); border-color: #ff6d00; }
+.btn-exp:hover:not(:disabled) {
+    box-shadow: 0 0 12px currentColor;
+    transform: translateY(-1px);
+}
+.btn-nav {
+    background: linear-gradient(135deg,#021a20,#054955);
+    border-color: var(--cyan-dim);
+    color: var(--text2);
+    text-transform: uppercase;
+}
+.btn-nav:hover {
+    border-color: var(--cyan2);
+    color: var(--text);
+}
+.btn-nav.active-nav {
+    background: linear-gradient(135deg,#003844,#00838f);
+    border-color: var(--cyan);
+    color: var(--cyan);
+    text-shadow: 0 0 8px var(--cyan);
+    box-shadow: 0 0 12px rgba(0,245,255,0.4);
+}
+
+/* ===== PAGINI SECUNDARE (Mesaje / Contact) ===== */
+.page-section { display: none; }
+.page-section.active-page { display: block; }
+
+.wide-header {
+    background: linear-gradient(135deg, rgba(0,40,50,0.9), rgba(0,15,30,0.9));
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 16px 22px;
+    margin-bottom: 14px;
+    box-shadow: 0 0 14px rgba(0,245,255,0.08);
+}
+.wide-header h2 {
+    margin: 0 0 4px 0;
+    font-family: 'Roboto', monospace;
+    letter-spacing: 2px;
+    color: var(--cyan);
+    text-shadow: 0 0 8px rgba(0,245,255,0.5);
+    text-transform: uppercase;
+    font-size: 20px;
+}
+.wide-header p {
+    margin: 0;
+    font-family: 'Roboto', monospace;
+    color: var(--text2);
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+.btn-back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 7px 18px;
+    border: 1px solid var(--cyan);
+    border-radius: 3px;
+    background: linear-gradient(135deg,#003844,#00838f);
+    color: var(--cyan);
+    text-shadow: 0 0 8px var(--cyan);
+    font-family: 'Roboto', monospace;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 12px;
+    cursor: pointer;
+}
+.btn-back-home:hover { box-shadow: 0 0 12px rgba(0,245,255,0.5); }
+
+.msg-panel {
+    background: rgba(5,45,61,0.9);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+.msg-panel label {
+    display: block;
+    font-family: 'Roboto', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+.msg-panel select, .msg-panel textarea, .msg-panel input[type=text] {
+    width: 100%;
+    font-family: 'Roboto', monospace;
+    background: rgba(0,245,255,0.06);
+    border: 1px solid var(--cyan-dim);
+    color: var(--text);
+    border-radius: 3px;
+    padding: 8px 10px;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+.msg-panel textarea { resize: vertical; min-height: 70px; margin-top: 8px; }
+.msg-panel select:focus, .msg-panel textarea:focus, .msg-panel input[type=text]:focus {
+    outline: none; border-color: var(--cyan);
+    box-shadow: 0 0 8px rgba(0,245,255,0.4);
+}
+.msg-send-btn {
+    margin-top: 10px;
+    padding: 8px 22px;
+    border: 1px solid var(--neon-g);
+    border-radius: 3px;
+    background: linear-gradient(135deg,#0a1f0a,#1b5e20);
     color: var(--neon-g);
-    padding: 5px 10px;
+    font-family: 'Roboto', monospace;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.msg-send-btn:hover { box-shadow: 0 0 12px var(--neon-g); }
+
+.msg-list {
+    background: rgba(2,13,26,0.85);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px;
+    max-height: 360px;
+    overflow-y: auto;
+}
+.msg-item {
+    border-left: 3px solid var(--cyan-dim);
+    background: rgba(0,245,255,0.04);
+    border-radius: 3px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
     font-family: 'Roboto', monospace;
     font-size: 13px;
-    outline: none;
+}
+.msg-item.from-admin { border-left-color: var(--neon-y); }
+.msg-item.from-locatar { border-left-color: var(--cyan); }
+.msg-item .msg-meta {
+    font-size: 10px;
+    color: var(--text2);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+.msg-empty { color: var(--text2); font-family:'Roboto',monospace; font-size:12px; text-align:center; padding:14px; opacity:0.7;}
+
+/* ===== CONTACT ===== */
+.contact-wrap {
+    background: rgba(5,45,61,0.9);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 26px;
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+.contact-logo {
+    flex: 0 0 auto;
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(0,245,255,0.25), rgba(0,15,30,0.9));
+    border: 1px solid var(--cyan);
+    box-shadow: 0 0 18px rgba(0,245,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+}
+.contact-logo svg { width: 56px; height: 56px; fill: var(--cyan); filter: drop-shadow(0 0 6px var(--cyan)); }
+.contact-info { flex: 1 1 320px; min-width: 280px; }
+.contact-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 10px;
+    align-items: center;
+    border-bottom: 1px solid var(--cyan-dim);
+    padding: 9px 0;
+}
+.contact-row label {
+    font-family: 'Roboto', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.contact-row input[type=text], .contact-row input[type=email] {
     width: 100%;
+    font-family: 'Roboto', monospace;
+    background: rgba(0,245,255,0.06);
+    border: none;
+    border-bottom: 1px solid var(--cyan-dim);
+    color: var(--text);
+    font-size: 14px;
+    padding: 5px 6px;
+    border-radius: 2px;
 }
-.btn-html-save { background: #e65100; color: white; padding: 8px 20px; cursor: pointer; border: none; font-weight: 900; border-radius: 3px; white-space: nowrap; box-shadow: 0 0 15px var(--cyan); color: var(--orange);  }
+.contact-row input[type=text]:focus, .contact-row input[type=email]:focus {
+    outline: none; border-bottom-color: var(--cyan);
+    box-shadow: 0 0 6px rgba(0,245,255,0.3);
+}
 
-/* TABEL ȘI EFECT DE SELECȚIE */
-.container { 
-    background: rgba(5,45,61,0.9); border: 1px solid var(--border); 
-    overflow-x: auto; border-radius: 4px; 
+/* ===== FOOTER ===== */
+.app-footer {
+    text-align: center;
+    font-family: 'Roboto', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text2);
+    opacity: 0.7;
+    padding: 16px 0 10px;
+}
+
+/* ===== TABEL CONTAINER ===== */
+.container {
+    background: rgba(5,45,61,0.9);
+    border: 1px solid var(--border);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    overflow-x: auto;
+    border-radius: 4px;
+    
+/* GRILA MILIMETRICĂ */
+    background-image: 
+        linear-gradient(rgba(2, 76, 160, 0.05) 1.5px, transparent 2px), /* Linii orizontale mici */
+        linear-gradient(90deg, rgba(2, 13, 158, 0.137) 1.5px, transparent 2px), /* Linii verticale mici */
+        linear-gradient(rgba(2, 46, 168, 0.1) 1.5px, transparent 2px), /* Linii orizontale mari (la 10 unități) */
+        linear-gradient(90deg, rgba(2, 39, 109, 0.548) 1.5px, transparent 2px); /* Linii verticale mari (la 10 unități) */
+    background-size: 2px ,2px, 2px 2px, 5px ,5px, 5px ,5px ; /* Dimensiunea pătrățelelor */
+    width: 95%;            /* Ocupă 95% din lățimea ecranului */
+    max-width: 1450px;     /* Nu lasă tabelul să se întindă mai mult de 1200px */
+    margin: 0 auto;        /* Îl centrează pe mijloc */
+    overflow-x: auto;      /* Permite scroll doar dacă ecranul este foarte mic */
+    /* ... restul codului pentru grilă ... */
 }
-table { border-collapse: collapse; width: 100%; min-width: 1400px; table-layout: fixed; }
-th { border: 1px solid rgba(0,245,255,0.2); color: var(--cyan); font-size: 10px; padding: 8px 2px; text-transform: uppercase; background: rgba(0,245,255,0.03); }
-td { border: 1px solid rgba(0,245,255,0.1); text-align: center; padding: 5px 2px; height: 35px; transition: background 0.3s; }
-.res-col { background: rgba(255,45,85,0.12) !important; color: var(--neon-r) !important; font-weight: 900; }
 
-/* BLUR PE RÂNDUL SELECTAT */
-tr.row-focus td {
-    background: rgba(0, 255, 42, 0.15) !important;
-    border-top: 1px solid var(--cyan);
-    border-bottom: 1px solid var(--cyan);
-    box-shadow: inset 0 0 15px rgba(0, 245, 255, 0.1);
+/* Overlay de tranzitie intre scari */
+#tranzitie-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(ellipse at center, rgba(0,245,255,0.18) 0%, transparent 70%);
+    transition: opacity 0.15s ease;
+}
+#tranzitie-overlay.activ { opacity: 1; }
+
+/* Scanline sweep la tranzitie */
+#tranzitie-sweep {
+    position: fixed;
+    left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--cyan2), var(--cyan), transparent);
+    box-shadow: 0 0 18px var(--cyan), 0 0 40px var(--cyan2);
+    z-index: 10000;
+    top: -4px;
+    transition: none;
+}
+#tranzitie-sweep.sweep {
+    animation: sweepDown 0.45s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+@keyframes sweepDown {
+    0%   { top: -4px; opacity: 1; }
+    100% { top: 100vh; opacity: 0.3; }
 }
 
-input { background: transparent; border: none; color: var(--neon-y); text-align: center; width: 100%; outline: none; font-weight: 900; font-family: 'Roboto', sans-serif; font-size: 15px; }
+/* Flash border pe tabel */
+.container.flash-a {
+    animation: flashA 0.5s ease-out;
+}
+.container.flash-b {
+    animation: flashB 0.5s ease-out;
+}
+@keyframes flashA {
+    0%   { box-shadow: 0 0 60px rgba(57,255,20,0.8), 0 0 20px rgba(0,245,255,0.1); border-color: var(--neon-g); }
+    100% { box-shadow: 0 0 20px rgba(0,245,255,0.1); border-color: var(--border); }
+}
+@keyframes flashB {
+    0%   { box-shadow: 0 0 60px rgba(0,245,255,0.8), 0 0 20px rgba(0,245,255,0.1); border-color: var(--cyan); }
+    100% { box-shadow: 0 0 20px rgba(0,245,255,0.1); border-color: var(--border); }
+}
+
+
+table {
+    border-collapse: collapse;
+    font-size: 15px; width: 1450px;
+    table-layout: fixed;
+    margin-left: auto; margin-right: auto;
+    font-family: 'Roboto', monospace;
+    contain: layout style;
+}
+
+/* Header tabel-titlu coloane */
+th {
+    border: 2px solid rgba(0,245,255,0.2);
+    padding: 5px 0; font-weight: 900;
+    color: var(--cyan); line-height: 1;
+    overflow: hidden; text-transform: uppercase;
+    font-size: 10px ;letter-spacing: 1px;
+
+}
+.scara-a-th th {
+    background: linear-gradient(180deg, #0a2010, #0d3018);
+    border-bottom: 2px solid var(--neon-g);
+}
+.scara-b-th th {
+    background: linear-gradient(180deg, #020c20, #041530);
+    border-bottom: 2px solid var(--cyan);
+}
+
+/* cifre coloane */
+td {
+    border: 2px solid rgba(0, 247, 255, 0.212);
+    text-align: center; padding: 5px 0;
+    font-weight: 500; color: var(--text);
+}
+/* coloana apartament */
+.col-ap {
+    font-weight: 800; border-right: 1px solid var(--border);
+    background: rgba(255, 45, 83, 0.267) !important;
+    color: var(--neon-r) !important;
+}
+
+/* Zebra futurista Scara A - verde inchis */
+.scara-a-mode tbody tr:nth-child(even):not(.active-row) td {
+    background: rgba(0,60,20,0.35) !important;
+}
+.scara-a-mode tbody tr:nth-child(odd):not(.active-row) td {
+    background: rgba(0,30,10,0.2) !important;
+}
+
+/* Zebra futurista Scara B - albastru inchis */
+.scara-b-mode tbody tr:nth-child(even):not(.active-row) td {
+    background: rgba(2, 126, 148, 0.192) !important;
+}
+.scara-b-mode tbody tr:nth-child(odd):not(.active-row) td {
+    background: rgba(0,15,40,0.2) !important;
+}
+
+/* Selectie rand - CYAN NEON */
+tr.active-row td {
+    background: rgba(247, 129, 178, 0.164) !important;
+    border-top: 3px solid var(--neon-r) !important;
+    border-bottom: 3px solid var(--neon-r) !important;
+    color: var(--neon-g) !important;
+    font-weight: 950;
+    box-shadow: inset 0 0 10px rgba(248, 247, 247, 0.925);
+   
+}
+
+.res-col {
+    background: rgba(255, 45, 83, 0.267) !important;
+    color: var(--neon-r) !important;
+    font-weight: 950;
+    border-left: 1px solid rgba(255,45,85,0.4) !important;
+    border-right: 1px solid rgba(255,45,85,0.4) !important;
+    font-size: 15px
+}
+
+/* Aplică blur doar pe celulele din coloana 14 */
+td:nth-child(14) {
+    box-shadow: inset 0 0 35px rgba(255, 0, 0, 0.192);
+   
+}
+
+/* Aplică blur doar pe celulele din coloana 21 */
+td:nth-child(21) {
+    box-shadow: inset 0 0 35px rgba(255, 0, 0, 0.192);
+   
+}
+
+
+
+
+.fond-col {
+    background: rgba(0,100,150,0.15) !important;
+}
+
+/* Inputs in tabel cifre cu galben*/
+input[type="number"] {
+    width: 95%; border: none; text-align: center;
+    font-weight: 600; padding: 2px; font-size: 14px;
+    background: transparent;
+    color: var(--neon-y);
+    font-family: 'Roboto', monospace;
+}
+input[type="number"]:focus {
+    outline: 1px solid var(--cyan);
+    background: rgba(0,245,255,0.05);
+    border-radius: 2px;
+}
+
 .readonly-mode input { pointer-events: none; }
-.readonly-mode .admin-msg-box { pointer-events: none; }
-</style>
-</head>
-<body id="mainBody" class="readonly-mode">
 
-<div class="crt-overlay"></div>
-<div id="wipe" class="transition-wipe"></div>
+/* Scrollbar futurista */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan2); box-shadow: 0 0 6px var(--cyan); }
+
+/* expMsg */
+#expMsg { font-size: 11px; color: var(--neon-g); margin-left: 6px; text-shadow: 0 0 6px var(--neon-g); }
+
+</style>
+
+<!-- ===== FIREBASE (mesaje in timp real) ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  // !!! INLOCUIESTE valorile de mai jos cu cele din Firebase Console -> Project settings -> Your apps -> SDK setup and configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCvU-POdP7rYsP2Ii1cx8I_-GNudOsUUU8",
+    authDomain: "saturn34-mesaje.firebaseapp.com",
+    databaseURL: "https://saturn34-mesaje-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId:"saturn34-mesaje",
+    storageBucket: "saturn34-mesaje.firebasestorage.app",
+    messagingSenderId: "929453014159",
+    appId: "1:929453014159:web:f637fa2b6012662e22c4fa"
+  };
+
+  function initFirebaseSigur() {
+    if (typeof firebase === "undefined") {
+      console.error("Firebase SDK nu s-a încărcat (firebase is not defined). " +
+        "Verifică: 1) ai conexiune la internet activă; 2) fisierul este deschis prin http(s):// (server/GitHub Pages), nu doar dublu-click local; " +
+        "3) nu ai un AdBlock / extensie care blochează www.gstatic.com; 4) reteaua/firewall-ul nu blocheaza domeniul gstatic.com.");
+      return;
+    }
+    if (firebaseConfig.apiKey.indexOf("PUNE_AICI") === 0) {
+      console.error("Firebase nu este configurat: completează firebaseConfig cu valorile reale din Firebase Console.");
+      return;
+    }
+    try {
+      firebase.initializeApp(firebaseConfig);
+      window._dbMesaje = firebase.firestore();
+    } catch (e) {
+      console.error("Firebase nu a putut fi initializat.", e);
+    }
+  }
+
+  initFirebaseSigur();
+</script>
+</head>
+<body id="mainBody" class="">
+<div id="tranzitie-overlay"></div>
+<div id="tranzitie-sweep"></div>
 
 <div class="header-panel">
-    <div>
-        <div id="ceas">00:00:00</div>
-        <input type="text" id="l_an" style="color:var(--neon-r); text-align:left; font-size: 14px;" value="MAI 2026">
+    <div class="logo-wrap" style="display:flex;align-items:center;gap:18px;">
+        <svg style="width:52px;height:52px;fill:#ff2d55;" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>
+        <div>
+            <div id="ceas">00:00:00</div>
+            <div style="font-size:13px;color:var(--text2);font-family:Roboto,monospace;letter-spacing:1px;">
+                LUNA:&nbsp;<input type="text" id="l_an" value="APRILIE-2026">
+            </div>
+        </div>
     </div>
-    <input type="text" id="titlu" class="edit-titlu" value="GESTIUNE SATURN 34">
-    <div style="text-align:right;">
-        <div style="font-size:12px; margin-bottom:5px; color:var(--text2);">PERSOANE: <span id="tot_p" style="color:var(--neon-g); font-size:18px;">0</span></div>
-        <button id="lockBtn" onclick="verificareParola()">🔒 BLOCAT</button>
+    <div style="text-align:center;">
+        <input type="text" id="titlu" class="edit-titlu" value="GESTIUNE SATURN 34-bl.129">
+    </div>
+    <div style="text-align:right;line-height:1.6;">
+        <div style="font-family:Roboto,monospace;font-size:13px;color:var(--text2);">
+            PERS:&nbsp;<span id="tot_p">0</span>
+        </div>
+        <button id="lockBtn" onclick="verificareParola()">&#128274; ADMIN</button>
     </div>
 </div>
 
+<div id="page-home" class="page-section active-page">
 <div class="calc-master no-print">
-    <div class="calc-group"><label>Pierderi Apa</label><input type="number" id="f_dif" value="0" oninput="recalc()"></div>
-    <div class="calc-group"><label>Lumina</label><input type="number" id="f_el" value="0" oninput="recalc()"></div>
-    <div class="calc-group"><label>Salarii</label><input type="number" id="f_sal" value="0" oninput="recalc()"></div>
-    <div class="calc-group"><label>Curatenie</label><input type="number" id="f_crt" value="0" oninput="recalc()"></div>
-    <div class="calc-group"><label>Chelt.Sediu</label><input type="number" id="f_sed" value="0" oninput="recalc()"></div>
-    <div class="calc-group"><label>Comision.Banca</label><input type="number" id="f_bank" value="0" oninput="recalc()"></div>
-    <div class="calc-group"><label>Chirie</label><input type="number" id="f_chir" value="0" oninput="recalc()"></div>
-    <div class="calc-group"><label>Gunoi/P</label><input type="number" id="f_gun" value="0" oninput="recalc()"></div>
+    <div class="calc-group"><label>Pierderi.Apa</label><input type="number" id="f_dif" value="396.39" oninput="recalc()"></div>
+    <div class="calc-group"><label>Lumina</label><input type="number" id="f_el" value="40.82" oninput="recalc()"></div>
+    <div class="calc-group"><label>Salarii</label><input type="number" id="f_sal" value="490.56" oninput="recalc()"></div>
+    <div class="calc-group"><label>Curatenie</label><input type="number" id="f_crt" value="200.01" oninput="recalc()"></div>
+    <div class="calc-group"><label>Chelt.Sediu</label><input type="number" id="f_sed" value="4.17" oninput="recalc()"></div>
+    <div class="calc-group"><label>Comision.Banca</label><input type="number" id="f_bank" value="14.50" oninput="recalc()"></div>
+    <div class="calc-group"><label>Chirie</label><input type="number" id="f_chir" value="3.37" oninput="recalc()"></div>
+    <div class="calc-group"><label>Gunoi/Per.</label><input type="number" id="f_gun" value="30.29" oninput="recalc()"></div>
 </div>
 
 <div class="nav-tabs no-print">
-    <div>
-        <button id="btnA" class="tab-btn btn-a active-a" onclick="switchS('A')">SCARA A</button>
-        <button id="btnB" class="tab-btn btn-b" onclick="switchS('B')">SCARA B</button>
+    <div class="nav-btns">
+        <button id="btnA" class="tab-btn btn-a active-a" onclick="switchS('A')">&#9632; Scara A</button>
+        <button id="btnB" class="tab-btn btn-b" onclick="switchS('B')">&#9632; Scara B</button>
     </div>
-    <div class="program-wrapper">
-	    <div style="font-size: 11px; color: var(--cyan2); font-weight: bold;">Program</div>
-		<div style="font-size: 11px; color: var(--cyan2); font-weight: bold;">Functionare:</div>
-        <div class="day-block"><span class="day-label">Luni</span><input class="prog-ora" type="text" id="prog_l" value="08:00-16:00"></div>
-        <div class="day-block"><span class="day-label">Marți</span><input class="prog-ora" type="text" id="prog_ma" value="08:00-16:00"></div>
-        <div class="day-block"><span class="day-label">Miercuri</span><input class="prog-ora" type="text" id="prog_mi" value="08:00-16:00"></div>
-        <div class="day-block"><span class="day-label">Joi</span><input class="prog-ora" type="text" id="prog_j" value="08:00-16:00"></div>
-        <div class="day-block"><span class="day-label">Vineri</span><input class="prog-ora" type="text" id="prog_v" value="08:00-14:00"></div>
+    <div class="program-grid">
+        <div class="prog-label">&#128336;<br>PROGRAM<br>FUNC.</div>
+        <div class="prog-zi-name luni">Luni</div>
+        <div class="prog-zi-name marti">Marti</div>
+        <div class="prog-zi-name mierc">Mierc.</div>
+        <div class="prog-zi-name joi">Joi</div>
+        <div class="prog-zi-name vineri">Vineri</div>
+        <input class="prog-ora" type="text" id="prog_l"  value="15:00-18:00">
+        <input class="prog-ora" type="text" id="prog_ma" value="11:00-14:00">
+        <input class="prog-ora" type="text" id="prog_mi" value="15:00-18.00">
+        <input class="prog-ora" type="text" id="prog_j"  value="10:00-13:00">
+        <input class="prog-ora" type="text" id="prog_v"  value="inchis">
+    </div>
+    <div style="font-family:Roboto,monospace;font-size:8px;color:var(--text2);text-align:right;line-height:1.6;opacity:0.6;">
+        &#128100; PERS ACTIVE<br>
+        <span style="font-size:14px;color:var(--neon-g);text-shadow:0 0 8px var(--neon-g);font-weight:900;" id="tot_p2">0</span>
     </div>
 </div>
 
 <div class="export-bar no-print">
-    <button class="btn-html-save" onclick="salveazaHTML()">💾 SALVEAZĂ DATELE</button>
-    <input type="text" id="admin_notite" class="admin-msg-box" placeholder="TRANSMITE UN MESAJ SAU NOTIȚĂ AICI...">
-    <span id="expMsg" style="color:var(--neon-g); font-weight:bold;"></span>
+    <span>&#128190; DATE:</span>
+    <button class="btn-exp btn-nav btn-nav-home active-nav" id="navHome" onclick="showPage('home')">&#127968; Acasă</button>
+    <button class="btn-exp btn-nav" id="navMesaje" onclick="showPage('mesaje')">&#128172; Mesaje</button>
+    <button class="btn-exp btn-nav" id="navContact" onclick="showPage('contact')">&#128222; Contact</button>
+
+    <button class="btn-exp" onclick="genereazaSlave()"
+        style="background:linear-gradient(135deg,#1a0030,#6a00aa);border:1px solid #cc44ff;color:#cc44ff;font-weight:900;"
+        title="Genereaza fisier  read-only">&#9889; Genereaza fisier</button>
+    <span id="expMsg"></span>
 </div>
 
-<div class="container" id="tableCont">
+<div class="container scara-a-mode" id="tableCont">
     <table>
         <thead>
-            <tr>
-                <th width="35">Ap</th><th width="35">P.</th><th width="55">Cota</th><th width="45">Ind.A</th>
-                <th width="55">V.Apa</th><th width="55">Pierd.</th><th width="45">Lum.</th><th width="45">Gun.</th>
-                <th width="45">Sal.</th><th width="45">Crt.</th><th width="45">Sed.</th><th width="45">Bnk.</th><th width="45">Chi.</th>
-                <th width="70" class="res-col">TOT L.</th>
-                <th width="45">FRul.</th><th width="45">FRep.</th>
-                <th width="45">Res.I</th><th width="45">Pen.</th><th width="45">Res.F</th><th width="45">Res.P</th>
-                <th width="75" class="res-col">TOTAL</th>
+            <tr id="headRow" class="scara-a-th">
+                <th width="15">Ap</th><th width="15">Nr.P</th><th width="35">Cota parte</th><th width="30">Index Apa</th>
+                <th width="40">Valoare.Apa</th><th width="35">Pierderi</th><th width="35">Lumina</th><th width="35">Gunoi</th>
+                <th width="35">Salarii</th><th width="35">Curatenie.</th><th width="25">Sed.</th><th width="25">Bnk.</th><th width="25">Chi.</th>
+                <th width="45" class="res-col">TOT LUNA</th>
+                <th width="35">Fond.Rul.</th><th width="35">Fond.Rep.</th>
+                <th width="40">Restanțe.I</th><th width="40">Penalitati.</th><th width="40">Restanțe.Fd</th><th width="40">Restanțe.Rep</th>
+                <th width="45" class="res-col">TOT PLATA</th>
             </tr>
         </thead>
         <tbody id="bodyTable"></tbody>
     </table>
 </div>
+</div><!-- /page-home -->
 
-<script id="dataScript">
-    var bazaDeDateSalvate = {}; 
-    let curS = 'A';
+<div id="page-mesaje" class="page-section">
+    <div class="wide-header">
+        <h2>&#128172; Mesaje Locatari &#8596; Administrator</h2>
+        <p>Comunicare directă între locatari și administrația asociației de proprietari.</p>
+        <button class="btn-back-home no-print" onclick="showPage('home')">&#127968; Înapoi acasă</button>
+    </div>
+
+    <div class="msg-panel no-print">
+        <label>Trimite mesaj</label>
+        <select id="msg_from">
+            <option value="Administrator">Administrator</option>
+            <option value="Locatar">Locatar</option>
+        </select>
+        <input type="text" id="msg_apt" placeholder="Apartament / Nume expeditor" style="margin-top:8px;">
+        <textarea id="msg_text" placeholder="Scrie mesajul aici..."></textarea>
+        <button class="msg-send-btn" onclick="trimiteMesaj()">&#9993; Trimite mesaj</button>
+    </div>
+
+    <div class="msg-panel">
+        <label>Mesaje primite / trimise</label>
+        <div class="msg-list" id="msg_list">
+            <div class="msg-empty">Niciun mesaj încă.</div>
+        </div>
+    </div>
+</div>
+
+<div id="page-contact" class="page-section">
+    <div class="wide-header">
+        <h2>&#128222; Contact</h2>
+        <p>Datele de contact ale asociației de proprietari.</p>
+        <button class="btn-back-home no-print" onclick="showPage('home')">&#127968; Înapoi acasă</button>
+    </div>
+
+    <div class="contact-wrap">
+        <div class="contact-logo">
+            <svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>
+        </div>
+        <div class="contact-info">
+            <div class="contact-row">
+                <label>Administrator asociație</label>
+                <input type="text" id="c_admin" value="Nume Administrator">
+            </div>
+            <div class="contact-row">
+                <label>Președinte asociație</label>
+                <input type="text" id="c_presedinte" value="Nume Președinte">
+            </div>
+            <div class="contact-row">
+                <label>Membrii asociație</label>
+                <input type="text" id="c_membri" value="Nume membru 1, Nume membru 2, Nume membru 3">
+            </div>
+            <div class="contact-row">
+                <label>Adresă email</label>
+                <input type="email" id="c_email" value="contact@asociatie.ro">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-footer no-print">
+    &copy; <span id="footer-year">2026</span> GESTIUNE SATURN 34-bl.129. Toate drepturile rezervate.
+</div>
+
+<script>
+
+
+let curS = 'A';
     const pretApaMC = 17.03;
     const divizorCota = 49.997;
+
+    // debounce mutat in sectiunea gen_slave_js
+
+    // ---- WEB AUDIO - Sunet sci-fi click rand ----
+    var _actx = null;
+    function getAudioCtx() {
+        if (!_actx) {
+            try { _actx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+        }
+        return _actx;
+    }
+
+    function playClickSF() {
+        var ctx = getAudioCtx(); if (!ctx) return;
+        var t = ctx.currentTime;
+
+        // Sunet 1: beep scurt cyberpunk (descendent)
+        var osc1 = ctx.createOscillator();
+        var gain1 = ctx.createGain();
+        osc1.connect(gain1); gain1.connect(ctx.destination);
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(880, t);
+        osc1.frequency.exponentialRampToValueAtTime(220, t + 0.12);
+        gain1.gain.setValueAtTime(0.18, t);
+        gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+        osc1.start(t); osc1.stop(t + 0.15);
+
+        // Sunet 2: click metalic (noise scurt)
+        var osc2 = ctx.createOscillator();
+        var gain2 = ctx.createGain();
+        osc2.connect(gain2); gain2.connect(ctx.destination);
+        osc2.type = 'square';
+        osc2.frequency.setValueAtTime(1200, t);
+        osc2.frequency.exponentialRampToValueAtTime(400, t + 0.04);
+        gain2.gain.setValueAtTime(0.08, t);
+        gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+        osc2.start(t); osc2.stop(t + 0.05);
+
+        // Sunet 3: ton confirmare (scurt, sus)
+        var osc3 = ctx.createOscillator();
+        var gain3 = ctx.createGain();
+        osc3.connect(gain3); gain3.connect(ctx.destination);
+        osc3.type = 'triangle';
+        osc3.frequency.setValueAtTime(1760, t + 0.06);
+        gain3.gain.setValueAtTime(0.0, t + 0.06);
+        gain3.gain.linearRampToValueAtTime(0.12, t + 0.08);
+        gain3.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+        osc3.start(t + 0.06); osc3.stop(t + 0.19);
+    }
+
+    function markRow(id) {
+        playClickSF();
+        document.querySelectorAll('tr').forEach(r => r.classList.remove('active-row'));
+        const row = document.getElementById('row_' + id);
+        if (row) row.classList.add('active-row');
+    }
+
+    function recalc() {
+        // FIX: calculeaza persoane separat pentru fiecare scara
+        let tP_A = 0, tP_B = 0;
+        for (let i = 1; i <= 20; i++) {
+            let el = document.getElementById('p_' + i);
+            if (el) tP_A += parseFloat(el.value) || 0;
+        }
+        for (let i = 21; i <= 40; i++) {
+            let el = document.getElementById('p_' + i);
+            if (el) tP_B += parseFloat(el.value) || 0;
+        }
+        // Afiseaza total persoane scara activa
+        const tP_activ = (curS === 'A') ? tP_A : tP_B;
+        document.getElementById('tot_p').innerText = tP_activ;
+        var tp2 = document.getElementById('tot_p2');
+        if (tp2) tp2.innerText = tP_activ;
+
+        const fEl  = parseFloat(document.getElementById('f_el').value)   || 0;
+        const fDif = parseFloat(document.getElementById('f_dif').value)  || 0;
+        const fSal = parseFloat(document.getElementById('f_sal').value)  || 0;
+        const fCrt = parseFloat(document.getElementById('f_crt').value)  || 0;
+        const fSed = parseFloat(document.getElementById('f_sed').value)  || 0;
+        const fBnk = parseFloat(document.getElementById('f_bank').value) || 0;
+        const fChr = parseFloat(document.getElementById('f_chir').value) || 0;
+        const vGun = parseFloat(document.getElementById('f_gun').value)  || 0;
+
+        // FIX: fiecare scara are propriul sau divizor persoane si propriul uDif (20 ap/scara)
+        const uEl_A  = tP_A > 0 ? fEl / tP_A : 0;
+        const uEl_B  = tP_B > 0 ? fEl / tP_B : 0;
+        const uDif_A = fDif / 20;
+        const uDif_B = fDif / 20;
+
+        const uSal = fSal / divizorCota;
+        const uCrt = fCrt / divizorCota;
+        const uSed = fSed / divizorCota;
+        const uBnk = fBnk / divizorCota;
+        const uChr = fChr / divizorCota;
+
+        for (let i = 1; i <= 40; i++) {
+            let elP = document.getElementById('p_' + i);
+            if (!elP) continue;
+
+            let p   = parseFloat(elP.value) || 0;
+            let c   = parseFloat(document.getElementById('c_'  + i).value) || 0;
+            let mc  = parseFloat(document.getElementById('mc_' + i).value) || 0;
+
+            // FIX: foloseste uEl si uDif corecte per scara
+            const uEl  = (i <= 20) ? uEl_A  : uEl_B;
+            const uDif = (i <= 20) ? uDif_A : uDif_B;
+
+            const va  = mc * pretApaMC;
+            const vd  = uDif;
+            const ve  = p * uEl;
+            const vg  = p * vGun;
+            const vsl = c * uSal;
+            const vcr = c * uCrt;
+            const vsd = c * uSed;
+            const vbk = c * uBnk;
+            const vch = c * uChr;
+
+            document.getElementById('va_'  + i).innerText = va.toFixed(2);
+            document.getElementById('vd_'  + i).innerText = vd.toFixed(2);
+            document.getElementById('ve_'  + i).innerText = ve.toFixed(2);
+            document.getElementById('vg_'  + i).innerText = vg.toFixed(2);
+            document.getElementById('vsl_' + i).innerText = vsl.toFixed(2);
+            document.getElementById('vcr_' + i).innerText = vcr.toFixed(2);
+            document.getElementById('vsd_' + i).innerText = vsd.toFixed(2);
+            document.getElementById('vbk_' + i).innerText = vbk.toFixed(2);
+            document.getElementById('vch_' + i).innerText = vch.toFixed(2);
+
+            let totL = va + vd + ve + vg + c * (uSal + uCrt + uSed + uBnk + uChr);
+            document.getElementById('tl_' + i).innerText = totL.toFixed(2);
+
+            // FIX: fr si frp NU se includ in TOT PLATA
+            let ri = parseFloat(document.getElementById('ri_' + i).value) || 0;
+            let pn = parseFloat(document.getElementById('pn_' + i).value) || 0;
+            let rf = parseFloat(document.getElementById('rf_' + i).value) || 0;
+            let rp = parseFloat(document.getElementById('rp_' + i).value) || 0;
+
+            document.getElementById('tp_' + i).innerText = (totL + ri + pn + rf + rp).toFixed(2);
+        }
+
+        saveDebounced();
+    }
 
     function build() {
         let rows = "";
         for (let i = 1; i <= 40; i++) {
             let vis = (i <= 20) ? '' : 'display:none;';
-            rows += `<tr id="row_${i}" style="${vis}" onclick="focusRow(this)">
-                <td style="color:var(--cyan); font-weight:900;">${i}</td>
-                <td><input type="number" id="p_${i}" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="c_${i}" value="0" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_${i}" value="0" step="0.01" oninput="recalc()"></td>
+            rows += `<tr id="row_${i}" style="${vis}" onclick="markRow(${i})">
+                <td class="col-ap">${i}</td>
+                <td><input type="number" id="p_${i}"   value="1"     oninput="recalc()"></td>
+                <td><input type="number" id="c_${i}"   value="2.500" step="0.001" oninput="recalc()"></td>
+                <td><input type="number" id="mc_${i}"  value="0"     step="0.01"  oninput="recalc()"></td>
                 <td id="va_${i}">0</td><td id="vd_${i}">0</td><td id="ve_${i}">0</td><td id="vg_${i}">0</td>
                 <td id="vsl_${i}">0</td><td id="vcr_${i}">0</td><td id="vsd_${i}">0</td><td id="vbk_${i}">0</td><td id="vch_${i}">0</td>
                 <td id="tl_${i}" class="res-col">0</td>
-                <td><input type="number" id="fr_${i}" value="0"></td>
-                <td><input type="number" id="frp_${i}" value="0"></td>
-                <td><input type="number" id="ri_${i}" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_${i}" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_${i}" value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_${i}" value="0" oninput="recalc()"></td>
+                <td class="fond-col"><input type="number" id="fr_${i}"  value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td class="fond-col"><input type="number" id="frp_${i}" value="" placeholder="-" oninput="saveDebounced()"></td>
+                <td><input type="number" id="ri_${i}"  value="0" oninput="recalc()"></td>
+                <td><input type="number" id="pn_${i}"  value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rf_${i}"  value="0" oninput="recalc()"></td>
+                <td><input type="number" id="rp_${i}"  value="0" oninput="recalc()"></td>
                 <td id="tp_${i}" class="res-col">0</td>
             </tr>`;
         }
         document.getElementById('bodyTable').innerHTML = rows;
-        
-        if(Object.keys(bazaDeDateSalvate).length > 0) {
-            Object.keys(bazaDeDateSalvate).forEach(id => {
-                let el = document.getElementById(id);
-                if(el) el.value = bazaDeDateSalvate[id];
-            });
-        }
-        recalc();
+        load(); // FIX: load dupa build, nu pierde datele
     }
 
-    // Funcția pentru fixare Focus pe rând
-    function focusRow(rowEl) {
-        document.querySelectorAll('tr').forEach(r => r.classList.remove('row-focus'));
-        rowEl.classList.add('row-focus');
+    // ---- SUNET tranzitie scara ----
+    function playSwitchSF(scara) {
+        var ctx = getAudioCtx(); if (!ctx) return;
+        var t = ctx.currentTime;
+        var freqs = scara === 'A'
+            ? [330, 440, 660, 880]   // Scara A - urcator verde
+            : [880, 660, 440, 330];  // Scara B - coborator albastru
+
+        freqs.forEach(function(f, i) {
+            var osc = ctx.createOscillator();
+            var g   = ctx.createGain();
+            osc.connect(g); g.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = f;
+            var st = t + i * 0.07;
+            g.gain.setValueAtTime(0, st);
+            g.gain.linearRampToValueAtTime(0.15, st + 0.03);
+            g.gain.exponentialRampToValueAtTime(0.001, st + 0.12);
+            osc.start(st); osc.stop(st + 0.13);
+        });
+
+        // Whoosh
+        var buf = ctx.createBuffer(1, ctx.sampleRate * 0.3, ctx.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var j = 0; j < data.length; j++) data[j] = (Math.random()*2-1) * (1 - j/data.length);
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        var filt = ctx.createBiquadFilter();
+        filt.type = 'bandpass';
+        filt.frequency.value = scara === 'A' ? 800 : 400;
+        filt.Q.value = 1.5;
+        var gw = ctx.createGain();
+        gw.gain.setValueAtTime(0.06, t);
+        gw.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+        src.connect(filt); filt.connect(gw); gw.connect(ctx.destination);
+        src.start(t); src.stop(t + 0.3);
     }
 
     function switchS(s) {
-        if(curS === s) return;
-        const wipe = document.getElementById('wipe');
-        wipe.classList.add('wipe-active');
-        setTimeout(() => {
+        if (s === curS) return;
+        playSwitchSF(s);
+
+        // Animatie: sweep line + overlay flash
+        var overlay = document.getElementById('tranzitie-overlay');
+        var sweep   = document.getElementById('tranzitie-sweep');
+        var cont    = document.getElementById('tableCont');
+
+        // Schimba culoarea sweep in functie de scara
+        sweep.style.background = s === 'A'
+            ? 'linear-gradient(90deg, transparent, #39ff14, #00f5ff, #39ff14, transparent)'
+            : 'linear-gradient(90deg, transparent, #00f5ff, #00bcd4, #00f5ff, transparent)';
+        sweep.style.boxShadow = s === 'A'
+            ? '0 0 18px #39ff14, 0 0 40px #39ff14'
+            : '0 0 18px #00f5ff, 0 0 40px #00bcd4';
+
+        // Pornim animatia
+        overlay.classList.add('activ');
+        sweep.classList.remove('sweep');
+        void sweep.offsetWidth; // reflow
+        sweep.classList.add('sweep');
+
+        // Schimbam continutul la jumatatea animatiei (220ms)
+        setTimeout(function() {
             curS = s;
+            document.getElementById('headRow').className   = s === 'A' ? 'scara-a-th' : 'scara-b-th';
+            document.getElementById('tableCont').className = s === 'A' ? 'container scara-a-mode' : 'container scara-b-mode';
             document.getElementById('btnA').classList.toggle('active-a', s === 'A');
             document.getElementById('btnB').classList.toggle('active-b', s === 'B');
-            for (let i = 1; i <= 40; i++) {
-                document.getElementById(`row_${i}`).style.display = ((i <= 20 && s === 'A') || (i > 20 && s === 'B')) ? '' : 'none';
+            for (var i = 1; i <= 40; i++) {
+                var row = document.getElementById('row_' + i);
+                if (row) row.style.display = ((i <= 20 && s === 'A') || (i > 20 && s === 'B')) ? '' : 'none';
             }
-            wipe.classList.remove('wipe-active');
             recalc();
-        }, 300);
+
+            // Flash border pe tabel
+            cont.classList.remove('flash-a','flash-b');
+            void cont.offsetWidth;
+            cont.classList.add(s === 'A' ? 'flash-a' : 'flash-b');
+
+            // Stingem overlay-ul
+            overlay.classList.remove('activ');
+        }, 220);
     }
 
-    function recalc() {
-        let tP_A = 0, tP_B = 0;
-        for (let i = 1; i <= 20; i++) tP_A += parseFloat(document.getElementById('p_'+i).value) || 0;
-        for (let i = 21; i <= 40; i++) tP_B += parseFloat(document.getElementById('p_'+i).value) || 0;
-        document.getElementById('tot_p').innerText = (curS === 'A') ? tP_A : tP_B;
+    // save/load mutat in sectiunea gen_slave_js
 
-        const fEl = parseFloat(document.getElementById('f_el').value) || 0;
-        const fDif = parseFloat(document.getElementById('f_dif').value) || 0;
-        const fSal = parseFloat(document.getElementById('f_sal').value) || 0;
-        const fCrt = parseFloat(document.getElementById('f_crt').value) || 0;
-        const fSed = parseFloat(document.getElementById('f_sed').value) || 0;
-        const fBnk = parseFloat(document.getElementById('f_bank').value) || 0;
-        const fChr = parseFloat(document.getElementById('f_chir').value) || 0;
-        const vGun = parseFloat(document.getElementById('f_gun').value) || 0;
+    const _h = (s) => s.split('').reduce((a,c)=>Math.imul(31,a)+c.charCodeAt(0)|0, 0);
+    const _ph = _h('alfa.40');
 
-        for (let i = 1; i <= 40; i++) {
-            let p = parseFloat(document.getElementById('p_'+i).value) || 0;
-            let c = parseFloat(document.getElementById('c_'+i).value) || 0;
-            let mc = parseFloat(document.getElementById('mc_'+i).value) || 0;
-
-            let va = mc * pretApaMC;
-            let vd = fDif / 40;
-            let ve = p * (i <= 20 ? (tP_A > 0 ? fEl/tP_A : 0) : (tP_B > 0 ? fEl/tP_B : 0));
-            let vg = p * vGun;
-
-            document.getElementById('va_'+i).innerText = va.toFixed(2);
-            document.getElementById('vd_'+i).innerText = vd.toFixed(2);
-            document.getElementById('ve_'+i).innerText = ve.toFixed(2);
-            document.getElementById('vg_'+i).innerText = vg.toFixed(2);
-            document.getElementById('vsl_'+i).innerText = (c * (fSal/divizorCota)).toFixed(2);
-            document.getElementById('vcr_'+i).innerText = (c * (fCrt/divizorCota)).toFixed(2);
-            document.getElementById('vsd_'+i).innerText = (c * (fSed/divizorCota)).toFixed(2);
-            document.getElementById('vbk_'+i).innerText = (c * (fBnk/divizorCota)).toFixed(2);
-            document.getElementById('vch_'+i).innerText = (c * (fChr/divizorCota)).toFixed(2);
-
-            let totL = va + vd + ve + vg + (c * ((fSal+fCrt+fSed+fBnk+fChr)/divizorCota));
-            document.getElementById('tl_'+i).innerText = totL.toFixed(2);
-            let ri = parseFloat(document.getElementById('ri_'+i).value) || 0;
-            let pn = parseFloat(document.getElementById('pn_'+i).value) || 0;
-            let rf = parseFloat(document.getElementById('rf_'+i).value) || 0;
-            let rp = parseFloat(document.getElementById('rp_'+i).value) || 0;
-            document.getElementById('tp_'+i).innerText = (totL + ri + pn + rf + rp).toFixed(2);
-        }
+    function setButoaneDateStat(esteAdmin) {
+        ['btn-json-exp','btn-json-imp','btn-html-save'].forEach(function(cls) {
+            document.querySelectorAll('.' + cls).forEach(function(btn) {
+                btn.disabled = !esteAdmin;
+                btn.style.opacity = esteAdmin ? '1' : '0.35';
+                btn.style.cursor  = esteAdmin ? 'pointer' : 'not-allowed';
+                btn.title = esteAdmin ? '' : 'Necesita mod ADMIN';
+            });
+        });
+        var imp = document.getElementById('importFile');
+        if (imp) imp.disabled = !esteAdmin;
     }
 
     function verificareParola() {
-        let p = prompt("PAROLA:");
-        if(p === "alfa.40") {
-            document.getElementById('mainBody').classList.remove('readonly-mode');
-            document.getElementById('lockBtn').innerHTML = "🔓 ADMIN ACTIV";
-            document.getElementById('lockBtn').style.color = "var(--neon-g)";
+        var input = prompt("PAROLA:");
+        if (input !== null && _h(input) === _ph) {
+            document.getElementById('mainBody').classList.toggle('readonly-mode');
+            var esteAdmin = !document.getElementById('mainBody').classList.contains('readonly-mode');
+            document.getElementById('lockBtn').textContent = esteAdmin ? '🔓 ADMIN' : '🔒 BLOCAT';
+            setButoaneDateStat(esteAdmin);
+        } else if (input !== null) {
+            alert('Parola incorecta!');
         }
     }
 
-    function salveazaHTML() {
-        document.getElementById('mainBody').classList.add('readonly-mode');
-        document.getElementById('lockBtn').innerHTML = "🔒 BLOCAT";
-        document.getElementById('lockBtn').style.color = "var(--neon-r)";
-
-        let dateNoi = {};
-        document.querySelectorAll('input').forEach(el => { if(el.id) dateNoi[el.id] = el.value; });
-        
-        let scriptData = `var bazaDeDateSalvate = ${JSON.stringify(dateNoi, null, 2)};`;
-        let sursa = document.documentElement.outerHTML.replace(/var bazaDeDateSalvate = \{[\s\S]*?\};/, scriptData);
-
-        const blob = new Blob(["<!DOCTYPE html>\n" + sursa], { type: 'text/html' });
+    // ---- EXPORT JSON ----
+    function exportJSON() {
+        const d = { in: {}, _meta: { luna: document.getElementById('l_an').value, titlu: document.getElementById('titlu').value, data: new Date().toLocaleString('ro-RO') } };
+        document.querySelectorAll('input').forEach(el => { if (el.id) d.in[el.id] = el.value; });
+        const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `Gestiune_Update.html`;
+        const luna = (document.getElementById('l_an').value || 'date').replace(/\s+/g, '_');
+        a.download = 'Saturn34_' + luna + '.json';
         a.click();
-        
-        document.getElementById('expMsg').innerText = "✅ SALVAT!";
-        setTimeout(() => document.getElementById('expMsg').innerText = "", 3000);
+        mesajExp('✅ JSON exportat!');
     }
 
-    window.onload = build;
-    setInterval(() => { document.getElementById('ceas').innerText = new Date().toLocaleTimeString('ro-RO'); }, 1000);
+    // ---- IMPORT JSON ----
+    function importJSON(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const d = JSON.parse(e.target.result);
+                if (!d.in) throw new Error('Format invalid');
+                Object.keys(d.in).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && el.tagName === 'INPUT') el.value = d.in[id];
+                });
+                recalc();
+                mesajExp('✅ Date importate din: ' + file.name);
+            } catch(err) {
+                alert('Eroare la import: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+        input.value = '';
+    }
+    // ---- GENERARE SLAVE (fara fetch, fara server) ----
+    function genereazaSlave() {
+        recalc();
+
+        // 1. Colecteaza TOATE datele curente
+        var d = {};
+        document.querySelectorAll('input').forEach(function(el){
+            if (el.id) d[el.id] = el.value;
+        });
+        // Coloane calculate (td)
+        ['va_','vd_','ve_','vg_','vsl_','vcr_','vsd_','vbk_','vch_','tl_','tp_'].forEach(function(p){
+            for (var i=1;i<=40;i++){
+                var e=document.getElementById(p+i);
+                if(e) d[p+i]=e.innerText||'0';
+            }
+        });
+
+        var luna   = (d['l_an']||'date').replace(/\s+/g,'_');
+        var titlu  = d['titlu']||'GESTIUNE';
+        var l_an   = d['l_an']||'';
+        var prog_l = d['prog_l']||''; var prog_ma=d['prog_ma']||'';
+        var prog_mi=d['prog_mi']||''; var prog_j =d['prog_j']||'';
+        var prog_v =d['prog_v']||'';
+
+        // 2. Construieste HTML slave complet in memorie
+        var slaveHtml = construiesteSlaveHTML(d, titlu, l_an, prog_l, prog_ma, prog_mi, prog_j, prog_v);
+
+        // 3. Descarca
+        var blob = new Blob([slaveHtml], {type:'text/html;charset=utf-8'});
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Saturn34_' + luna + '_SLAVE.html';
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a); URL.revokeObjectURL(a.href);
+        mesajExp('&#10003; SLAVE generat: Saturn34_' + luna + '_SLAVE.html');
+    }
+
+    function construiesteSlaveHTML(d, titlu, l_an, prog_l, prog_ma, prog_mi, prog_j, prog_v) {
+        var dStr = JSON.stringify(d);
+        var css  = document.querySelector('style').textContent;
+
+        // Generam randurile tabelului direct cu valorile deja completate
+        var rows = '';
+        for (var i = 1; i <= 40; i++) {
+            var vis = (i <= 20) ? '' : 'display:none;';
+            var p   = d['p_'+i]   || '0';
+            var c   = d['c_'+i]   || '0';
+            var mc  = d['mc_'+i]  || '0';
+            var fr  = d['fr_'+i]  || '';
+            var frp = d['frp_'+i] || '';
+            var ri  = d['ri_'+i]  || '0';
+            var pn  = d['pn_'+i]  || '0';
+            var rf  = d['rf_'+i]  || '0';
+            var rp  = d['rp_'+i]  || '0';
+            var va  = d['va_'+i]  || '0';
+            var vd  = d['vd_'+i]  || '0';
+            var ve  = d['ve_'+i]  || '0';
+            var vg  = d['vg_'+i]  || '0';
+            var vsl = d['vsl_'+i] || '0';
+            var vcr = d['vcr_'+i] || '0';
+            var vsd = d['vsd_'+i] || '0';
+            var vbk = d['vbk_'+i] || '0';
+            var vch = d['vch_'+i] || '0';
+            var tl  = d['tl_'+i]  || '0';
+            var tp  = d['tp_'+i]  || '0';
+
+            rows += '<tr id="row_' + i + '" style="' + vis + '" onclick="markRow(' + i + ')">' +
+                '<td class="col-ap">' + i + '</td>' +
+                '<td>' + p + '</td>' +
+                '<td>' + c + '</td>' +
+                '<td>' + mc + '</td>' +
+                '<td>' + va + '</td>' +
+                '<td>' + vd + '</td>' +
+                '<td>' + ve + '</td>' +
+                '<td>' + vg + '</td>' +
+                '<td>' + vsl + '</td>' +
+                '<td>' + vcr + '</td>' +
+                '<td>' + vsd + '</td>' +
+                '<td>' + vbk + '</td>' +
+                '<td>' + vch + '</td>' +
+                '<td class="res-col">' + tl + '</td>' +
+                '<td class="fond-col">' + (fr||'-') + '</td>' +
+                '<td class="fond-col">' + (frp||'-') + '</td>' +
+                '<td>' + ri + '</td>' +
+                '<td>' + pn + '</td>' +
+                '<td>' + rf + '</td>' +
+                '<td>' + rp + '</td>' +
+                '<td class="res-col">' + tp + '</td>' +
+            '</tr>';
+        }
+
+        // JS minimal slave - doar navigare scara si ceas
+        var jsMin = [
+            'var _cS="A";',
+            'function markRow(id){',
+            '  document.querySelectorAll("tr").forEach(function(r){r.classList.remove("active-row");});',
+            '  var r=document.getElementById("row_"+id);if(r)r.classList.add("active-row");',
+            '}',
+            'function _sw(s){',
+            '  _cS=s;',
+            '  document.getElementById("headRow").className=s==="A"?"scara-a-th":"scara-b-th";',
+            '  document.getElementById("tableCont").className=s==="A"?"container scara-a-mode":"container scara-b-mode";',
+            '  var bA=document.getElementById("btnA");var bB=document.getElementById("btnB");',
+            '  if(bA)bA.classList.toggle("active-a",s==="A");',
+            '  if(bB)bB.classList.toggle("active-b",s==="B");',
+            '  for(var i=1;i<=40;i++){',
+            '    var r=document.getElementById("row_"+i);',
+            '    if(r)r.style.display=((i<=20&&s==="A")||(i>20&&s==="B"))?"":"none";',
+            '  }',
+            '}',
+            'function showPage(name){',
+            '  document.querySelectorAll(".page-section").forEach(function(p){p.classList.remove("active-page");});',
+            '  document.querySelectorAll(".btn-nav").forEach(function(b){b.classList.remove("active-nav");});',
+            '  var page=document.getElementById("page-"+name);',
+            '  if(page)page.classList.add("active-page");',
+            '  var btn=document.getElementById("nav"+name.charAt(0).toUpperCase()+name.slice(1));',
+            '  if(btn)btn.classList.add("active-nav");',
+            '  window.scrollTo(0,0);',
+            '  if(name==="mesaje"&&typeof porneșteAscultareaMesajeSlave==="function")porneșteAscultareaMesajeSlave();',
+            '}',
+            'function escHtml(s){',
+            '  return String(s==null?"":s).replace(/[&<>"\']/g, function(c){',
+            '    return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","\'":"&#39;"}[c];',
+            '  });',
+            '}',
+            'var COLECTIE_MESAJE="mesaje";',
+            'var _unsubscribeMesajeSlave=null;',
+            'function randMesajSlave(m){',
+            '  var cls=m.from==="Administrator"?"from-admin":"from-locatar";',
+            '  return \'<div class="msg-item \'+cls+\'">\'',
+            '    +\'<div class="msg-meta">\'+escHtml(m.from)+\' &middot; \'+escHtml(m.apt||"")+\' &middot; \'+escHtml(m.data||"")+\'</div>\'',
+            '    +\'<div>\'+escHtml(m.text)+\'</div></div>\';',
+            '}',
+            'function porneșteAscultareaMesajeSlave(){',
+            '  var list=document.getElementById("msg_list");',
+            '  if(!list)return;',
+            '  if(!window._dbMesaje){list.innerHTML=\'<div class="msg-empty">&#9888; Firebase nu este configurat.</div>\';return;}',
+            '  if(_unsubscribeMesajeSlave)return;',
+            '  list.innerHTML=\'<div class="msg-empty">Se încarcă mesajele...</div>\';',
+            '  try{',
+            '    _unsubscribeMesajeSlave=window._dbMesaje.collection(COLECTIE_MESAJE).orderBy("ts","asc").onSnapshot(function(snap){',
+            '      if(snap.empty){list.innerHTML=\'<div class="msg-empty">Niciun mesaj încă.</div>\';return;}',
+            '      var html="";var docs=[];',
+            '      snap.forEach(function(doc){docs.push(doc.data());});',
+            '      docs.slice().reverse().forEach(function(m){html+=randMesajSlave(m);});',
+            '      list.innerHTML=html;',
+            '    },function(err){console.error(err);list.innerHTML=\'<div class="msg-empty">&#9888; Eroare conectare Firebase.</div>\';});',
+            '  }catch(e){console.error(e);list.innerHTML=\'<div class="msg-empty">&#9888; Eroare conectare Firebase.</div>\';}',
+            '}',
+            'function trimiteMesaj(){',
+            '  var from=document.getElementById("msg_from").value;',
+            '  var apt=document.getElementById("msg_apt").value.trim();',
+            '  var text=document.getElementById("msg_text").value.trim();',
+            '  if(!text)return;',
+            '  if(!window._dbMesaje){alert("Firebase nu este configurat.");return;}',
+            '  var btn=document.querySelector(".msg-send-btn");',
+            '  if(btn){btn.disabled=true;btn.style.opacity="0.6";}',
+            '  window._dbMesaje.collection(COLECTIE_MESAJE).add({',
+            '    from:from,apt:apt,text:text,data:new Date().toLocaleString("ro-RO"),',
+            '    ts:firebase.firestore.FieldValue.serverTimestamp()',
+            '  }).then(function(){',
+            '    if(btn){btn.disabled=false;btn.style.opacity="1";}',
+            '    document.getElementById("msg_text").value="";',
+            '  }).catch(function(err){',
+            '    if(btn){btn.disabled=false;btn.style.opacity="1";}',
+            '    console.error(err);alert("Mesajul nu a putut fi trimis. Verifică Firebase.");',
+            '  });',
+            '}',
+            'document.addEventListener("DOMContentLoaded",function(){',
+            '  setInterval(function(){',
+            '    var el=document.getElementById("ceas");',
+            '    if(el)el.innerText=new Date().toLocaleTimeString("ro-RO");',
+            '  },1000);',
+            '  porneșteAscultareaMesajeSlave();',
+            '});'
+        ].join('\n');
+
+        var h = '<!DOCTYPE html>\n<html lang="ro">\n<head>\n<meta charset="UTF-8">\n';
+        h += '<title>' + titlu + ' - VIZUALIZARE</title>\n';
+        h += '<style>\n' + css + '\n';
+        h += 'input,textarea{pointer-events:none!important;}\n';
+        h += '.msg-panel input,.msg-panel textarea,.msg-panel select{pointer-events:auto!important;}\n';
+        h += '.tab-btn{pointer-events:auto!important;cursor:pointer!important;}\n';
+        h += '.slave-badge{position:fixed;bottom:10px;right:12px;z-index:9999;background:rgba(0,20,40,0.9);';
+        h += 'border:1px solid var(--cyan);border-radius:20px;padding:4px 14px;font-size:10px;';
+        h += 'color:var(--cyan2);text-shadow:0 0 6px var(--cyan2);}\n';
+        h += '.no-print,#lockBtn,.calc-master{display:none!important;}\n';
+        h += '</style>\n';
+        var sOpen = '<' + 'script', sClose = '<' + '/script>';
+        h += sOpen + ' src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js">' + sClose + '\n';
+        h += sOpen + ' src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js">' + sClose + '\n';
+        h += sOpen + '>\n';
+        h += 'try{firebase.initializeApp(' + JSON.stringify((typeof firebaseConfig!=='undefined')?firebaseConfig:{}) + ');window._dbMesaje=firebase.firestore();}catch(e){console.error("Firebase init eroare",e);}\n';
+        h += sClose + '\n';
+        h += '</head>\n<body id="mainBody">\n';
+        h += '<div class="slave-badge">&#128274; VIZUALIZARE &mdash; ' + l_an + '</div>\n';
+        h += '<div id="tranzitie-overlay"></div><div id="tranzitie-sweep"></div>\n';
+
+        // Nav menu (doar navigare, fara editare)
+        h += '<div class="export-bar">\n';
+        h += '<span>&#128190; DATE:</span>\n';
+        h += '<button class="btn-exp btn-nav btn-nav-home active-nav" id="navHome" onclick="showPage(\'home\')">&#127968; Acasă</button>\n';
+        h += '<button class="btn-exp btn-nav" id="navMesaje" onclick="showPage(\'mesaje\')">&#128172; Mesaje</button>\n';
+        h += '<button class="btn-exp btn-nav" id="navContact" onclick="showPage(\'contact\')">&#128222; Contact</button>\n';
+        h += '</div>\n';
+
+        h += '<div id="page-home" class="page-section active-page">\n';
+
+        // Header
+        h += '<div class="header-panel">\n';
+        h += '<div style="display:flex;align-items:center;gap:18px;">';
+        h += '<svg style="width:52px;height:52px;fill:#ff2d55;" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>';
+        h += '<div><div id="ceas" style="font-size:28px;font-weight:700;color:var(--cyan);letter-spacing:3px;">00:00:00</div>';
+        h += '<div style="font-size:13px;color:var(--text2);">LUNA:&nbsp;' + l_an + '</div></div></div>\n';
+        h += '<div style="text-align:center;"><span class="edit-titlu">' + titlu + '</span></div>\n';
+        h += '<div style="text-align:right;"><div style="font-size:13px;color:var(--text2);">PERS:&nbsp;<span id="tot_p">0</span></div></div>\n';
+        h += '</div>\n';
+
+        // Nav + program
+        h += '<div class="nav-tabs">\n';
+        h += '<div class="nav-btns">';
+        h += '<button id="btnA" class="tab-btn btn-a active-a" onclick="_sw(\'A\')">&#9632; Scara A</button>';
+        h += '<button id="btnB" class="tab-btn btn-b" onclick="_sw(\'B\')">&#9632; Scara B</button>';
+        h += '</div>\n';
+        h += '<div class="program-grid">';
+        h += '<div class="prog-label">&#128336;<br>PROGRAM<br>FUNC.</div>';
+        h += '<div class="prog-zi-name luni">Luni</div><div class="prog-zi-name marti">Marti</div>';
+        h += '<div class="prog-zi-name mierc">Mierc.</div><div class="prog-zi-name joi">Joi</div>';
+        h += '<div class="prog-zi-name vineri">Vineri</div>';
+        h += '<div class="prog-ora">' + prog_l  + '</div>';
+        h += '<div class="prog-ora">' + prog_ma + '</div>';
+        h += '<div class="prog-ora">' + prog_mi + '</div>';
+        h += '<div class="prog-ora">' + prog_j  + '</div>';
+        h += '<div class="prog-ora">' + prog_v  + '</div>';
+        h += '</div>\n</div>\n';
+
+        // Tabel cu randuri deja completate
+        h += '<div class="container scara-a-mode" id="tableCont">\n<table>\n<thead>\n';
+        h += '<tr id="headRow" class="scara-a-th">';
+        h += '<th width="20">Ap</th><th width="20">Nr.P</th><th width="40">Cota parte</th><th width="30">Index Apa</th>';
+        h += '<th width="40">V.Apa</th><th width="40">Pierderi</th><th width="35">Lumina</th><th width="35">Gunoi</th>';
+        h += '<th width="35">Salarii</th><th width="35">Crt.</th><th width="35">Sed.</th><th width="35">Bnk.</th><th width="35">Chi.</th>';
+        h += '<th width="45" class="res-col">TOT LUNA</th>';
+        h += '<th width="30">FRul.</th><th width="30">FRep.</th>';
+        h += '<th width="30">Rest.I</th><th width="30">Pen.</th><th width="30">Res.F</th><th width="30">Res.P</th>';
+        h += '<th width="45" class="res-col">TOT PLATA</th>';
+        h += '</tr>\n</thead>\n<tbody id="bodyTable">\n' + rows + '</tbody>\n</table>\n</div>\n';
+        h += '</div><!-- /page-home -->\n';
+
+        // Pagina Mesaje (live, prin Firebase)
+        h += '<div id="page-mesaje" class="page-section">\n';
+        h += '<div class="wide-header"><h2>&#128172; Mesaje Locatari &#8596; Administrator</h2>';
+        h += '<p>Comunicare directă între locatari și administrația asociației de proprietari.</p>';
+        h += '<button class="btn-back-home" onclick="showPage(\'home\')">&#127968; Înapoi acasă</button></div>\n';
+        h += '<div class="msg-panel"><label>Trimite mesaj</label>';
+        h += '<select id="msg_from"><option value="Administrator">Administrator</option><option value="Locatar">Locatar</option></select>';
+        h += '<input type="text" id="msg_apt" placeholder="Apartament / Nume expeditor" style="margin-top:8px;">';
+        h += '<textarea id="msg_text" placeholder="Scrie mesajul aici..."></textarea>';
+        h += '<button class="msg-send-btn" onclick="trimiteMesaj()">&#9993; Trimite mesaj</button></div>\n';
+        h += '<div class="msg-panel"><label>Mesaje primite / trimise</label>';
+        h += '<div class="msg-list" id="msg_list"><div class="msg-empty">Se încarcă mesajele...</div></div></div>\n';
+        h += '</div><!-- /page-mesaje -->\n';
+
+        // Pagina Contact (doar vizualizare)
+        var c_admin = d['c_admin'] || 'Nume Administrator';
+        var c_pres  = d['c_presedinte'] || 'Nume Președinte';
+        var c_membri= d['c_membri'] || 'Nume membru 1, Nume membru 2, Nume membru 3';
+        var c_email = d['c_email'] || 'contact@asociatie.ro';
+        h += '<div id="page-contact" class="page-section">\n';
+        h += '<div class="wide-header"><h2>&#128222; Contact</h2>';
+        h += '<p>Datele de contact ale asociației de proprietari. (Vizualizare)</p>';
+        h += '<button class="btn-back-home" onclick="showPage(\'home\')">&#127968; Înapoi acasă</button></div>\n';
+        h += '<div class="contact-wrap">';
+        h += '<div class="contact-logo"><svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg></div>';
+        h += '<div class="contact-info">';
+        h += '<div class="contact-row"><label>Administrator asociație</label><span>' + escHtml(c_admin) + '</span></div>';
+        h += '<div class="contact-row"><label>Președinte asociație</label><span>' + escHtml(c_pres) + '</span></div>';
+        h += '<div class="contact-row"><label>Membrii asociație</label><span>' + escHtml(c_membri) + '</span></div>';
+        h += '<div class="contact-row"><label>Adresă email</label><span>' + escHtml(c_email) + '</span></div>';
+        h += '</div></div>\n';
+        h += '</div><!-- /page-contact -->\n';
+
+        h += '<div class="app-footer">&copy; ' + new Date().getFullYear() + ' ' + titlu + '. Toate drepturile rezervate.</div>\n';
+
+        // Script
+        var s1='<scr', s2='ipt>', e1='<\/sc', e2='ript>';
+        h += s1+s2+'\n'+jsMin+'\n'+e1+e2+'\n';
+        h += '</body>\n</html>';
+        return h;
+    }
+
+    function mesajExp(txt){
+        var el=document.getElementById('expMsg');
+        if(el){el.innerHTML=txt;setTimeout(function(){el.innerHTML='';},5000);}
+    }
+
+    function descarcaHTML(html,luna){
+        var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+        var a=document.createElement('a');
+        a.href=URL.createObjectURL(blob);a.download='Saturn34_'+luna+'.html';
+        document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
+    }
+
+    function save(){
+        var d={in:{}};
+        document.querySelectorAll('input').forEach(function(el){if(el.id)d.in[el.id]=el.value;});
+        try{localStorage.setItem('saturn_full_gest_v2',JSON.stringify(d));}catch(e){}
+    }
+    function load(){
+        try{
+            var raw=localStorage.getItem('saturn_full_gest_v2');
+            if(!raw){recalc();return;}
+            var s=JSON.parse(raw);
+            if(s&&s.in){Object.keys(s.in).forEach(function(id){var el=document.getElementById(id);if(el&&el.tagName==='INPUT')el.value=s.in[id];});}
+        }catch(e){}
+        recalc();
+    }
+    function saveDebounced(){clearTimeout(window._st);window._st=setTimeout(save,400);}
+
+    document.addEventListener('DOMContentLoaded',function(){
+        build();load();
+        var eraAdmin=false;
+        try{eraAdmin=sessionStorage.getItem('saturn_admin')==='1';}catch(e){}
+        if(typeof aplicaStareAdmin==='function')aplicaStareAdmin(eraAdmin);
+        else setButoaneDateStat(eraAdmin);
+        porneșteAscultareaMesaje();
+        var fy=document.getElementById('footer-year');
+        if(fy) fy.innerText=new Date().getFullYear();
+    });
+    setInterval(function(){var el=document.getElementById('ceas');if(el)el.innerText=new Date().toLocaleTimeString('ro-RO');},1000);
+
+    /* ===== NAVIGARE PAGINI ===== */
+    function showPage(name){
+        document.querySelectorAll('.page-section').forEach(function(p){p.classList.remove('active-page');});
+        document.querySelectorAll('.btn-nav').forEach(function(b){b.classList.remove('active-nav');});
+        var page=document.getElementById('page-'+name);
+        if(page) page.classList.add('active-page');
+        var btn=document.getElementById('nav'+name.charAt(0).toUpperCase()+name.slice(1));
+        if(btn) btn.classList.add('active-nav');
+        window.scrollTo(0,0);
+        if(name==='mesaje' && typeof porneșteAscultareaMesaje==='function') porneșteAscultareaMesaje();
+    }
+
+    /* ===== MESAJE (Firebase Firestore - timp real) ===== */
+    var COLECTIE_MESAJE = 'mesaje';
+    var _unsubscribeMesaje = null;
+
+    function escHtml(s){
+        return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+            return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+        });
+    }
+
+    function randMesaj(m){
+        var cls = m.from==='Administrator' ? 'from-admin' : 'from-locatar';
+        var data = m.data || '';
+        return '<div class="msg-item '+cls+'">'
+             + '<div class="msg-meta">'+escHtml(m.from)+' &middot; '+escHtml(m.apt||'')+' &middot; '+escHtml(data)+'</div>'
+             + '<div>'+escHtml(m.text)+'</div></div>';
+    }
+
+    function porneșteAscultareaMesaje(){
+        var list=document.getElementById('msg_list');
+        if(!list) return;
+        if(!window._dbMesaje){
+            list.innerHTML='<div class="msg-empty">&#9888; Firebase nu este configurat. Completează firebaseConfig în &lt;head&gt;.</div>';
+            return;
+        }
+        if(_unsubscribeMesaje) return; // ascultarea e deja activa
+        list.innerHTML='<div class="msg-empty">Se încarcă mesajele...</div>';
+        try{
+            _unsubscribeMesaje = window._dbMesaje.collection(COLECTIE_MESAJE)
+                .orderBy('ts', 'asc')
+                .onSnapshot(function(snap){
+                    if(snap.empty){
+                        list.innerHTML='<div class="msg-empty">Niciun mesaj încă.</div>';
+                        return;
+                    }
+                    var html='';
+                    var docs=[];
+                    snap.forEach(function(doc){ docs.push(doc.data()); });
+                    docs.slice().reverse().forEach(function(m){ html += randMesaj(m); });
+                    list.innerHTML=html;
+                }, function(err){
+                    console.error('Firestore onSnapshot error:', err);
+                    list.innerHTML='<div class="msg-empty">&#9888; Eroare la conectarea cu Firebase. Verifică firebaseConfig și regulile Firestore.</div>';
+                });
+        }catch(e){
+            console.error(e);
+            list.innerHTML='<div class="msg-empty">&#9888; Eroare la conectarea cu Firebase.</div>';
+        }
+    }
+
+    function trimiteMesaj(){
+        var from=document.getElementById('msg_from').value;
+        var apt=document.getElementById('msg_apt').value.trim();
+        var text=document.getElementById('msg_text').value.trim();
+        if(!text) return;
+        if(!window._dbMesaje){ alert('Firebase nu este configurat. Completează firebaseConfig.'); return; }
+        var btn=document.querySelector('.msg-send-btn');
+        if(btn){btn.disabled=true;btn.style.opacity='0.6';}
+        window._dbMesaje.collection(COLECTIE_MESAJE).add({
+            from: from,
+            apt: apt,
+            text: text,
+            data: new Date().toLocaleString('ro-RO'),
+            ts: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(function(){
+            if(btn){btn.disabled=false;btn.style.opacity='1';}
+            document.getElementById('msg_text').value='';
+        }).catch(function(err){
+            if(btn){btn.disabled=false;btn.style.opacity='1';}
+            console.error(err);
+            alert('Mesajul nu a putut fi trimis. Verifică firebaseConfig și regulile Firestore.');
+        });
+    }
+
+</script>
+
+<script id="date-salvate">
+(function(){
+  var d={};
+  document.addEventListener("DOMContentLoaded",function(){
+    setTimeout(function(){
+      var ls=null;try{ls=localStorage.getItem("saturn_full_gest_v2");}catch(e){}
+      if(!ls){Object.keys(d).forEach(function(id){var el=document.getElementById(id);if(el&&el.tagName==="INPUT")el.value=d[id];});if(typeof recalc==="function")recalc();}
+      if(typeof setButoaneDateStat==="function")setButoaneDateStat(false);
+    },80);
+  });
+})();
 </script>
 </body></html>
