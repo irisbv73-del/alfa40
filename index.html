@@ -2,8 +2,9 @@
 <html lang="ro">
 <head>
 <meta charset="UTF-8">
-<title>GESTIUNE SATURN 34-bl.129 - MASTER</title>
+<title>GESTIUNE SATURN 34-bl.129 - VIZUALIZARE</title>
 <style>
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
 
 :root {
@@ -677,941 +678,144 @@ input[type="number"]:focus {
 /* expMsg */
 #expMsg { font-size: 11px; color: var(--neon-g); margin-left: 6px; text-shadow: 0 0 6px var(--neon-g); }
 
+/* Font mai mare general */
+body { font-size: 15px; }
+td, th { font-size: 13px; }
+
+/* Notificare mesaje */
+.notif-badge {
+    display: inline-block;
+    color: var(--neon-r);
+    font-size: 14px;
+    text-shadow: 0 0 8px var(--neon-r);
+    animation: blink-notif 1s step-start infinite;
+    margin-left: 2px;
+}
+@keyframes blink-notif { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+/* Pagina Program */
+.program-page-wrap {
+    background: rgba(5,45,61,0.9);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 30px 24px;
+    margin-top: 10px;
+}
+.program-grid-page {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.prog-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-width: 130px;
+    background: rgba(0,245,255,0.04);
+    border: 1px solid var(--cyan-dim);
+    border-radius: 6px;
+    padding: 18px 12px;
+}
+.prog-col .prog-zi-name {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.prog-col .prog-ora {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    width: 120px;
+    padding: 8px;
+}
+
+
+input,textarea{pointer-events:none!important;}
+.msg-panel input,.msg-panel textarea,.msg-panel select{pointer-events:auto!important;}
+.tab-btn{pointer-events:auto!important;cursor:pointer!important;}
+.slave-badge{position:fixed;bottom:10px;right:12px;z-index:9999;background:rgba(0,20,40,0.9);border:1px solid var(--cyan);border-radius:20px;padding:4px 14px;font-size:10px;color:var(--cyan2);text-shadow:0 0 6px var(--cyan2);}
+.no-print,#lockBtn,.calc-master{display:none!important;}
 </style>
-
-<!-- ===== FIREBASE (mesaje in timp real) ===== -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script>
-  // !!! INLOCUIESTE valorile de mai jos cu cele din Firebase Console -> Project settings -> Your apps -> SDK setup and configuration
-  var firebaseConfig =
-
-  function initFirebaseSigur() {
-    if (typeof firebase === "undefined") {
-      console.error("Firebase SDK nu s-a încărcat (firebase is not defined). " +
-        "Verifică: 1) ai conexiune la internet activă; 2) fisierul este deschis prin http(s):// (server/GitHub Pages), nu doar dublu-click local; " +
-        "3) nu ai un AdBlock / extensie care blochează www.gstatic.com; 4) reteaua/firewall-ul nu blocheaza domeniul gstatic.com.");
-      return;
-    }
-    if (firebaseConfig.apiKey.indexOf("PUNE_AICI") === 0) {
-      console.error("Firebase nu este configurat: completează firebaseConfig cu valorile reale din Firebase Console.");
-      return;
-    }
-    try {
-      firebase.initializeApp(firebaseConfig);
-      window._dbMesaje = firebase.firestore();
-    } catch (e) {
-      console.error("Firebase nu a putut fi initializat.", e);
-    }
-  }
-
-  initFirebaseSigur();
-</script>
 </head>
-<body id="mainBody" class="">
-<div id="tranzitie-overlay"></div>
-<div id="tranzitie-sweep"></div>
-
-<div class="header-panel">
-    <div class="logo-wrap" style="display:flex;align-items:center;gap:18px;">
-        <svg style="width:52px;height:52px;fill:#ff2d55;" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>
-        <div>
-            <div id="ceas">00:00:00</div>
-            <div style="font-size:13px;color:var(--text2);font-family:Roboto,monospace;letter-spacing:1px;">
-                LUNA:&nbsp;<input type="text" id="l_an" value="APRILIE-2026">
-            </div>
-        </div>
-    </div>
-    <div style="text-align:center;">
-        <input type="text" id="titlu" class="edit-titlu" value="GESTIUNE SATURN 34-bl.129">
-    </div>
-    <div style="text-align:right;line-height:1.6;">
-        <div style="font-family:Roboto,monospace;font-size:13px;color:var(--text2);">
-            PERS:&nbsp;<span id="tot_p">0</span>
-        </div>
-        <button id="lockBtn" onclick="verificareParola()">&#128274; ADMIN</button>
-    </div>
+<body id="mainBody">
+<div class="slave-badge">&#128274; VIZUALIZARE &mdash; APRILIE-2026</div>
+<div id="tranzitie-overlay"></div><div id="tranzitie-sweep"></div>
+<div class="export-bar">
+<span>&#128190; DATE:</span>
+<button class="btn-exp btn-nav btn-nav-home active-nav" id="navHome" onclick="showPage('home')">&#127968; Acasă</button>
+<button class="btn-exp btn-nav" id="navMesaje" onclick="showPage('mesaje')">&#128172; Mesaje <span id="notif-badge" class="notif-badge" style="display:none;">&#9679;</span></button>
+<button class="btn-exp btn-nav" id="navProgram" onclick="showPage('program')">&#128336; Program</button>
+<button class="btn-exp btn-nav" id="navContact" onclick="showPage('contact')">&#128222; Contact</button>
 </div>
-
 <div id="page-home" class="page-section active-page">
-<div class="calc-master no-print">
-    <div class="calc-group"><label>Pierderi.Apa</label><input type="number" id="f_dif" value="396.39" oninput="recalc()"></div>
-    <div class="calc-group"><label>Lumina</label><input type="number" id="f_el" value="40.82" oninput="recalc()"></div>
-    <div class="calc-group"><label>Salarii</label><input type="number" id="f_sal" value="490.56" oninput="recalc()"></div>
-    <div class="calc-group"><label>Curatenie</label><input type="number" id="f_crt" value="200.01" oninput="recalc()"></div>
-    <div class="calc-group"><label>Chelt.Sediu</label><input type="number" id="f_sed" value="4.17" oninput="recalc()"></div>
-    <div class="calc-group"><label>Comision.Banca</label><input type="number" id="f_bank" value="14.50" oninput="recalc()"></div>
-    <div class="calc-group"><label>Chirie</label><input type="number" id="f_chir" value="3.37" oninput="recalc()"></div>
-    <div class="calc-group"><label>Gunoi/Per.</label><input type="number" id="f_gun" value="30.29" oninput="recalc()"></div>
+<div class="header-panel">
+<div style="display:flex;align-items:center;gap:18px;"><svg style="width:52px;height:52px;fill:#ff2d55;" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg><div><div id="ceas" style="font-size:28px;font-weight:700;color:var(--cyan);letter-spacing:3px;">00:00:00</div><div style="font-size:13px;color:var(--text2);">LUNA:&nbsp;APRILIE-2026</div></div></div>
+<div style="text-align:center;"><span class="edit-titlu">GESTIUNE SATURN 34-bl.129</span></div>
+<div style="text-align:right;"><div style="font-size:13px;color:var(--text2);">PERS:&nbsp;<span id="tot_p">0</span></div></div>
 </div>
-
-<div class="nav-tabs no-print">
-    <div class="nav-btns">
-        <button id="btnA" class="tab-btn btn-a active-a" onclick="switchS('A')">&#9632; Scara A</button>
-        <button id="btnB" class="tab-btn btn-b" onclick="switchS('B')">&#9632; Scara B</button>
-    </div>
-    <div class="program-grid">
-        <div class="prog-label">&#128336;<br>PROGRAM<br>FUNC.</div>
-        <div class="prog-zi-name luni">Luni</div>
-        <div class="prog-zi-name marti">Marti</div>
-        <div class="prog-zi-name mierc">Mierc.</div>
-        <div class="prog-zi-name joi">Joi</div>
-        <div class="prog-zi-name vineri">Vineri</div>
-        <input class="prog-ora" type="text" id="prog_l"  value="15:00-18:00">
-        <input class="prog-ora" type="text" id="prog_ma" value="11:00-14:00">
-        <input class="prog-ora" type="text" id="prog_mi" value="15:00-18.00">
-        <input class="prog-ora" type="text" id="prog_j"  value="10:00-13:00">
-        <input class="prog-ora" type="text" id="prog_v"  value="inchis">
-    </div>
-    <div style="font-family:Roboto,monospace;font-size:8px;color:var(--text2);text-align:right;line-height:1.6;opacity:0.6;">
-        &#128100; PERS ACTIVE<br>
-        <span style="font-size:14px;color:var(--neon-g);text-shadow:0 0 8px var(--neon-g);font-weight:900;" id="tot_p2">0</span>
-    </div>
+<div class="nav-tabs">
+<div class="nav-btns"><button id="btnA" class="tab-btn btn-a active-a" onclick="_sw('A')">&#9632; Scara A</button><button id="btnB" class="tab-btn btn-b" onclick="_sw('B')">&#9632; Scara B</button></div>
 </div>
-
-<div class="export-bar no-print">
-    <span>&#128190; DATE:</span>
-    <button class="btn-exp btn-nav btn-nav-home active-nav" id="navHome" onclick="showPage('home')">&#127968; Acasă</button>
-    <button class="btn-exp btn-nav" id="navMesaje" onclick="showPage('mesaje')">&#128172; Mesaje</button>
-    <button class="btn-exp btn-nav" id="navContact" onclick="showPage('contact')">&#128222; Contact</button>
-
-    <button class="btn-exp" onclick="genereazaSlave()"
-        style="background:linear-gradient(135deg,#1a0030,#6a00aa);border:1px solid #cc44ff;color:#cc44ff;font-weight:900;"
-        title="Genereaza fisier  read-only">&#9889; Genereaza fisier</button>
-    <span id="expMsg"></span>
-</div>
-
 <div class="container scara-a-mode" id="tableCont">
-    <table>
-        <thead>
-            <tr id="headRow" class="scara-a-th">
-                <th width="15">Ap</th><th width="15">Nr.P</th><th width="35">Cota parte</th><th width="30">Index Apa</th>
-                <th width="40">Valoare.Apa</th><th width="35">Pierderi</th><th width="35">Lumina</th><th width="35">Gunoi</th>
-                <th width="35">Salarii</th><th width="35">Curatenie.</th><th width="25">Sed.</th><th width="25">Bnk.</th><th width="25">Chi.</th>
-                <th width="45" class="res-col">TOT LUNA</th>
-                <th width="35">Fond.Rul.</th><th width="35">Fond.Rep.</th>
-                <th width="40">Restanțe.I</th><th width="40">Penalitati.</th><th width="40">Restanțe.Fd</th><th width="40">Restanțe.Rep</th>
-                <th width="45" class="res-col">TOT PLATA</th>
-            </tr>
-        </thead>
-        <tbody id="bodyTable"></tbody>
-    </table>
+<table>
+<thead>
+<tr id="headRow" class="scara-a-th"><th width="20">Ap</th><th width="20">Nr.P</th><th width="40">Cota parte</th><th width="30">Index Apa</th><th width="40">V.Apa</th><th width="40">Pierderi</th><th width="35">Lumina</th><th width="35">Gunoi</th><th width="35">Salarii</th><th width="35">Crt.</th><th width="35">Sed.</th><th width="35">Bnk.</th><th width="35">Chi.</th><th width="45" class="res-col">TOT LUNA</th><th width="30">FRul.</th><th width="30">FRep.</th><th width="30">Rest.I</th><th width="30">Pen.</th><th width="30">Res.F</th><th width="30">Res.P</th><th width="45" class="res-col">TOT PLATA</th></tr>
+</thead>
+<tbody id="bodyTable">
+<tr id="row_1" style="" onclick="markRow(1)"><td class="col-ap">1</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_2" style="" onclick="markRow(2)"><td class="col-ap">2</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_3" style="" onclick="markRow(3)"><td class="col-ap">3</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_4" style="" onclick="markRow(4)"><td class="col-ap">4</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_5" style="" onclick="markRow(5)"><td class="col-ap">5</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_6" style="" onclick="markRow(6)"><td class="col-ap">6</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_7" style="" onclick="markRow(7)"><td class="col-ap">7</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_8" style="" onclick="markRow(8)"><td class="col-ap">8</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_9" style="" onclick="markRow(9)"><td class="col-ap">9</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_10" style="" onclick="markRow(10)"><td class="col-ap">10</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_11" style="" onclick="markRow(11)"><td class="col-ap">11</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_12" style="" onclick="markRow(12)"><td class="col-ap">12</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_13" style="" onclick="markRow(13)"><td class="col-ap">13</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_14" style="" onclick="markRow(14)"><td class="col-ap">14</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_15" style="" onclick="markRow(15)"><td class="col-ap">15</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_16" style="" onclick="markRow(16)"><td class="col-ap">16</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_17" style="" onclick="markRow(17)"><td class="col-ap">17</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_18" style="" onclick="markRow(18)"><td class="col-ap">18</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_19" style="" onclick="markRow(19)"><td class="col-ap">19</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_20" style="" onclick="markRow(20)"><td class="col-ap">20</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_21" style="display:none;" onclick="markRow(21)"><td class="col-ap">21</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_22" style="display:none;" onclick="markRow(22)"><td class="col-ap">22</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_23" style="display:none;" onclick="markRow(23)"><td class="col-ap">23</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_24" style="display:none;" onclick="markRow(24)"><td class="col-ap">24</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_25" style="display:none;" onclick="markRow(25)"><td class="col-ap">25</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_26" style="display:none;" onclick="markRow(26)"><td class="col-ap">26</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_27" style="display:none;" onclick="markRow(27)"><td class="col-ap">27</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_28" style="display:none;" onclick="markRow(28)"><td class="col-ap">28</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_29" style="display:none;" onclick="markRow(29)"><td class="col-ap">29</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_30" style="display:none;" onclick="markRow(30)"><td class="col-ap">30</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_31" style="display:none;" onclick="markRow(31)"><td class="col-ap">31</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_32" style="display:none;" onclick="markRow(32)"><td class="col-ap">32</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_33" style="display:none;" onclick="markRow(33)"><td class="col-ap">33</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_34" style="display:none;" onclick="markRow(34)"><td class="col-ap">34</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_35" style="display:none;" onclick="markRow(35)"><td class="col-ap">35</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_36" style="display:none;" onclick="markRow(36)"><td class="col-ap">36</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_37" style="display:none;" onclick="markRow(37)"><td class="col-ap">37</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_38" style="display:none;" onclick="markRow(38)"><td class="col-ap">38</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_39" style="display:none;" onclick="markRow(39)"><td class="col-ap">39</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr><tr id="row_40" style="display:none;" onclick="markRow(40)"><td class="col-ap">40</td><td>1</td><td>2.500</td><td>0</td><td>0.00</td><td>19.82</td><td>2.04</td><td>30.29</td><td>24.53</td><td>10.00</td><td>0.21</td><td>0.73</td><td>0.17</td><td class="res-col">87.78</td><td class="fond-col">-</td><td class="fond-col">-</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="res-col">87.78</td></tr></tbody>
+</table>
 </div>
 </div><!-- /page-home -->
-
 <div id="page-mesaje" class="page-section">
-    <div class="wide-header">
-        <h2>&#128172; Mesaje Locatari &#8596; Administrator</h2>
-        <p>Comunicare directă între locatari și administrația asociației de proprietari.</p>
-        <button class="btn-back-home no-print" onclick="showPage('home')">&#127968; Înapoi acasă</button>
-    </div>
-
-    <div class="msg-panel no-print">
-        <label>Trimite mesaj</label>
-        <select id="msg_from">
-            <option value="Administrator">Administrator</option>
-            <option value="Locatar">Locatar</option>
-        </select>
-        <input type="text" id="msg_apt" placeholder="Apartament / Nume expeditor" style="margin-top:8px;">
-        <textarea id="msg_text" placeholder="Scrie mesajul aici..."></textarea>
-        <button class="msg-send-btn" onclick="trimiteMesaj()">&#9993; Trimite mesaj</button>
-    </div>
-
-    <div class="msg-panel">
-        <label>Mesaje primite / trimise</label>
-        <div class="msg-list" id="msg_list">
-            <div class="msg-empty">Niciun mesaj încă.</div>
-        </div>
-    </div>
-</div>
-
+<div class="wide-header"><h2>&#128172; Mesaje</h2><p>Notificări și informări din partea administrației asociației de proprietari.</p><button class="btn-back-home" onclick="showPage('home')">&#127968; Înapoi acasă</button></div>
+<div class="msg-panel"><label>Mesaje afișate</label><div class="msg-list" id="msg_list"><div class="msg-item from-admin"><div class="msg-meta">Administrator &middot; 01.07.2026, 12:16:18</div><div style="font-size:15px;">Afișat lista de plată</div></div></div></div>
+</div><!-- /page-mesaje -->
+<div id="page-program" class="page-section">
+<div class="wide-header"><h2>&#128336; Program de funcționare</h2><p>Orarul de funcționare al administrației asociației de proprietari.</p><button class="btn-back-home" onclick="showPage('home')">&#127968; Înapoi acasă</button></div>
+<div class="program-page-wrap"><div class="program-grid-page"><div class="prog-col"><div class="prog-zi-name luni">&#9632; Luni</div><div class="prog-ora" style="pointer-events:none;">15:00-18:00</div></div><div class="prog-col"><div class="prog-zi-name marti">&#9632; Marți</div><div class="prog-ora" style="pointer-events:none;">11:00-14:00</div></div><div class="prog-col"><div class="prog-zi-name mierc">&#9632; Miercuri</div><div class="prog-ora" style="pointer-events:none;">15:00-18.00</div></div><div class="prog-col"><div class="prog-zi-name joi">&#9632; Joi</div><div class="prog-ora" style="pointer-events:none;">10:00-13:00</div></div><div class="prog-col"><div class="prog-zi-name vineri">&#9632; Vineri</div><div class="prog-ora" style="pointer-events:none;">inchis</div></div></div></div>
+</div><!-- /page-program -->
 <div id="page-contact" class="page-section">
-    <div class="wide-header">
-        <h2>&#128222; Contact</h2>
-        <p>Datele de contact ale asociației de proprietari.</p>
-        <button class="btn-back-home no-print" onclick="showPage('home')">&#127968; Înapoi acasă</button>
-    </div>
-
-    <div class="contact-wrap">
-        <div class="contact-logo">
-            <svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>
-        </div>
-        <div class="contact-info">
-            <div class="contact-row">
-                <label>Administrator asociație</label>
-                <input type="text" id="c_admin" value="Nume Administrator">
-            </div>
-            <div class="contact-row">
-                <label>Președinte asociație</label>
-                <input type="text" id="c_presedinte" value="Nume Președinte">
-            </div>
-            <div class="contact-row">
-                <label>Membrii asociație</label>
-                <input type="text" id="c_membri" value="Nume membru 1, Nume membru 2, Nume membru 3">
-            </div>
-            <div class="contact-row">
-                <label>Adresă email</label>
-                <input type="email" id="c_email" value="contact@asociatie.ro">
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="app-footer no-print">
-    &copy; <span id="footer-year">2026</span> GESTIUNE SATURN 34-bl.129. Toate drepturile rezervate.
-</div>
-
+<div class="wide-header"><h2>&#128222; Contact</h2><p>Datele de contact ale asociației de proprietari.</p><button class="btn-back-home" onclick="showPage('home')">&#127968; Înapoi acasă</button></div>
+<div class="contact-wrap"><div class="contact-logo"><svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg></div><div class="contact-info"><div class="contact-row"><label>Administrator asociație</label><span>Nume Administrator</span></div><div class="contact-row"><label>Președinte asociație</label><span>Nume Președinte</span></div><div class="contact-row"><label>Membrii asociație</label><span>Nume membru 1, Nume membru 2, Nume membru 3</span></div><div class="contact-row"><label>Adresă email</label><span>contact@asociatie.ro</span></div></div></div>
+</div><!-- /page-contact -->
+<script>document.addEventListener("DOMContentLoaded",function(){var b=document.getElementById("notif-badge");if(b){b.style.display="inline";}});</script>
+<div class="app-footer">&copy; 2026 GESTIUNE SATURN 34-bl.129. Toate drepturile rezervate.</div>
 <script>
-
-
-let curS = 'A';
-    const pretApaMC = 17.03;
-    const divizorCota = 49.997;
-
-    // debounce mutat in sectiunea gen_slave_js
-
-    // ---- WEB AUDIO - Sunet sci-fi click rand ----
-    var _actx = null;
-    function getAudioCtx() {
-        if (!_actx) {
-            try { _actx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
-        }
-        return _actx;
-    }
-
-    function playClickSF() {
-        var ctx = getAudioCtx(); if (!ctx) return;
-        var t = ctx.currentTime;
-
-        // Sunet 1: beep scurt cyberpunk (descendent)
-        var osc1 = ctx.createOscillator();
-        var gain1 = ctx.createGain();
-        osc1.connect(gain1); gain1.connect(ctx.destination);
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(880, t);
-        osc1.frequency.exponentialRampToValueAtTime(220, t + 0.12);
-        gain1.gain.setValueAtTime(0.18, t);
-        gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
-        osc1.start(t); osc1.stop(t + 0.15);
-
-        // Sunet 2: click metalic (noise scurt)
-        var osc2 = ctx.createOscillator();
-        var gain2 = ctx.createGain();
-        osc2.connect(gain2); gain2.connect(ctx.destination);
-        osc2.type = 'square';
-        osc2.frequency.setValueAtTime(1200, t);
-        osc2.frequency.exponentialRampToValueAtTime(400, t + 0.04);
-        gain2.gain.setValueAtTime(0.08, t);
-        gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
-        osc2.start(t); osc2.stop(t + 0.05);
-
-        // Sunet 3: ton confirmare (scurt, sus)
-        var osc3 = ctx.createOscillator();
-        var gain3 = ctx.createGain();
-        osc3.connect(gain3); gain3.connect(ctx.destination);
-        osc3.type = 'triangle';
-        osc3.frequency.setValueAtTime(1760, t + 0.06);
-        gain3.gain.setValueAtTime(0.0, t + 0.06);
-        gain3.gain.linearRampToValueAtTime(0.12, t + 0.08);
-        gain3.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-        osc3.start(t + 0.06); osc3.stop(t + 0.19);
-    }
-
-    function markRow(id) {
-        playClickSF();
-        document.querySelectorAll('tr').forEach(r => r.classList.remove('active-row'));
-        const row = document.getElementById('row_' + id);
-        if (row) row.classList.add('active-row');
-    }
-
-    function recalc() {
-        // FIX: calculeaza persoane separat pentru fiecare scara
-        let tP_A = 0, tP_B = 0;
-        for (let i = 1; i <= 20; i++) {
-            let el = document.getElementById('p_' + i);
-            if (el) tP_A += parseFloat(el.value) || 0;
-        }
-        for (let i = 21; i <= 40; i++) {
-            let el = document.getElementById('p_' + i);
-            if (el) tP_B += parseFloat(el.value) || 0;
-        }
-        // Afiseaza total persoane scara activa
-        const tP_activ = (curS === 'A') ? tP_A : tP_B;
-        document.getElementById('tot_p').innerText = tP_activ;
-        var tp2 = document.getElementById('tot_p2');
-        if (tp2) tp2.innerText = tP_activ;
-
-        const fEl  = parseFloat(document.getElementById('f_el').value)   || 0;
-        const fDif = parseFloat(document.getElementById('f_dif').value)  || 0;
-        const fSal = parseFloat(document.getElementById('f_sal').value)  || 0;
-        const fCrt = parseFloat(document.getElementById('f_crt').value)  || 0;
-        const fSed = parseFloat(document.getElementById('f_sed').value)  || 0;
-        const fBnk = parseFloat(document.getElementById('f_bank').value) || 0;
-        const fChr = parseFloat(document.getElementById('f_chir').value) || 0;
-        const vGun = parseFloat(document.getElementById('f_gun').value)  || 0;
-
-        // FIX: fiecare scara are propriul sau divizor persoane si propriul uDif (20 ap/scara)
-        const uEl_A  = tP_A > 0 ? fEl / tP_A : 0;
-        const uEl_B  = tP_B > 0 ? fEl / tP_B : 0;
-        const uDif_A = fDif / 20;
-        const uDif_B = fDif / 20;
-
-        const uSal = fSal / divizorCota;
-        const uCrt = fCrt / divizorCota;
-        const uSed = fSed / divizorCota;
-        const uBnk = fBnk / divizorCota;
-        const uChr = fChr / divizorCota;
-
-        for (let i = 1; i <= 40; i++) {
-            let elP = document.getElementById('p_' + i);
-            if (!elP) continue;
-
-            let p   = parseFloat(elP.value) || 0;
-            let c   = parseFloat(document.getElementById('c_'  + i).value) || 0;
-            let mc  = parseFloat(document.getElementById('mc_' + i).value) || 0;
-
-            // FIX: foloseste uEl si uDif corecte per scara
-            const uEl  = (i <= 20) ? uEl_A  : uEl_B;
-            const uDif = (i <= 20) ? uDif_A : uDif_B;
-
-            const va  = mc * pretApaMC;
-            const vd  = uDif;
-            const ve  = p * uEl;
-            const vg  = p * vGun;
-            const vsl = c * uSal;
-            const vcr = c * uCrt;
-            const vsd = c * uSed;
-            const vbk = c * uBnk;
-            const vch = c * uChr;
-
-            document.getElementById('va_'  + i).innerText = va.toFixed(2);
-            document.getElementById('vd_'  + i).innerText = vd.toFixed(2);
-            document.getElementById('ve_'  + i).innerText = ve.toFixed(2);
-            document.getElementById('vg_'  + i).innerText = vg.toFixed(2);
-            document.getElementById('vsl_' + i).innerText = vsl.toFixed(2);
-            document.getElementById('vcr_' + i).innerText = vcr.toFixed(2);
-            document.getElementById('vsd_' + i).innerText = vsd.toFixed(2);
-            document.getElementById('vbk_' + i).innerText = vbk.toFixed(2);
-            document.getElementById('vch_' + i).innerText = vch.toFixed(2);
-
-            let totL = va + vd + ve + vg + c * (uSal + uCrt + uSed + uBnk + uChr);
-            document.getElementById('tl_' + i).innerText = totL.toFixed(2);
-
-            // FIX: fr si frp NU se includ in TOT PLATA
-            let ri = parseFloat(document.getElementById('ri_' + i).value) || 0;
-            let pn = parseFloat(document.getElementById('pn_' + i).value) || 0;
-            let rf = parseFloat(document.getElementById('rf_' + i).value) || 0;
-            let rp = parseFloat(document.getElementById('rp_' + i).value) || 0;
-
-            document.getElementById('tp_' + i).innerText = (totL + ri + pn + rf + rp).toFixed(2);
-        }
-
-        saveDebounced();
-    }
-
-    function build() {
-        let rows = "";
-        for (let i = 1; i <= 40; i++) {
-            let vis = (i <= 20) ? '' : 'display:none;';
-            rows += `<tr id="row_${i}" style="${vis}" onclick="markRow(${i})">
-                <td class="col-ap">${i}</td>
-                <td><input type="number" id="p_${i}"   value="1"     oninput="recalc()"></td>
-                <td><input type="number" id="c_${i}"   value="2.500" step="0.001" oninput="recalc()"></td>
-                <td><input type="number" id="mc_${i}"  value="0"     step="0.01"  oninput="recalc()"></td>
-                <td id="va_${i}">0</td><td id="vd_${i}">0</td><td id="ve_${i}">0</td><td id="vg_${i}">0</td>
-                <td id="vsl_${i}">0</td><td id="vcr_${i}">0</td><td id="vsd_${i}">0</td><td id="vbk_${i}">0</td><td id="vch_${i}">0</td>
-                <td id="tl_${i}" class="res-col">0</td>
-                <td class="fond-col"><input type="number" id="fr_${i}"  value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td class="fond-col"><input type="number" id="frp_${i}" value="" placeholder="-" oninput="saveDebounced()"></td>
-                <td><input type="number" id="ri_${i}"  value="0" oninput="recalc()"></td>
-                <td><input type="number" id="pn_${i}"  value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rf_${i}"  value="0" oninput="recalc()"></td>
-                <td><input type="number" id="rp_${i}"  value="0" oninput="recalc()"></td>
-                <td id="tp_${i}" class="res-col">0</td>
-            </tr>`;
-        }
-        document.getElementById('bodyTable').innerHTML = rows;
-        load(); // FIX: load dupa build, nu pierde datele
-    }
-
-    // ---- SUNET tranzitie scara ----
-    function playSwitchSF(scara) {
-        var ctx = getAudioCtx(); if (!ctx) return;
-        var t = ctx.currentTime;
-        var freqs = scara === 'A'
-            ? [330, 440, 660, 880]   // Scara A - urcator verde
-            : [880, 660, 440, 330];  // Scara B - coborator albastru
-
-        freqs.forEach(function(f, i) {
-            var osc = ctx.createOscillator();
-            var g   = ctx.createGain();
-            osc.connect(g); g.connect(ctx.destination);
-            osc.type = 'sine';
-            osc.frequency.value = f;
-            var st = t + i * 0.07;
-            g.gain.setValueAtTime(0, st);
-            g.gain.linearRampToValueAtTime(0.15, st + 0.03);
-            g.gain.exponentialRampToValueAtTime(0.001, st + 0.12);
-            osc.start(st); osc.stop(st + 0.13);
-        });
-
-        // Whoosh
-        var buf = ctx.createBuffer(1, ctx.sampleRate * 0.3, ctx.sampleRate);
-        var data = buf.getChannelData(0);
-        for (var j = 0; j < data.length; j++) data[j] = (Math.random()*2-1) * (1 - j/data.length);
-        var src = ctx.createBufferSource();
-        src.buffer = buf;
-        var filt = ctx.createBiquadFilter();
-        filt.type = 'bandpass';
-        filt.frequency.value = scara === 'A' ? 800 : 400;
-        filt.Q.value = 1.5;
-        var gw = ctx.createGain();
-        gw.gain.setValueAtTime(0.06, t);
-        gw.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
-        src.connect(filt); filt.connect(gw); gw.connect(ctx.destination);
-        src.start(t); src.stop(t + 0.3);
-    }
-
-    function switchS(s) {
-        if (s === curS) return;
-        playSwitchSF(s);
-
-        // Animatie: sweep line + overlay flash
-        var overlay = document.getElementById('tranzitie-overlay');
-        var sweep   = document.getElementById('tranzitie-sweep');
-        var cont    = document.getElementById('tableCont');
-
-        // Schimba culoarea sweep in functie de scara
-        sweep.style.background = s === 'A'
-            ? 'linear-gradient(90deg, transparent, #39ff14, #00f5ff, #39ff14, transparent)'
-            : 'linear-gradient(90deg, transparent, #00f5ff, #00bcd4, #00f5ff, transparent)';
-        sweep.style.boxShadow = s === 'A'
-            ? '0 0 18px #39ff14, 0 0 40px #39ff14'
-            : '0 0 18px #00f5ff, 0 0 40px #00bcd4';
-
-        // Pornim animatia
-        overlay.classList.add('activ');
-        sweep.classList.remove('sweep');
-        void sweep.offsetWidth; // reflow
-        sweep.classList.add('sweep');
-
-        // Schimbam continutul la jumatatea animatiei (220ms)
-        setTimeout(function() {
-            curS = s;
-            document.getElementById('headRow').className   = s === 'A' ? 'scara-a-th' : 'scara-b-th';
-            document.getElementById('tableCont').className = s === 'A' ? 'container scara-a-mode' : 'container scara-b-mode';
-            document.getElementById('btnA').classList.toggle('active-a', s === 'A');
-            document.getElementById('btnB').classList.toggle('active-b', s === 'B');
-            for (var i = 1; i <= 40; i++) {
-                var row = document.getElementById('row_' + i);
-                if (row) row.style.display = ((i <= 20 && s === 'A') || (i > 20 && s === 'B')) ? '' : 'none';
-            }
-            recalc();
-
-            // Flash border pe tabel
-            cont.classList.remove('flash-a','flash-b');
-            void cont.offsetWidth;
-            cont.classList.add(s === 'A' ? 'flash-a' : 'flash-b');
-
-            // Stingem overlay-ul
-            overlay.classList.remove('activ');
-        }, 220);
-    }
-
-    // save/load mutat in sectiunea gen_slave_js
-
-    const _h = (s) => s.split('').reduce((a,c)=>Math.imul(31,a)+c.charCodeAt(0)|0, 0);
-    const _ph = _h('alfa.40');
-
-    function setButoaneDateStat(esteAdmin) {
-        ['btn-json-exp','btn-json-imp','btn-html-save'].forEach(function(cls) {
-            document.querySelectorAll('.' + cls).forEach(function(btn) {
-                btn.disabled = !esteAdmin;
-                btn.style.opacity = esteAdmin ? '1' : '0.35';
-                btn.style.cursor  = esteAdmin ? 'pointer' : 'not-allowed';
-                btn.title = esteAdmin ? '' : 'Necesita mod ADMIN';
-            });
-        });
-        var imp = document.getElementById('importFile');
-        if (imp) imp.disabled = !esteAdmin;
-    }
-
-    function verificareParola() {
-        var input = prompt("PAROLA:");
-        if (input !== null && _h(input) === _ph) {
-            document.getElementById('mainBody').classList.toggle('readonly-mode');
-            var esteAdmin = !document.getElementById('mainBody').classList.contains('readonly-mode');
-            document.getElementById('lockBtn').textContent = esteAdmin ? '🔓 ADMIN' : '🔒 BLOCAT';
-            setButoaneDateStat(esteAdmin);
-        } else if (input !== null) {
-            alert('Parola incorecta!');
-        }
-    }
-
-    // ---- EXPORT JSON ----
-    function exportJSON() {
-        const d = { in: {}, _meta: { luna: document.getElementById('l_an').value, titlu: document.getElementById('titlu').value, data: new Date().toLocaleString('ro-RO') } };
-        document.querySelectorAll('input').forEach(el => { if (el.id) d.in[el.id] = el.value; });
-        const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        const luna = (document.getElementById('l_an').value || 'date').replace(/\s+/g, '_');
-        a.download = 'Saturn34_' + luna + '.json';
-        a.click();
-        mesajExp('✅ JSON exportat!');
-    }
-
-    // ---- IMPORT JSON ----
-    function importJSON(input) {
-        const file = input.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const d = JSON.parse(e.target.result);
-                if (!d.in) throw new Error('Format invalid');
-                Object.keys(d.in).forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el && el.tagName === 'INPUT') el.value = d.in[id];
-                });
-                recalc();
-                mesajExp('✅ Date importate din: ' + file.name);
-            } catch(err) {
-                alert('Eroare la import: ' + err.message);
-            }
-        };
-        reader.readAsText(file);
-        input.value = '';
-    }
-    // ---- GENERARE SLAVE (fara fetch, fara server) ----
-    function genereazaSlave() {
-        recalc();
-
-        // 1. Colecteaza TOATE datele curente
-        var d = {};
-        document.querySelectorAll('input').forEach(function(el){
-            if (el.id) d[el.id] = el.value;
-        });
-        // Coloane calculate (td)
-        ['va_','vd_','ve_','vg_','vsl_','vcr_','vsd_','vbk_','vch_','tl_','tp_'].forEach(function(p){
-            for (var i=1;i<=40;i++){
-                var e=document.getElementById(p+i);
-                if(e) d[p+i]=e.innerText||'0';
-            }
-        });
-
-        var luna   = (d['l_an']||'date').replace(/\s+/g,'_');
-        var titlu  = d['titlu']||'GESTIUNE';
-        var l_an   = d['l_an']||'';
-        var prog_l = d['prog_l']||''; var prog_ma=d['prog_ma']||'';
-        var prog_mi=d['prog_mi']||''; var prog_j =d['prog_j']||'';
-        var prog_v =d['prog_v']||'';
-
-        // 2. Construieste HTML slave complet in memorie
-        var slaveHtml = construiesteSlaveHTML(d, titlu, l_an, prog_l, prog_ma, prog_mi, prog_j, prog_v);
-
-        // 3. Descarca
-        var blob = new Blob([slaveHtml], {type:'text/html;charset=utf-8'});
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'Saturn34_' + luna + '_SLAVE.html';
-        document.body.appendChild(a); a.click();
-        document.body.removeChild(a); URL.revokeObjectURL(a.href);
-        mesajExp('&#10003; SLAVE generat: Saturn34_' + luna + '_SLAVE.html');
-    }
-
-    function construiesteSlaveHTML(d, titlu, l_an, prog_l, prog_ma, prog_mi, prog_j, prog_v) {
-        var dStr = JSON.stringify(d);
-        var css  = document.querySelector('style').textContent;
-
-        // Generam randurile tabelului direct cu valorile deja completate
-        var rows = '';
-        for (var i = 1; i <= 40; i++) {
-            var vis = (i <= 20) ? '' : 'display:none;';
-            var p   = d['p_'+i]   || '0';
-            var c   = d['c_'+i]   || '0';
-            var mc  = d['mc_'+i]  || '0';
-            var fr  = d['fr_'+i]  || '';
-            var frp = d['frp_'+i] || '';
-            var ri  = d['ri_'+i]  || '0';
-            var pn  = d['pn_'+i]  || '0';
-            var rf  = d['rf_'+i]  || '0';
-            var rp  = d['rp_'+i]  || '0';
-            var va  = d['va_'+i]  || '0';
-            var vd  = d['vd_'+i]  || '0';
-            var ve  = d['ve_'+i]  || '0';
-            var vg  = d['vg_'+i]  || '0';
-            var vsl = d['vsl_'+i] || '0';
-            var vcr = d['vcr_'+i] || '0';
-            var vsd = d['vsd_'+i] || '0';
-            var vbk = d['vbk_'+i] || '0';
-            var vch = d['vch_'+i] || '0';
-            var tl  = d['tl_'+i]  || '0';
-            var tp  = d['tp_'+i]  || '0';
-
-            rows += '<tr id="row_' + i + '" style="' + vis + '" onclick="markRow(' + i + ')">' +
-                '<td class="col-ap">' + i + '</td>' +
-                '<td>' + p + '</td>' +
-                '<td>' + c + '</td>' +
-                '<td>' + mc + '</td>' +
-                '<td>' + va + '</td>' +
-                '<td>' + vd + '</td>' +
-                '<td>' + ve + '</td>' +
-                '<td>' + vg + '</td>' +
-                '<td>' + vsl + '</td>' +
-                '<td>' + vcr + '</td>' +
-                '<td>' + vsd + '</td>' +
-                '<td>' + vbk + '</td>' +
-                '<td>' + vch + '</td>' +
-                '<td class="res-col">' + tl + '</td>' +
-                '<td class="fond-col">' + (fr||'-') + '</td>' +
-                '<td class="fond-col">' + (frp||'-') + '</td>' +
-                '<td>' + ri + '</td>' +
-                '<td>' + pn + '</td>' +
-                '<td>' + rf + '</td>' +
-                '<td>' + rp + '</td>' +
-                '<td class="res-col">' + tp + '</td>' +
-            '</tr>';
-        }
-
-        // JS minimal slave - doar navigare scara si ceas
-        var jsMin = [
-            'var _cS="A";',
-            'function markRow(id){',
-            '  document.querySelectorAll("tr").forEach(function(r){r.classList.remove("active-row");});',
-            '  var r=document.getElementById("row_"+id);if(r)r.classList.add("active-row");',
-            '}',
-            'function _sw(s){',
-            '  _cS=s;',
-            '  document.getElementById("headRow").className=s==="A"?"scara-a-th":"scara-b-th";',
-            '  document.getElementById("tableCont").className=s==="A"?"container scara-a-mode":"container scara-b-mode";',
-            '  var bA=document.getElementById("btnA");var bB=document.getElementById("btnB");',
-            '  if(bA)bA.classList.toggle("active-a",s==="A");',
-            '  if(bB)bB.classList.toggle("active-b",s==="B");',
-            '  for(var i=1;i<=40;i++){',
-            '    var r=document.getElementById("row_"+i);',
-            '    if(r)r.style.display=((i<=20&&s==="A")||(i>20&&s==="B"))?"":"none";',
-            '  }',
-            '}',
-            'function showPage(name){',
-            '  document.querySelectorAll(".page-section").forEach(function(p){p.classList.remove("active-page");});',
-            '  document.querySelectorAll(".btn-nav").forEach(function(b){b.classList.remove("active-nav");});',
-            '  var page=document.getElementById("page-"+name);',
-            '  if(page)page.classList.add("active-page");',
-            '  var btn=document.getElementById("nav"+name.charAt(0).toUpperCase()+name.slice(1));',
-            '  if(btn)btn.classList.add("active-nav");',
-            '  window.scrollTo(0,0);',
-            '  if(name==="mesaje"&&typeof porneșteAscultareaMesajeSlave==="function")porneșteAscultareaMesajeSlave();',
-            '}',
-            'function escHtml(s){',
-            '  return String(s==null?"":s).replace(/[&<>"\']/g, function(c){',
-            '    return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","\'":"&#39;"}[c];',
-            '  });',
-            '}',
-            'var COLECTIE_MESAJE="mesaje";',
-            'var _unsubscribeMesajeSlave=null;',
-            'function randMesajSlave(m){',
-            '  var cls=m.from==="Administrator"?"from-admin":"from-locatar";',
-            '  return \'<div class="msg-item \'+cls+\'">\'',
-            '    +\'<div class="msg-meta">\'+escHtml(m.from)+\' &middot; \'+escHtml(m.apt||"")+\' &middot; \'+escHtml(m.data||"")+\'</div>\'',
-            '    +\'<div>\'+escHtml(m.text)+\'</div></div>\';',
-            '}',
-            'function porneșteAscultareaMesajeSlave(){',
-            '  var list=document.getElementById("msg_list");',
-            '  if(!list)return;',
-            '  if(!window._dbMesaje){list.innerHTML=\'<div class="msg-empty">&#9888; Firebase nu este configurat.</div>\';return;}',
-            '  if(_unsubscribeMesajeSlave)return;',
-            '  list.innerHTML=\'<div class="msg-empty">Se încarcă mesajele...</div>\';',
-            '  try{',
-            '    _unsubscribeMesajeSlave=window._dbMesaje.collection(COLECTIE_MESAJE).orderBy("ts","asc").onSnapshot(function(snap){',
-            '      if(snap.empty){list.innerHTML=\'<div class="msg-empty">Niciun mesaj încă.</div>\';return;}',
-            '      var html="";var docs=[];',
-            '      snap.forEach(function(doc){docs.push(doc.data());});',
-            '      docs.slice().reverse().forEach(function(m){html+=randMesajSlave(m);});',
-            '      list.innerHTML=html;',
-            '    },function(err){console.error(err);list.innerHTML=\'<div class="msg-empty">&#9888; Eroare conectare Firebase.</div>\';});',
-            '  }catch(e){console.error(e);list.innerHTML=\'<div class="msg-empty">&#9888; Eroare conectare Firebase.</div>\';}',
-            '}',
-            'function trimiteMesaj(){',
-            '  var from=document.getElementById("msg_from").value;',
-            '  var apt=document.getElementById("msg_apt").value.trim();',
-            '  var text=document.getElementById("msg_text").value.trim();',
-            '  if(!text)return;',
-            '  if(!window._dbMesaje){alert("Firebase nu este configurat.");return;}',
-            '  var btn=document.querySelector(".msg-send-btn");',
-            '  if(btn){btn.disabled=true;btn.style.opacity="0.6";}',
-            '  window._dbMesaje.collection(COLECTIE_MESAJE).add({',
-            '    from:from,apt:apt,text:text,data:new Date().toLocaleString("ro-RO"),',
-            '    ts:firebase.firestore.FieldValue.serverTimestamp()',
-            '  }).then(function(){',
-            '    if(btn){btn.disabled=false;btn.style.opacity="1";}',
-            '    document.getElementById("msg_text").value="";',
-            '  }).catch(function(err){',
-            '    if(btn){btn.disabled=false;btn.style.opacity="1";}',
-            '    console.error(err);alert("Mesajul nu a putut fi trimis. Verifică Firebase.");',
-            '  });',
-            '}',
-            'document.addEventListener("DOMContentLoaded",function(){',
-            '  setInterval(function(){',
-            '    var el=document.getElementById("ceas");',
-            '    if(el)el.innerText=new Date().toLocaleTimeString("ro-RO");',
-            '  },1000);',
-            '  porneșteAscultareaMesajeSlave();',
-            '});'
-        ].join('\n');
-
-        var h = '<!DOCTYPE html>\n<html lang="ro">\n<head>\n<meta charset="UTF-8">\n';
-        h += '<title>' + titlu + ' - VIZUALIZARE</title>\n';
-        h += '<style>\n' + css + '\n';
-        h += 'input,textarea{pointer-events:none!important;}\n';
-        h += '.msg-panel input,.msg-panel textarea,.msg-panel select{pointer-events:auto!important;}\n';
-        h += '.tab-btn{pointer-events:auto!important;cursor:pointer!important;}\n';
-        h += '.slave-badge{position:fixed;bottom:10px;right:12px;z-index:9999;background:rgba(0,20,40,0.9);';
-        h += 'border:1px solid var(--cyan);border-radius:20px;padding:4px 14px;font-size:10px;';
-        h += 'color:var(--cyan2);text-shadow:0 0 6px var(--cyan2);}\n';
-        h += '.no-print,#lockBtn,.calc-master{display:none!important;}\n';
-        h += '</style>\n';
-        var sOpen = '<' + 'script', sClose = '<' + '/script>';
-        h += sOpen + ' src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js">' + sClose + '\n';
-        h += sOpen + ' src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js">' + sClose + '\n';
-        h += sOpen + '>\n';
-        h += 'try{firebase.initializeApp(' + JSON.stringify((typeof firebaseConfig!=='undefined')?firebaseConfig:{}) + ');window._dbMesaje=firebase.firestore();}catch(e){console.error("Firebase init eroare",e);}\n';
-        h += sClose + '\n';
-        h += '</head>\n<body id="mainBody">\n';
-        h += '<div class="slave-badge">&#128274; VIZUALIZARE &mdash; ' + l_an + '</div>\n';
-        h += '<div id="tranzitie-overlay"></div><div id="tranzitie-sweep"></div>\n';
-
-        // Nav menu (doar navigare, fara editare)
-        h += '<div class="export-bar">\n';
-        h += '<span>&#128190; DATE:</span>\n';
-        h += '<button class="btn-exp btn-nav btn-nav-home active-nav" id="navHome" onclick="showPage(\'home\')">&#127968; Acasă</button>\n';
-        h += '<button class="btn-exp btn-nav" id="navMesaje" onclick="showPage(\'mesaje\')">&#128172; Mesaje</button>\n';
-        h += '<button class="btn-exp btn-nav" id="navContact" onclick="showPage(\'contact\')">&#128222; Contact</button>\n';
-        h += '</div>\n';
-
-        h += '<div id="page-home" class="page-section active-page">\n';
-
-        // Header
-        h += '<div class="header-panel">\n';
-        h += '<div style="display:flex;align-items:center;gap:18px;">';
-        h += '<svg style="width:52px;height:52px;fill:#ff2d55;" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>';
-        h += '<div><div id="ceas" style="font-size:28px;font-weight:700;color:var(--cyan);letter-spacing:3px;">00:00:00</div>';
-        h += '<div style="font-size:13px;color:var(--text2);">LUNA:&nbsp;' + l_an + '</div></div></div>\n';
-        h += '<div style="text-align:center;"><span class="edit-titlu">' + titlu + '</span></div>\n';
-        h += '<div style="text-align:right;"><div style="font-size:13px;color:var(--text2);">PERS:&nbsp;<span id="tot_p">0</span></div></div>\n';
-        h += '</div>\n';
-
-        // Nav + program
-        h += '<div class="nav-tabs">\n';
-        h += '<div class="nav-btns">';
-        h += '<button id="btnA" class="tab-btn btn-a active-a" onclick="_sw(\'A\')">&#9632; Scara A</button>';
-        h += '<button id="btnB" class="tab-btn btn-b" onclick="_sw(\'B\')">&#9632; Scara B</button>';
-        h += '</div>\n';
-        h += '<div class="program-grid">';
-        h += '<div class="prog-label">&#128336;<br>PROGRAM<br>FUNC.</div>';
-        h += '<div class="prog-zi-name luni">Luni</div><div class="prog-zi-name marti">Marti</div>';
-        h += '<div class="prog-zi-name mierc">Mierc.</div><div class="prog-zi-name joi">Joi</div>';
-        h += '<div class="prog-zi-name vineri">Vineri</div>';
-        h += '<div class="prog-ora">' + prog_l  + '</div>';
-        h += '<div class="prog-ora">' + prog_ma + '</div>';
-        h += '<div class="prog-ora">' + prog_mi + '</div>';
-        h += '<div class="prog-ora">' + prog_j  + '</div>';
-        h += '<div class="prog-ora">' + prog_v  + '</div>';
-        h += '</div>\n</div>\n';
-
-        // Tabel cu randuri deja completate
-        h += '<div class="container scara-a-mode" id="tableCont">\n<table>\n<thead>\n';
-        h += '<tr id="headRow" class="scara-a-th">';
-        h += '<th width="20">Ap</th><th width="20">Nr.P</th><th width="40">Cota parte</th><th width="30">Index Apa</th>';
-        h += '<th width="40">V.Apa</th><th width="40">Pierderi</th><th width="35">Lumina</th><th width="35">Gunoi</th>';
-        h += '<th width="35">Salarii</th><th width="35">Crt.</th><th width="35">Sed.</th><th width="35">Bnk.</th><th width="35">Chi.</th>';
-        h += '<th width="45" class="res-col">TOT LUNA</th>';
-        h += '<th width="30">FRul.</th><th width="30">FRep.</th>';
-        h += '<th width="30">Rest.I</th><th width="30">Pen.</th><th width="30">Res.F</th><th width="30">Res.P</th>';
-        h += '<th width="45" class="res-col">TOT PLATA</th>';
-        h += '</tr>\n</thead>\n<tbody id="bodyTable">\n' + rows + '</tbody>\n</table>\n</div>\n';
-        h += '</div><!-- /page-home -->\n';
-
-        // Pagina Mesaje (live, prin Firebase)
-        h += '<div id="page-mesaje" class="page-section">\n';
-        h += '<div class="wide-header"><h2>&#128172; Mesaje Locatari &#8596; Administrator</h2>';
-        h += '<p>Comunicare directă între locatari și administrația asociației de proprietari.</p>';
-        h += '<button class="btn-back-home" onclick="showPage(\'home\')">&#127968; Înapoi acasă</button></div>\n';
-        h += '<div class="msg-panel"><label>Trimite mesaj</label>';
-        h += '<select id="msg_from"><option value="Administrator">Administrator</option><option value="Locatar">Locatar</option></select>';
-        h += '<input type="text" id="msg_apt" placeholder="Apartament / Nume expeditor" style="margin-top:8px;">';
-        h += '<textarea id="msg_text" placeholder="Scrie mesajul aici..."></textarea>';
-        h += '<button class="msg-send-btn" onclick="trimiteMesaj()">&#9993; Trimite mesaj</button></div>\n';
-        h += '<div class="msg-panel"><label>Mesaje primite / trimise</label>';
-        h += '<div class="msg-list" id="msg_list"><div class="msg-empty">Se încarcă mesajele...</div></div></div>\n';
-        h += '</div><!-- /page-mesaje -->\n';
-
-        // Pagina Contact (doar vizualizare)
-        var c_admin = d['c_admin'] || 'Nume Administrator';
-        var c_pres  = d['c_presedinte'] || 'Nume Președinte';
-        var c_membri= d['c_membri'] || 'Nume membru 1, Nume membru 2, Nume membru 3';
-        var c_email = d['c_email'] || 'contact@asociatie.ro';
-        h += '<div id="page-contact" class="page-section">\n';
-        h += '<div class="wide-header"><h2>&#128222; Contact</h2>';
-        h += '<p>Datele de contact ale asociației de proprietari. (Vizualizare)</p>';
-        h += '<button class="btn-back-home" onclick="showPage(\'home\')">&#127968; Înapoi acasă</button></div>\n';
-        h += '<div class="contact-wrap">';
-        h += '<div class="contact-logo"><svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg></div>';
-        h += '<div class="contact-info">';
-        h += '<div class="contact-row"><label>Administrator asociație</label><span>' + escHtml(c_admin) + '</span></div>';
-        h += '<div class="contact-row"><label>Președinte asociație</label><span>' + escHtml(c_pres) + '</span></div>';
-        h += '<div class="contact-row"><label>Membrii asociație</label><span>' + escHtml(c_membri) + '</span></div>';
-        h += '<div class="contact-row"><label>Adresă email</label><span>' + escHtml(c_email) + '</span></div>';
-        h += '</div></div>\n';
-        h += '</div><!-- /page-contact -->\n';
-
-        h += '<div class="app-footer">&copy; ' + new Date().getFullYear() + ' ' + titlu + '. Toate drepturile rezervate.</div>\n';
-
-        // Script
-        var s1='<scr', s2='ipt>', e1='<\/sc', e2='ript>';
-        h += s1+s2+'\n'+jsMin+'\n'+e1+e2+'\n';
-        h += '</body>\n</html>';
-        return h;
-    }
-
-    function mesajExp(txt){
-        var el=document.getElementById('expMsg');
-        if(el){el.innerHTML=txt;setTimeout(function(){el.innerHTML='';},5000);}
-    }
-
-    function descarcaHTML(html,luna){
-        var blob=new Blob([html],{type:'text/html;charset=utf-8'});
-        var a=document.createElement('a');
-        a.href=URL.createObjectURL(blob);a.download='Saturn34_'+luna+'.html';
-        document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
-    }
-
-    function save(){
-        var d={in:{}};
-        document.querySelectorAll('input').forEach(function(el){if(el.id)d.in[el.id]=el.value;});
-        try{localStorage.setItem('saturn_full_gest_v2',JSON.stringify(d));}catch(e){}
-    }
-    function load(){
-        try{
-            var raw=localStorage.getItem('saturn_full_gest_v2');
-            if(!raw){recalc();return;}
-            var s=JSON.parse(raw);
-            if(s&&s.in){Object.keys(s.in).forEach(function(id){var el=document.getElementById(id);if(el&&el.tagName==='INPUT')el.value=s.in[id];});}
-        }catch(e){}
-        recalc();
-    }
-    function saveDebounced(){clearTimeout(window._st);window._st=setTimeout(save,400);}
-
-    document.addEventListener('DOMContentLoaded',function(){
-        build();load();
-        var eraAdmin=false;
-        try{eraAdmin=sessionStorage.getItem('saturn_admin')==='1';}catch(e){}
-        if(typeof aplicaStareAdmin==='function')aplicaStareAdmin(eraAdmin);
-        else setButoaneDateStat(eraAdmin);
-        porneșteAscultareaMesaje();
-        var fy=document.getElementById('footer-year');
-        if(fy) fy.innerText=new Date().getFullYear();
-    });
-    setInterval(function(){var el=document.getElementById('ceas');if(el)el.innerText=new Date().toLocaleTimeString('ro-RO');},1000);
-
-    /* ===== NAVIGARE PAGINI ===== */
-    function showPage(name){
-        document.querySelectorAll('.page-section').forEach(function(p){p.classList.remove('active-page');});
-        document.querySelectorAll('.btn-nav').forEach(function(b){b.classList.remove('active-nav');});
-        var page=document.getElementById('page-'+name);
-        if(page) page.classList.add('active-page');
-        var btn=document.getElementById('nav'+name.charAt(0).toUpperCase()+name.slice(1));
-        if(btn) btn.classList.add('active-nav');
-        window.scrollTo(0,0);
-        if(name==='mesaje' && typeof porneșteAscultareaMesaje==='function') porneșteAscultareaMesaje();
-    }
-
-    /* ===== MESAJE (Firebase Firestore - timp real) ===== */
-    var COLECTIE_MESAJE = 'mesaje';
-    var _unsubscribeMesaje = null;
-
-    function escHtml(s){
-        return String(s==null?'':s).replace(/[&<>"']/g, function(c){
-            return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-        });
-    }
-
-    function randMesaj(m){
-        var cls = m.from==='Administrator' ? 'from-admin' : 'from-locatar';
-        var data = m.data || '';
-        return '<div class="msg-item '+cls+'">'
-             + '<div class="msg-meta">'+escHtml(m.from)+' &middot; '+escHtml(m.apt||'')+' &middot; '+escHtml(data)+'</div>'
-             + '<div>'+escHtml(m.text)+'</div></div>';
-    }
-
-    function porneșteAscultareaMesaje(){
-        var list=document.getElementById('msg_list');
-        if(!list) return;
-        if(!window._dbMesaje){
-            list.innerHTML='<div class="msg-empty">&#9888; Firebase nu este configurat. Completează firebaseConfig în &lt;head&gt;.</div>';
-            return;
-        }
-        if(_unsubscribeMesaje) return; // ascultarea e deja activa
-        list.innerHTML='<div class="msg-empty">Se încarcă mesajele...</div>';
-        try{
-            _unsubscribeMesaje = window._dbMesaje.collection(COLECTIE_MESAJE)
-                .orderBy('ts', 'asc')
-                .onSnapshot(function(snap){
-                    if(snap.empty){
-                        list.innerHTML='<div class="msg-empty">Niciun mesaj încă.</div>';
-                        return;
-                    }
-                    var html='';
-                    var docs=[];
-                    snap.forEach(function(doc){ docs.push(doc.data()); });
-                    docs.slice().reverse().forEach(function(m){ html += randMesaj(m); });
-                    list.innerHTML=html;
-                }, function(err){
-                    console.error('Firestore onSnapshot error:', err);
-                    list.innerHTML='<div class="msg-empty">&#9888; Eroare la conectarea cu Firebase. Verifică firebaseConfig și regulile Firestore.</div>';
-                });
-        }catch(e){
-            console.error(e);
-            list.innerHTML='<div class="msg-empty">&#9888; Eroare la conectarea cu Firebase.</div>';
-        }
-    }
-
-    function trimiteMesaj(){
-        var from=document.getElementById('msg_from').value;
-        var apt=document.getElementById('msg_apt').value.trim();
-        var text=document.getElementById('msg_text').value.trim();
-        if(!text) return;
-        if(!window._dbMesaje){ alert('Firebase nu este configurat. Completează firebaseConfig.'); return; }
-        var btn=document.querySelector('.msg-send-btn');
-        if(btn){btn.disabled=true;btn.style.opacity='0.6';}
-        window._dbMesaje.collection(COLECTIE_MESAJE).add({
-            from: from,
-            apt: apt,
-            text: text,
-            data: new Date().toLocaleString('ro-RO'),
-            ts: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(function(){
-            if(btn){btn.disabled=false;btn.style.opacity='1';}
-            document.getElementById('msg_text').value='';
-        }).catch(function(err){
-            if(btn){btn.disabled=false;btn.style.opacity='1';}
-            console.error(err);
-            alert('Mesajul nu a putut fi trimis. Verifică firebaseConfig și regulile Firestore.');
-        });
-    }
-
+var _cS="A";
+function markRow(id){
+  document.querySelectorAll("tr").forEach(function(r){r.classList.remove("active-row");});
+  var r=document.getElementById("row_"+id);if(r)r.classList.add("active-row");
+}
+function _sw(s){
+  _cS=s;
+  document.getElementById("headRow").className=s==="A"?"scara-a-th":"scara-b-th";
+  document.getElementById("tableCont").className=s==="A"?"container scara-a-mode":"container scara-b-mode";
+  var bA=document.getElementById("btnA");var bB=document.getElementById("btnB");
+  if(bA)bA.classList.toggle("active-a",s==="A");
+  if(bB)bB.classList.toggle("active-b",s==="B");
+  for(var i=1;i<=40;i++){
+    var r=document.getElementById("row_"+i);
+    if(r)r.style.display=((i<=20&&s==="A")||(i>20&&s==="B"))?"":"none";
+  }
+}
+function showPage(name){
+  document.querySelectorAll(".page-section").forEach(function(p){p.classList.remove("active-page");});
+  document.querySelectorAll(".btn-nav").forEach(function(b){b.classList.remove("active-nav");});
+  var page=document.getElementById("page-"+name);
+  if(page)page.classList.add("active-page");
+  var btn=document.getElementById("nav"+name.charAt(0).toUpperCase()+name.slice(1));
+  if(btn)btn.classList.add("active-nav");
+  window.scrollTo(0,0);
+}
+document.addEventListener("DOMContentLoaded",function(){
+  setInterval(function(){
+    var el=document.getElementById("ceas");
+    if(el)el.innerText=new Date().toLocaleTimeString("ro-RO");
+  },1000);
+});
 </script>
-
-<script id="date-salvate">
-(function(){
-  var d={};
-  document.addEventListener("DOMContentLoaded",function(){
-    setTimeout(function(){
-      var ls=null;try{ls=localStorage.getItem("saturn_full_gest_v2");}catch(e){}
-      if(!ls){Object.keys(d).forEach(function(id){var el=document.getElementById(id);if(el&&el.tagName==="INPUT")el.value=d[id];});if(typeof recalc==="function")recalc();}
-      if(typeof setButoaneDateStat==="function")setButoaneDateStat(false);
-    },80);
-  });
-})();
-</script>
-</body></html>
+</body>
+</html>
